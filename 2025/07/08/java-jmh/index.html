@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Jmh | mini-docs</title>
+  <meta name="description" content="Jmh记得之前写过一个这样的文档,后面找不着了,现在又来写了. orz  1. 基础使用1.1 依赖1234567891011&lt;dependency&gt;    &lt;groupId&gt;org.openjdk.jmh&lt;&#x2F;groupId&gt;    &lt;artifactId&gt;jmh-core&lt;&#x2F;artifactId&gt;    &lt;version&gt;1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jmh">
+<meta property="og:url" content="http://example.com/2025/07/08/java-jmh/index.html">
+<meta property="og:site_name" content="mini-docs">
+<meta property="og:description" content="Jmh记得之前写过一个这样的文档,后面找不着了,现在又来写了. orz  1. 基础使用1.1 依赖1234567891011&lt;dependency&gt;    &lt;groupId&gt;org.openjdk.jmh&lt;&#x2F;groupId&gt;    &lt;artifactId&gt;jmh-core&lt;&#x2F;artifactId&gt;    &lt;version&gt;1">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-08T12:46:25.000Z">
+<meta property="article:modified_time" content="2025-07-08T09:49:22.879Z">
+<meta property="article:author" content="cs12110@163.com">
+<meta property="article:tag" content="Java基础">
+<meta property="article:tag" content="Jmh">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2025/07/08/java-jmh/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="mini-docs" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/cs12110" target="_blank">
+          <img class="img-circle img-rotate" src="/images/12764287.png" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">cs12110</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Macondo</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>就一打字的!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaEE/">JavaEE</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/KillMe/">KillMe</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ai/">ai</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/database/">database</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/server/">server</a><span class="category-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/" rel="tag">AOP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Arthas/" rel="tag">Arthas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/" rel="tag">ClassLoader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docsify/" rel="tag">Docsify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GC/" rel="tag">GC</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/" rel="tag">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/" rel="tag">Go</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC/" rel="tag">IOC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOs/" rel="tag">IOs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E5%8A%A0%E5%AF%86/" rel="tag">Java 加密</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E6%9E%9A%E4%B8%BE/" rel="tag">Java 枚举</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaEE/" rel="tag">JavaEE</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E4%BC%98%E5%8C%96/" rel="tag">Java优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">Java设计模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmeter/" rel="tag">Jmeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmh/" rel="tag">Jmh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">Json 序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/" rel="tag">MQ</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mockito/" rel="tag">Mockito</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" rel="tag">Mybatis 源码阅读</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shiro/" rel="tag">Shiro</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Springboot/" rel="tag">Springboot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/" rel="tag">Thrift</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dify/" rel="tag">dify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo/" rel="tag">dubbo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ftp/" rel="tag">ftp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/" rel="tag">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">lambda表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lanproxy/" rel="tag">lanproxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/myabtis/" rel="tag">myabtis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/websocket/" rel="tag">websocket</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xxljob/" rel="tag">xxljob</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zipkin/" rel="tag">zipkin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" rel="tag">代码生成器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" rel="tag">分库分表</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" rel="tag">多数据源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="tag">工作流</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" rel="tag">布隆过滤器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" rel="tag">微信对接</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" rel="tag">日志框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" rel="tag">规则引擎</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/AOP/" style="font-size: 13px;">AOP</a> <a href="/tags/Arthas/" style="font-size: 13px;">Arthas</a> <a href="/tags/ClassLoader/" style="font-size: 13px;">ClassLoader</a> <a href="/tags/Docsify/" style="font-size: 13px;">Docsify</a> <a href="/tags/ElasticSearch/" style="font-size: 13.17px;">ElasticSearch</a> <a href="/tags/GC/" style="font-size: 13.17px;">GC</a> <a href="/tags/Game/" style="font-size: 13px;">Game</a> <a href="/tags/Go/" style="font-size: 13.5px;">Go</a> <a href="/tags/Gogs/" style="font-size: 13px;">Gogs</a> <a href="/tags/IOC/" style="font-size: 13px;">IOC</a> <a href="/tags/IOs/" style="font-size: 13px;">IOs</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/JWT/" style="font-size: 13px;">JWT</a> <a href="/tags/Java-%E5%8A%A0%E5%AF%86/" style="font-size: 13px;">Java 加密</a> <a href="/tags/Java-%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">Java 枚举</a> <a href="/tags/JavaEE/" style="font-size: 13.17px;">JavaEE</a> <a href="/tags/Java%E4%BC%98%E5%8C%96/" style="font-size: 13px;">Java优化</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 14px;">Java基础</a> <a href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13px;">Java设计模式</a> <a href="/tags/Jmeter/" style="font-size: 13px;">Jmeter</a> <a href="/tags/Jmh/" style="font-size: 13px;">Jmh</a> <a href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 13px;">Json 序列化</a> <a href="/tags/Leetcode/" style="font-size: 13px;">Leetcode</a> <a href="/tags/MQ/" style="font-size: 13.83px;">MQ</a> <a href="/tags/Mockito/" style="font-size: 13px;">Mockito</a> <a href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" style="font-size: 13px;">Mybatis 源码阅读</a> <a href="/tags/PostgreSQL/" style="font-size: 13px;">PostgreSQL</a> <a href="/tags/RabbitMQ/" style="font-size: 13.33px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 13.5px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 13.17px;">RocketMQ</a> <a href="/tags/Shiro/" style="font-size: 13px;">Shiro</a> <a href="/tags/Spring/" style="font-size: 13.67px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 13px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 13.67px;">SpringCloud</a> <a href="/tags/Springboot/" style="font-size: 13.17px;">Springboot</a> <a href="/tags/Thrift/" style="font-size: 13px;">Thrift</a> <a href="/tags/Zookeeper/" style="font-size: 13px;">Zookeeper</a> <a href="/tags/dify/" style="font-size: 13px;">dify</a> <a href="/tags/docker/" style="font-size: 13.17px;">docker</a> <a href="/tags/dubbo/" style="font-size: 13px;">dubbo</a> <a href="/tags/ftp/" style="font-size: 13px;">ftp</a> <a href="/tags/git/" style="font-size: 13px;">git</a> <a href="/tags/jenkins/" style="font-size: 13px;">jenkins</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/lanproxy/" style="font-size: 13px;">lanproxy</a> <a href="/tags/linux/" style="font-size: 13px;">linux</a> <a href="/tags/maven/" style="font-size: 13.33px;">maven</a> <a href="/tags/myabtis/" style="font-size: 13px;">myabtis</a> <a href="/tags/mysql/" style="font-size: 13.83px;">mysql</a> <a href="/tags/nacos/" style="font-size: 13px;">nacos</a> <a href="/tags/nginx/" style="font-size: 13px;">nginx</a> <a href="/tags/redis/" style="font-size: 13.33px;">redis</a> <a href="/tags/tomcat/" style="font-size: 13px;">tomcat</a> <a href="/tags/websocket/" style="font-size: 13px;">websocket</a> <a href="/tags/xxljob/" style="font-size: 13px;">xxljob</a> <a href="/tags/zipkin/" style="font-size: 13px;">zipkin</a> <a href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" style="font-size: 13px;">代码生成器</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" style="font-size: 13px;">分布式事务</a> <a href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" style="font-size: 13.17px;">分库分表</a> <a href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" style="font-size: 13px;">多数据源</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" style="font-size: 13px;">工作流</a> <a href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" style="font-size: 13px;">布隆过滤器</a> <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" style="font-size: 13px;">微信对接</a> <a href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">日志框架</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 13px;">爬虫</a> <a href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" style="font-size: 13px;">规则引擎</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">七月 2025</a><span class="archive-list-count">105</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-thread/" class="title">Go 多线程</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-web/" class="title">Go Web</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-classloder/" class="title">ClassLoader</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-encode/" class="title">Java 加密</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-enum/" class="title">Java 枚举</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-java-jmh" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Jmh
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2025/07/08/java-jmh/" class="article-date">
+	  <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a>, <a class="article-tag-link-link" href="/tags/Jmh/" rel="tag">Jmh</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2025/07/08/java-jmh/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="Jmh"><a href="#Jmh" class="headerlink" title="Jmh"></a>Jmh</h1><p>记得之前写过一个这样的文档,后面找不着了,现在又来写了. orz</p>
+<hr>
+<h3 id="1-基础使用"><a href="#1-基础使用" class="headerlink" title="1. 基础使用"></a>1. 基础使用</h3><h4 id="1-1-依赖"><a href="#1-1-依赖" class="headerlink" title="1.1 依赖"></a>1.1 依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.openjdk.jmh<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jmh-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.23<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.openjdk.jmh<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jmh-generator-annprocess<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.23<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-测试"><a href="#1-2-测试" class="headerlink" title="1.2 测试"></a>1.2 测试</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.dslyy.fd.utils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.annotations.Benchmark;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.annotations.BenchmarkMode;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.annotations.Fork;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.annotations.Measurement;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.annotations.Mode;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.annotations.OutputTimeUnit;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.annotations.Scope;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.annotations.State;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.annotations.Warmup;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.runner.Runner;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.runner.RunnerException;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.runner.options.Options;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.runner.options.OptionsBuilder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> huapeng.huang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> V1.0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2024-03-09 16:03</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@BenchmarkMode(Mode.AverageTime)</span></span><br><span class="line"><span class="meta">@State(Scope.Thread)</span></span><br><span class="line"><span class="meta">@Fork(1)</span></span><br><span class="line"><span class="meta">@OutputTimeUnit(TimeUnit.MILLISECONDS)</span></span><br><span class="line"><span class="meta">@Warmup(iterations = 3)</span></span><br><span class="line"><span class="meta">@Measurement(iterations = 5)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JmhUnit</span> &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">string</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="type">StringBuilder</span> <span class="variable">stringBuilder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Benchmark</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">stringAdd</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++) &#123;</span><br><span class="line">            string = string + i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> string;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Benchmark</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">stringBuilderAppend</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++) &#123;</span><br><span class="line">            stringBuilder.append(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> stringBuilder.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> RunnerException &#123;</span><br><span class="line">        <span class="type">Options</span> <span class="variable">opt</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">OptionsBuilder</span>()</span><br><span class="line">                .include(JmhUnit.class.getSimpleName())</span><br><span class="line">                .build();</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Runner</span>(opt).run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"># JMH version: 1.23</span><br><span class="line"># VM version: JDK 1.8.0_201, Java HotSpot(TM) 64-Bit Server VM, 25.201-b09</span><br><span class="line"># VM invoker: /Library/Java/JavaVirtualMachines/jdk1.8.0_201.jdk/Contents/Home/jre/bin/java</span><br><span class="line"># VM options: -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=56314:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8</span><br><span class="line"># Warmup: 3 iterations, 10 s each</span><br><span class="line"># Measurement: 5 iterations, 10 s each</span><br><span class="line"># Timeout: 10 min per iteration</span><br><span class="line"># Threads: 1 thread, will synchronize iterations</span><br><span class="line"># Benchmark mode: Average time, time/op</span><br><span class="line"># Benchmark: com.poorman.utils.JmhUnit.stringAdd</span><br><span class="line"></span><br><span class="line"># Run progress: 0.00% complete, ETA 00:02:40</span><br><span class="line"># Fork: 1 of 1</span><br><span class="line"># Warmup Iteration   1: 0.445 ms/op</span><br><span class="line"># Warmup Iteration   2: 0.357 ms/op</span><br><span class="line"># Warmup Iteration   3: 0.353 ms/op</span><br><span class="line">Iteration   1: 0.328 ms/op</span><br><span class="line">Iteration   2: 0.345 ms/op</span><br><span class="line">Iteration   3: 0.335 ms/op</span><br><span class="line">Iteration   4: 0.450 ms/op</span><br><span class="line">Iteration   5: 0.421 ms/op</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Result &quot;com.poorman.utils.JmhUnit.stringAdd&quot;:</span><br><span class="line">  0.376 ±(99.9%) 0.215 ms/op [Average]</span><br><span class="line">  (min, avg, max) = (0.328, 0.376, 0.450), stdev = 0.056</span><br><span class="line">  CI (99.9%): [0.161, 0.591] (assumes normal distribution)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># JMH version: 1.23</span><br><span class="line"># VM version: JDK 1.8.0_201, Java HotSpot(TM) 64-Bit Server VM, 25.201-b09</span><br><span class="line"># VM invoker: /Library/Java/JavaVirtualMachines/jdk1.8.0_201.jdk/Contents/Home/jre/bin/java</span><br><span class="line"># VM options: -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=56314:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8</span><br><span class="line"># Warmup: 3 iterations, 10 s each</span><br><span class="line"># Measurement: 5 iterations, 10 s each</span><br><span class="line"># Timeout: 10 min per iteration</span><br><span class="line"># Threads: 1 thread, will synchronize iterations</span><br><span class="line"># Benchmark mode: Average time, time/op</span><br><span class="line"># Benchmark: com.poorman.utils.JmhUnit.stringBuilderAppend</span><br><span class="line"></span><br><span class="line"># Run progress: 50.00% complete, ETA 00:01:22</span><br><span class="line"># Fork: 1 of 1</span><br><span class="line"># Warmup Iteration   1: 0.016 ms/op</span><br><span class="line"># Warmup Iteration   2: 0.014 ms/op</span><br><span class="line"># Warmup Iteration   3: 0.014 ms/op</span><br><span class="line">Iteration   1: 0.014 ms/op</span><br><span class="line">Iteration   2: 0.015 ms/op</span><br><span class="line">Iteration   3: 0.015 ms/op</span><br><span class="line">Iteration   4: 0.018 ms/op</span><br><span class="line">Iteration   5: 0.038 ms/op</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Result &quot;com.poorman.utils.JmhUnit.stringBuilderAppend&quot;:</span><br><span class="line">  0.020 ±(99.9%) 0.039 ms/op [Average]</span><br><span class="line">  (min, avg, max) = (0.014, 0.020, 0.038), stdev = 0.010</span><br><span class="line">  CI (99.9%): [≈ 0, 0.059] (assumes normal distribution)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># Run complete. Total time: 00:02:43</span><br><span class="line"></span><br><span class="line">REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on</span><br><span class="line">why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial</span><br><span class="line">experiments, perform baseline and negative tests that provide experimental control, make sure</span><br><span class="line">the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.</span><br><span class="line">Do not assume the numbers tell you what you want them to tell.</span><br><span class="line"></span><br><span class="line">Benchmark                    Mode  Cnt  Score   Error  Units</span><br><span class="line">JmhUnit.stringAdd            avgt    5  0.376 ± 0.215  ms/op</span><br><span class="line">JmhUnit.stringBuilderAppend  avgt    5  0.020 ± 0.039  ms/op</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-基础知识"><a href="#2-基础知识" class="headerlink" title="2. 基础知识"></a>2. 基础知识</h3><p>Q: 在上面代码里面使用到的注解分别是干啥的呀?</p>
+<p>A: 下面我们来看看相关的注解是干啥的.</p>
+<h4 id="2-1-BenchmarkMode"><a href="#2-1-BenchmarkMode" class="headerlink" title="2.1 BenchmarkMode"></a>2.1 BenchmarkMode</h4><p>配置 Mode 选项，可用于类或者方法上，这个注解的 value 是一个数组，可以把几种 Mode 集合在一起执行，如：<code>@BenchmarkMode(&#123;Mode.SampleTime, Mode.AverageTime&#125;)</code>，还可以设置为 Mode.All，即全部执行一遍。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Throughput</td>
+<td>整体吞吐量，每秒执行了多少次调用，单位为 ops&#x2F;time</td>
+</tr>
+<tr>
+<td>AverageTime</td>
+<td>用的平均时间，每次操作的平均时间，单位为 time&#x2F;op</td>
+</tr>
+<tr>
+<td>SampleTime</td>
+<td>随机取样，最后输出取样结果的分布</td>
+</tr>
+<tr>
+<td>SingleShotTime</td>
+<td>只运行一次，往往同时把 Warmup 次数设为 0，用于测试冷启动时的性能</td>
+</tr>
+<tr>
+<td>All</td>
+<td>上面的所有模式都执行一次</td>
+</tr>
+</tbody></table>
+<p>Q: 这个怎么看确定哪个执行方法性能比较好?</p>
+<p>A: 如果<u>采用的是 AverageTime,则 score 的分值越低越好,如果是 Throughput 则越高越好.</u></p>
+<h4 id="2-2-State"><a href="#2-2-State" class="headerlink" title="2.2 State"></a>2.2 State</h4><p>通过 State 可以指定一个对象的作用范围，JMH 根据 scope 来进行实例化和共享操作。@State 可以被继承使用，如果父类定义了该注解，子类则无需定义。由于 JMH 允许多线程同时执行测试，不同的选项含义如下：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Scope.Benchmark</td>
+<td>所有测试线程共享一个实例，测试有状态实例在多线程共享下的性能</td>
+</tr>
+<tr>
+<td>Scope.Group</td>
+<td>同一个线程在同一个 group 里共享实例</td>
+</tr>
+<tr>
+<td>Scope.Thread</td>
+<td>默认的 State，每个测试线程分配一个实例</td>
+</tr>
+</tbody></table>
+<h4 id="2-3-OutputTimeUnit"><a href="#2-3-OutputTimeUnit" class="headerlink" title="2.3 OutputTimeUnit"></a>2.3 OutputTimeUnit</h4><p>为统计结果的时间单位，可用于类或者方法注解</p>
+<h4 id="2-4-Warmup"><a href="#2-4-Warmup" class="headerlink" title="2.4 Warmup"></a>2.4 Warmup</h4><p>预热所需要配置的一些基本测试参数，可用于类或者方法上。一般前几次进行程序测试的时候都会比较慢，所以要让程序进行几轮预热，保证测试的准确性。参数如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>iterations</td>
+<td>预热的次数</td>
+</tr>
+<tr>
+<td>time</td>
+<td>每次预热的时间</td>
+</tr>
+<tr>
+<td>timeUnit</td>
+<td>时间的单位，默认秒</td>
+</tr>
+<tr>
+<td>batchSize</td>
+<td>批处理大小，每次操作调用几次方法</td>
+</tr>
+</tbody></table>
+<p>Q: 为什么需要预热？</p>
+<p>A: 因为 JVM 的 JIT 机制的存在，如果某个函数被调用多次之后，JVM 会尝试将其编译为机器码，从而提高执行速度，所以为了让 benchmark 的结果更加接近真实情况就需要进行预热。</p>
+<h4 id="2-5-Measurement"><a href="#2-5-Measurement" class="headerlink" title="2.5 Measurement"></a>2.5 Measurement</h4><p>实际调用方法所需要配置的一些基本测试参数，可用于类或者方法上，参数和 @Warmup 相同。</p>
+<h4 id="2-6-Thread"><a href="#2-6-Thread" class="headerlink" title="2.6 Thread"></a>2.6 Thread</h4><p>@Threads 每个进程中的测试线程，可用于类或者方法上。</p>
+<h4 id="2-7-Fork"><a href="#2-7-Fork" class="headerlink" title="2.7 Fork"></a>2.7 Fork</h4><p>@Fork 进行 fork 的次数，可用于类或者方法上。如果 fork 数是 2 的话，则 JMH 会 fork 出两个进程来进行测试。</p>
+<h4 id="2-8-Param"><a href="#2-8-Param" class="headerlink" title="2.8 Param"></a>2.8 Param</h4><p>@Param 指定某项参数的多种情况，特别适合用来测试一个函数在不同的参数输入的情况下的性能，只能作用在字段上，使用该注解必须定义 @State 注解。</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2025/07/08/java-jmh/" title="Jmh" target="_blank" rel="external">http://example.com/2025/07/08/java-jmh/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/cs12110" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/12764287.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/cs12110" target="_blank"><span class="text-dark">cs12110</span><small class="ml-1x"></small></a></h3>
+        <div>就一打字的</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2025/07/08/java-ios/" title="IOs"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2025/07/08/java-json/" title="Json 序列化"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

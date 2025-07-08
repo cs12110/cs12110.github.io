@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Redis 事务 | mini-docs</title>
+  <meta name="description" content="Redis 事务在被问到对 redis 事务了不了解的时候,你会后悔没看这篇文章的. FBI WARNING: 下面仅适用于单机版本的redis事务,请知悉. 同时,请注意不同版本Redis对事务的异常的策略!!!  1. 基础知识1.1 事务概念事务是恢复和并发控制的基本单位,事务应该具有4个属性:原子性,一致性,隔离性,持久性. 这四个属性通常称为ACID特性.  原子性(atomicity)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis 事务">
+<meta property="og:url" content="http://example.com/2025/07/08/redis-tx/index.html">
+<meta property="og:site_name" content="mini-docs">
+<meta property="og:description" content="Redis 事务在被问到对 redis 事务了不了解的时候,你会后悔没看这篇文章的. FBI WARNING: 下面仅适用于单机版本的redis事务,请知悉. 同时,请注意不同版本Redis对事务的异常的策略!!!  1. 基础知识1.1 事务概念事务是恢复和并发控制的基本单位,事务应该具有4个属性:原子性,一致性,隔离性,持久性. 这四个属性通常称为ACID特性.  原子性(atomicity)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-08T12:46:25.000Z">
+<meta property="article:modified_time" content="2025-07-08T09:07:12.512Z">
+<meta property="article:author" content="cs12110@163.com">
+<meta property="article:tag" content="redis">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2025/07/08/redis-tx/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="mini-docs" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/cs12110" target="_blank">
+          <img class="img-circle img-rotate" src="/images/12764287.png" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">cs12110</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Macondo</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>就一打字的!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaEE/">JavaEE</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/KillMe/">KillMe</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ai/">ai</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/database/">database</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/server/">server</a><span class="category-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/" rel="tag">AOP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Arthas/" rel="tag">Arthas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/" rel="tag">ClassLoader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docsify/" rel="tag">Docsify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GC/" rel="tag">GC</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/" rel="tag">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/" rel="tag">Go</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC/" rel="tag">IOC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOs/" rel="tag">IOs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E5%8A%A0%E5%AF%86/" rel="tag">Java 加密</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E6%9E%9A%E4%B8%BE/" rel="tag">Java 枚举</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaEE/" rel="tag">JavaEE</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E4%BC%98%E5%8C%96/" rel="tag">Java优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">Java设计模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmeter/" rel="tag">Jmeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmh/" rel="tag">Jmh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">Json 序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/" rel="tag">MQ</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mockito/" rel="tag">Mockito</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" rel="tag">Mybatis 源码阅读</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shiro/" rel="tag">Shiro</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Springboot/" rel="tag">Springboot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/" rel="tag">Thrift</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dify/" rel="tag">dify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo/" rel="tag">dubbo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ftp/" rel="tag">ftp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/" rel="tag">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">lambda表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lanproxy/" rel="tag">lanproxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/myabtis/" rel="tag">myabtis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/websocket/" rel="tag">websocket</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xxljob/" rel="tag">xxljob</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zipkin/" rel="tag">zipkin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" rel="tag">代码生成器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" rel="tag">分库分表</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" rel="tag">多数据源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="tag">工作流</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" rel="tag">布隆过滤器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" rel="tag">微信对接</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" rel="tag">日志框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" rel="tag">规则引擎</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/AOP/" style="font-size: 13px;">AOP</a> <a href="/tags/Arthas/" style="font-size: 13px;">Arthas</a> <a href="/tags/ClassLoader/" style="font-size: 13px;">ClassLoader</a> <a href="/tags/Docsify/" style="font-size: 13px;">Docsify</a> <a href="/tags/ElasticSearch/" style="font-size: 13.17px;">ElasticSearch</a> <a href="/tags/GC/" style="font-size: 13.17px;">GC</a> <a href="/tags/Game/" style="font-size: 13px;">Game</a> <a href="/tags/Go/" style="font-size: 13.5px;">Go</a> <a href="/tags/Gogs/" style="font-size: 13px;">Gogs</a> <a href="/tags/IOC/" style="font-size: 13px;">IOC</a> <a href="/tags/IOs/" style="font-size: 13px;">IOs</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/JWT/" style="font-size: 13px;">JWT</a> <a href="/tags/Java-%E5%8A%A0%E5%AF%86/" style="font-size: 13px;">Java 加密</a> <a href="/tags/Java-%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">Java 枚举</a> <a href="/tags/JavaEE/" style="font-size: 13.17px;">JavaEE</a> <a href="/tags/Java%E4%BC%98%E5%8C%96/" style="font-size: 13px;">Java优化</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 14px;">Java基础</a> <a href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13px;">Java设计模式</a> <a href="/tags/Jmeter/" style="font-size: 13px;">Jmeter</a> <a href="/tags/Jmh/" style="font-size: 13px;">Jmh</a> <a href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 13px;">Json 序列化</a> <a href="/tags/Leetcode/" style="font-size: 13px;">Leetcode</a> <a href="/tags/MQ/" style="font-size: 13.83px;">MQ</a> <a href="/tags/Mockito/" style="font-size: 13px;">Mockito</a> <a href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" style="font-size: 13px;">Mybatis 源码阅读</a> <a href="/tags/PostgreSQL/" style="font-size: 13px;">PostgreSQL</a> <a href="/tags/RabbitMQ/" style="font-size: 13.33px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 13.5px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 13.17px;">RocketMQ</a> <a href="/tags/Shiro/" style="font-size: 13px;">Shiro</a> <a href="/tags/Spring/" style="font-size: 13.67px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 13px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 13.67px;">SpringCloud</a> <a href="/tags/Springboot/" style="font-size: 13.17px;">Springboot</a> <a href="/tags/Thrift/" style="font-size: 13px;">Thrift</a> <a href="/tags/Zookeeper/" style="font-size: 13px;">Zookeeper</a> <a href="/tags/dify/" style="font-size: 13px;">dify</a> <a href="/tags/docker/" style="font-size: 13.17px;">docker</a> <a href="/tags/dubbo/" style="font-size: 13px;">dubbo</a> <a href="/tags/ftp/" style="font-size: 13px;">ftp</a> <a href="/tags/git/" style="font-size: 13px;">git</a> <a href="/tags/jenkins/" style="font-size: 13px;">jenkins</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/lanproxy/" style="font-size: 13px;">lanproxy</a> <a href="/tags/linux/" style="font-size: 13px;">linux</a> <a href="/tags/maven/" style="font-size: 13.33px;">maven</a> <a href="/tags/myabtis/" style="font-size: 13px;">myabtis</a> <a href="/tags/mysql/" style="font-size: 13.83px;">mysql</a> <a href="/tags/nacos/" style="font-size: 13px;">nacos</a> <a href="/tags/nginx/" style="font-size: 13px;">nginx</a> <a href="/tags/redis/" style="font-size: 13.33px;">redis</a> <a href="/tags/tomcat/" style="font-size: 13px;">tomcat</a> <a href="/tags/websocket/" style="font-size: 13px;">websocket</a> <a href="/tags/xxljob/" style="font-size: 13px;">xxljob</a> <a href="/tags/zipkin/" style="font-size: 13px;">zipkin</a> <a href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" style="font-size: 13px;">代码生成器</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" style="font-size: 13px;">分布式事务</a> <a href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" style="font-size: 13.17px;">分库分表</a> <a href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" style="font-size: 13px;">多数据源</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" style="font-size: 13px;">工作流</a> <a href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" style="font-size: 13px;">布隆过滤器</a> <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" style="font-size: 13px;">微信对接</a> <a href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">日志框架</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 13px;">爬虫</a> <a href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" style="font-size: 13px;">规则引擎</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">七月 2025</a><span class="archive-list-count">105</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-thread/" class="title">Go 多线程</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-web/" class="title">Go Web</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-classloder/" class="title">ClassLoader</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-encode/" class="title">Java 加密</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-enum/" class="title">Java 枚举</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-redis-tx" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Redis 事务
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2025/07/08/redis-tx/" class="article-date">
+	  <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/database/">database</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/redis/" rel="tag">redis</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2025/07/08/redis-tx/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="Redis-事务"><a href="#Redis-事务" class="headerlink" title="Redis 事务"></a>Redis 事务</h1><p>在被问到对 redis 事务了不了解的时候,你会后悔没看这篇文章的.</p>
+<p><strong>FBI WARNING</strong>: 下面仅适用于单机版本的redis事务,请知悉.</p>
+<p>同时,<strong>请注意不同版本Redis对事务的异常的策略!!!</strong></p>
+<hr>
+<h2 id="1-基础知识"><a href="#1-基础知识" class="headerlink" title="1. 基础知识"></a>1. 基础知识</h2><h3 id="1-1-事务概念"><a href="#1-1-事务概念" class="headerlink" title="1.1 事务概念"></a>1.1 事务概念</h3><p>事务是恢复和并发控制的基本单位,事务应该具有4个属性:<code>原子性</code>,<code>一致性</code>,<code>隔离性</code>,<code>持久性</code>.</p>
+<p>这四个属性通常称为ACID特性.</p>
+<ul>
+<li><p>原子性(atomicity): 一个事务是一个不可分割的工作单位,事务中包括的诸操作要么都做,要么都不做.</p>
+</li>
+<li><p>一致性(consistency): 事务必须是使数据库从一个一致性状态变到另一个一致性状态.一致性与原子性是密切相关的.</p>
+</li>
+<li><p>隔离性(isolation): 一个事务的执行不能被其他事务干扰.即一个事务内部的操作及使用的数据对并发的其他事务是隔离的,并发执行的各个事务之间不能互相干扰.</p>
+</li>
+<li><p>持久性(durability): 持久性也称永久性(permanence),指一个事务一旦提交,它对数据库中数据的改变就应该是永久性的.接下来的其他操作或故障不应该对其有任何影响.</p>
+</li>
+</ul>
+<h3 id="1-2-Redis事务执行流程"><a href="#1-2-Redis事务执行流程" class="headerlink" title="1.2 Redis事务执行流程"></a>1.2 Redis事务执行流程</h3><p>Redis 事务可以一次执行多个命令, 并且带有以下两个重要的保证:</p>
+<ul>
+<li>批量操作在发送 EXEC 命令前被放入队列缓存</li>
+<li>收到 EXEC 命令后进入事务执行(版本确定是抛弃整一个事务,还是继续执行事务中其他成功的命令)</li>
+<li>在事务执行过程,其他客户端提交的命令请求不会插入到事务执行命令序列中</li>
+</ul>
+<p>一个事务从开始到执行会经历以下三个阶段</p>
+<ul>
+<li>开始事务</li>
+<li>命令入队</li>
+<li>执行事务</li>
+</ul>
+<p>Redis 事务的执行具有原子性的: 事务中的命令要么全部被执行,要么全部都不执行.</p>
+<p><strong>Redis 版本以及对事务的处理</strong></p>
+<p>在 Redis 2.6.5 以前,Redis 只执行事务中那些入队成功的命令,而忽略那些入队失败的命令.</p>
+<p>从 Redis 2.6.5 开始,服务器会对命令入队失败的情况进行记录,并在客户端调用 EXEC 命令时,拒绝执行并自动放弃这个事务.</p>
+<hr>
+<h2 id="2-命令操作"><a href="#2-命令操作" class="headerlink" title="2. 命令操作"></a>2. 命令操作</h2><p>请注意测试的redis版本.</p>
+<p>版本在<code>2.6.5</code>之后,事务里面有一个命令异常,就会丢弃整一个事务.</p>
+<h3 id="2-1-基础命令"><a href="#2-1-基础命令" class="headerlink" title="2.1 基础命令"></a>2.1 基础命令</h3><table>
+<thead>
+<tr>
+<th align="center">命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">MULTI</td>
+<td>标记一个事务块的开始</td>
+</tr>
+<tr>
+<td align="center">EXEC</td>
+<td>执行所有事务块内的命令</td>
+</tr>
+<tr>
+<td align="center">DISCARD</td>
+<td>取消事务,放弃执行事务块内的所有命令</td>
+</tr>
+<tr>
+<td align="center">UNWATCH</td>
+<td>取消 WATCH 命令对所有 key 的监视</td>
+</tr>
+<tr>
+<td align="center">WATCH</td>
+<td>监视一个(或多个) key,如果在事务执行之前这个(或这些)key 被其他命令所改动,那么事务将被打断</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-命令使用"><a href="#2-2-命令使用" class="headerlink" title="2.2 命令使用"></a>2.2 命令使用</h3><p>本次测试,使用的 redis 版本如下:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop201 src]# ./redis-server --version</span><br><span class="line">Redis server v=2.8.3 sha=00000000:0 malloc=jemalloc-3.2.0 bits=64 build=e9558e7fd4e66350</span><br></pre></td></tr></table></figure>
+
+<p>初始化数据</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop201 src]# ./redis-cli  </span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> like haiyan </span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> hate others</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; </span><br></pre></td></tr></table></figure>
+
+<p><strong>测试成功事务</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; MULTI</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> like haiyan1</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> hate myself</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379&gt; EXEC</span><br><span class="line">1) OK</span><br><span class="line">2) OK</span><br><span class="line">127.0.0.1:6379&gt; get like </span><br><span class="line"><span class="string">&quot;haiyan1&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; get hate</span><br><span class="line"><span class="string">&quot;myself&quot;</span></span><br></pre></td></tr></table></figure>
+<p>事务里面没有错误命令全部执行成功.</p>
+<p><strong>失败事务</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; MULTI</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> like haiyan2</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379&gt; hset hate others</span><br><span class="line">(error) ERR wrong number of arguments <span class="keyword">for</span> <span class="string">&#x27;hset&#x27;</span> <span class="built_in">command</span></span><br><span class="line">127.0.0.1:6379&gt; EXEC</span><br><span class="line">(error) EXECABORT Transaction discarded because of previous errors.</span><br><span class="line">127.0.0.1:6379&gt; get like</span><br><span class="line"><span class="string">&quot;haiyan1&quot;</span></span><br></pre></td></tr></table></figure>
+<p>可以看出来,<code>set like haiyan2</code>也没有成功.</p>
+<p><strong>丢弃事务</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; MULTI</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> like haiyan2</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379&gt; DISCARD</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; get like </span><br></pre></td></tr></table></figure>
+
+
+<h3 id="2-3-旧版本测试"><a href="#2-3-旧版本测试" class="headerlink" title="2.3 旧版本测试"></a>2.3 旧版本测试</h3><p>测试版本为</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-116 ~]# redis-server --version</span><br><span class="line">Redis server v=2.6.0 sha=00000000:0 malloc=jemalloc-3.0.0 bits=64</span><br><span class="line">[root@dev-116 ~]# </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">redis 127.0.0.1:6379&gt; <span class="built_in">set</span> like haiyan</span><br><span class="line">OK</span><br><span class="line">redis 127.0.0.1:6379&gt; <span class="built_in">set</span> hate others</span><br><span class="line">OK</span><br><span class="line">redis 127.0.0.1:6379&gt; get like </span><br><span class="line"><span class="string">&quot;haiyan&quot;</span></span><br><span class="line">redis 127.0.0.1:6379&gt; get hate</span><br><span class="line"><span class="string">&quot;others&quot;</span></span><br><span class="line">redis 127.0.0.1:6379&gt; MULTI</span><br><span class="line">OK</span><br><span class="line">redis 127.0.0.1:6379&gt; <span class="built_in">set</span> like haiyan1 </span><br><span class="line">QUEUED</span><br><span class="line">redis 127.0.0.1:6379&gt; hset hate myself</span><br><span class="line">(error) ERR wrong number of arguments <span class="keyword">for</span> <span class="string">&#x27;hset&#x27;</span> <span class="built_in">command</span></span><br><span class="line">redis 127.0.0.1:6379&gt; <span class="built_in">set</span> like haiyan2</span><br><span class="line">QUEUED</span><br><span class="line">redis 127.0.0.1:6379&gt; EXEC</span><br><span class="line">1) OK</span><br><span class="line">2) OK</span><br><span class="line">redis 127.0.0.1:6379&gt; hget like</span><br><span class="line">(error) ERR wrong number of arguments <span class="keyword">for</span> <span class="string">&#x27;hget&#x27;</span> <span class="built_in">command</span></span><br><span class="line">redis 127.0.0.1:6379&gt; get like</span><br><span class="line"><span class="string">&quot;haiyan2&quot;</span></span><br><span class="line">redis 127.0.0.1:6379&gt; </span><br></pre></td></tr></table></figure>
+
+<p>这里面可以看出来即使<code>hset hate myself</code>错误之后,还是执行了<code>set like haiyan2</code>.</p>
+<p>在<code>2.6.5</code>版本前就会出现: 即使事务中有某个&#x2F;某些命令在执行时产生了错误, 事务中的其他命令仍然会继续执行.</p>
+<hr>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>a. <a target="_blank" rel="noopener" href="https://redis.io/topics/transactions">redis 官网</a></p>
+<p>b. <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/361cb9cd13d5">redis 事务和 watch</a></p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2025/07/08/redis-tx/" title="Redis 事务" target="_blank" rel="external">http://example.com/2025/07/08/redis-tx/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/cs12110" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/12764287.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/cs12110" target="_blank"><span class="text-dark">cs12110</span><small class="ml-1x"></small></a></h3>
+        <div>就一打字的</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2025/07/08/rabbitmq-map/" title="RabbitMQ 使用手册"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2025/07/08/rocketmq-base/" title="RocketMQ 使用手册"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

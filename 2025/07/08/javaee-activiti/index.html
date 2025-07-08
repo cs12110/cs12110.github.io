@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>工作流(Activiti) | mini-docs</title>
+  <meta name="description" content="工作流(Activiti)activiti,至今都不知道这个单词是不是写对了 FBI Warning: 本文档使用 activiti 版本为 6.0  1. 基础知识基础知识和环境部署. 1.1 安装 activiti-appQ: 为什么要安装???不是直接使用 maven 引入依赖和 idea 安装一下插件就可以了吗? A: idea 安装的插件太难用,使用起来真的一言难尽,activiti 的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="工作流(Activiti)">
+<meta property="og:url" content="http://example.com/2025/07/08/javaee-activiti/index.html">
+<meta property="og:site_name" content="mini-docs">
+<meta property="og:description" content="工作流(Activiti)activiti,至今都不知道这个单词是不是写对了 FBI Warning: 本文档使用 activiti 版本为 6.0  1. 基础知识基础知识和环境部署. 1.1 安装 activiti-appQ: 为什么要安装???不是直接使用 maven 引入依赖和 idea 安装一下插件就可以了吗? A: idea 安装的插件太难用,使用起来真的一言难尽,activiti 的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/javaee-images/wf-app.jpg">
+<meta property="og:image" content="http://example.com/images/javaee-images/activiti-vaction.png">
+<meta property="og:image" content="http://example.com/images/javaee-images/activiti-apply-node.png">
+<meta property="og:image" content="http://example.com/images/javaee-images/activiti-first-audit.png">
+<meta property="og:image" content="http://example.com/images/javaee-images/actitviti-listner.png">
+<meta property="og:image" content="http://example.com/images/javaee-images/activitivi-gateway-c1.png">
+<meta property="og:image" content="http://example.com/images/javaee-images/activitivi-gateway-c2.png">
+<meta property="og:image" content="http://example.com/images/javaee-images/activiti-grade-node.png">
+<meta property="og:image" content="http://example.com/images/javaee-images/activiti-spring-listener.png">
+<meta property="article:published_time" content="2025-07-08T12:46:25.000Z">
+<meta property="article:modified_time" content="2025-07-08T10:02:22.276Z">
+<meta property="article:author" content="cs12110@163.com">
+<meta property="article:tag" content="工作流">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/javaee-images/wf-app.jpg">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2025/07/08/javaee-activiti/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="mini-docs" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/cs12110" target="_blank">
+          <img class="img-circle img-rotate" src="/images/12764287.png" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">cs12110</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Macondo</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>就一打字的!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaEE/">JavaEE</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/KillMe/">KillMe</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ai/">ai</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/database/">database</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/server/">server</a><span class="category-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/" rel="tag">AOP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Arthas/" rel="tag">Arthas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/" rel="tag">ClassLoader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docsify/" rel="tag">Docsify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GC/" rel="tag">GC</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/" rel="tag">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/" rel="tag">Go</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC/" rel="tag">IOC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOs/" rel="tag">IOs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E5%8A%A0%E5%AF%86/" rel="tag">Java 加密</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E6%9E%9A%E4%B8%BE/" rel="tag">Java 枚举</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaEE/" rel="tag">JavaEE</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E4%BC%98%E5%8C%96/" rel="tag">Java优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">Java设计模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmeter/" rel="tag">Jmeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmh/" rel="tag">Jmh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">Json 序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/" rel="tag">MQ</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mockito/" rel="tag">Mockito</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" rel="tag">Mybatis 源码阅读</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shiro/" rel="tag">Shiro</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Springboot/" rel="tag">Springboot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/" rel="tag">Thrift</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dify/" rel="tag">dify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo/" rel="tag">dubbo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ftp/" rel="tag">ftp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/" rel="tag">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">lambda表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lanproxy/" rel="tag">lanproxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/myabtis/" rel="tag">myabtis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/websocket/" rel="tag">websocket</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xxljob/" rel="tag">xxljob</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zipkin/" rel="tag">zipkin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" rel="tag">代码生成器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" rel="tag">分库分表</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" rel="tag">多数据源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="tag">工作流</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" rel="tag">布隆过滤器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" rel="tag">微信对接</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" rel="tag">日志框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" rel="tag">规则引擎</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/AOP/" style="font-size: 13px;">AOP</a> <a href="/tags/Arthas/" style="font-size: 13px;">Arthas</a> <a href="/tags/ClassLoader/" style="font-size: 13px;">ClassLoader</a> <a href="/tags/Docsify/" style="font-size: 13px;">Docsify</a> <a href="/tags/ElasticSearch/" style="font-size: 13.17px;">ElasticSearch</a> <a href="/tags/GC/" style="font-size: 13.17px;">GC</a> <a href="/tags/Game/" style="font-size: 13px;">Game</a> <a href="/tags/Go/" style="font-size: 13.5px;">Go</a> <a href="/tags/Gogs/" style="font-size: 13px;">Gogs</a> <a href="/tags/IOC/" style="font-size: 13px;">IOC</a> <a href="/tags/IOs/" style="font-size: 13px;">IOs</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/JWT/" style="font-size: 13px;">JWT</a> <a href="/tags/Java-%E5%8A%A0%E5%AF%86/" style="font-size: 13px;">Java 加密</a> <a href="/tags/Java-%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">Java 枚举</a> <a href="/tags/JavaEE/" style="font-size: 13.17px;">JavaEE</a> <a href="/tags/Java%E4%BC%98%E5%8C%96/" style="font-size: 13px;">Java优化</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 14px;">Java基础</a> <a href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13px;">Java设计模式</a> <a href="/tags/Jmeter/" style="font-size: 13px;">Jmeter</a> <a href="/tags/Jmh/" style="font-size: 13px;">Jmh</a> <a href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 13px;">Json 序列化</a> <a href="/tags/Leetcode/" style="font-size: 13px;">Leetcode</a> <a href="/tags/MQ/" style="font-size: 13.83px;">MQ</a> <a href="/tags/Mockito/" style="font-size: 13px;">Mockito</a> <a href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" style="font-size: 13px;">Mybatis 源码阅读</a> <a href="/tags/PostgreSQL/" style="font-size: 13px;">PostgreSQL</a> <a href="/tags/RabbitMQ/" style="font-size: 13.33px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 13.5px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 13.17px;">RocketMQ</a> <a href="/tags/Shiro/" style="font-size: 13px;">Shiro</a> <a href="/tags/Spring/" style="font-size: 13.67px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 13px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 13.67px;">SpringCloud</a> <a href="/tags/Springboot/" style="font-size: 13.17px;">Springboot</a> <a href="/tags/Thrift/" style="font-size: 13px;">Thrift</a> <a href="/tags/Zookeeper/" style="font-size: 13px;">Zookeeper</a> <a href="/tags/dify/" style="font-size: 13px;">dify</a> <a href="/tags/docker/" style="font-size: 13.17px;">docker</a> <a href="/tags/dubbo/" style="font-size: 13px;">dubbo</a> <a href="/tags/ftp/" style="font-size: 13px;">ftp</a> <a href="/tags/git/" style="font-size: 13px;">git</a> <a href="/tags/jenkins/" style="font-size: 13px;">jenkins</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/lanproxy/" style="font-size: 13px;">lanproxy</a> <a href="/tags/linux/" style="font-size: 13px;">linux</a> <a href="/tags/maven/" style="font-size: 13.33px;">maven</a> <a href="/tags/myabtis/" style="font-size: 13px;">myabtis</a> <a href="/tags/mysql/" style="font-size: 13.83px;">mysql</a> <a href="/tags/nacos/" style="font-size: 13px;">nacos</a> <a href="/tags/nginx/" style="font-size: 13px;">nginx</a> <a href="/tags/redis/" style="font-size: 13.33px;">redis</a> <a href="/tags/tomcat/" style="font-size: 13px;">tomcat</a> <a href="/tags/websocket/" style="font-size: 13px;">websocket</a> <a href="/tags/xxljob/" style="font-size: 13px;">xxljob</a> <a href="/tags/zipkin/" style="font-size: 13px;">zipkin</a> <a href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" style="font-size: 13px;">代码生成器</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" style="font-size: 13px;">分布式事务</a> <a href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" style="font-size: 13.17px;">分库分表</a> <a href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" style="font-size: 13px;">多数据源</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" style="font-size: 13px;">工作流</a> <a href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" style="font-size: 13px;">布隆过滤器</a> <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" style="font-size: 13px;">微信对接</a> <a href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">日志框架</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 13px;">爬虫</a> <a href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" style="font-size: 13px;">规则引擎</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">七月 2025</a><span class="archive-list-count">105</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-thread/" class="title">Go 多线程</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-web/" class="title">Go Web</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-classloder/" class="title">ClassLoader</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-encode/" class="title">Java 加密</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-enum/" class="title">Java 枚举</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-javaee-activiti" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      工作流(Activiti)
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2025/07/08/javaee-activiti/" class="article-date">
+	  <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/JavaEE/">JavaEE</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="tag">工作流</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2025/07/08/javaee-activiti/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="工作流-Activiti"><a href="#工作流-Activiti" class="headerlink" title="工作流(Activiti)"></a>工作流(Activiti)</h1><p><code>activiti</code>,至今都不知道这个单词是不是写对了</p>
+<p>FBI Warning: 本文档使用 activiti 版本为 6.0</p>
+<hr>
+<h3 id="1-基础知识"><a href="#1-基础知识" class="headerlink" title="1. 基础知识"></a>1. 基础知识</h3><p>基础知识和环境部署.</p>
+<h4 id="1-1-安装-activiti-app"><a href="#1-1-安装-activiti-app" class="headerlink" title="1.1 安装 activiti-app"></a>1.1 安装 activiti-app</h4><p>Q: 为什么要安装???不是直接使用 maven 引入依赖和 idea 安装一下插件就可以了吗?</p>
+<p>A: idea 安装的插件太难用,使用起来真的一言难尽,activiti 的官方插件还比较好用一点.</p>
+<p>在官网:<code>https://www.activiti.org/get-started</code>下载好所需的 activiti 组件(下载慢到泪目),把<code>activiti-app.war</code>扔进 tomcat 目录即可.</p>
+<p>如下所示,可以修改<code>activiti-app</code>数据库,用户名等配置.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root @ team-2 in /opt/soft/tomcat/apache-tomcat-8.5.37 [15:24:13] C:127</span></span><br><span class="line">$ <span class="built_in">cd</span> webapps/activiti-app/WEB-INF/classes/META-INF/activiti-app</span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ team-2 in /opt/soft/tomcat/apache-tomcat-8.5.37/webapps/activiti-app/WEB-INF/classes/META-INF/activiti-app [15:24:38]</span></span><br><span class="line">$ ll</span><br><span class="line">total 4.0K</span><br><span class="line">-rw-r----- 1 root root 1.6K Jul 31 15:07 activiti-app.properties</span><br></pre></td></tr></table></figure>
+
+<p>重启 tomcat 完成后,可以通过浏览器打开:<code>http://47.98.104.252:8080/activiti-app/#/login</code></p>
+<table>
+<thead>
+<tr>
+<th>用户名</th>
+<th>密码</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>admin</td>
+<td>test</td>
+<td>默认密码</td>
+</tr>
+</tbody></table>
+<p>进入之后的界面如下图所示</p>
+<p><img src="/images/javaee-images/wf-app.jpg" alt="images"></p>
+<h4 id="1-2-基础知识"><a href="#1-2-基础知识" class="headerlink" title="1.2 基础知识"></a>1.2 基础知识</h4><h4 id="数据表"><a href="#数据表" class="headerlink" title="数据表"></a>数据表</h4><p>在初始化工作流数据库的时候,会自动生成数据库表,</p>
+<p>各个数据库含义,表以 ACT_开头, 第二部分是表示表的用途的两个字母标识.</p>
+<ul>
+<li>ACT_RE_: <code>repository</code>包含了流程定义和流程静态资源(图片,规则…)</li>
+<li>ACT_RU_: <code>runtime</code>包含运行时的表包含流程实例,任务,变量,异步任务,等运行中的数据.只在流程实例执行过程中保存这些数据,在流程结束时就会删除这些记录.</li>
+<li>ACT_ID_: <code>identity</code>包含身份信息,比如用户,组等等.</li>
+<li>ACT_HI_: <code>history</code>包含历史数据,比如历史流程实例, 变量,任务等.</li>
+<li>ACT_GE_: <code>general</code>包含通用数据, 用于不同场景下,如存放资源文件.</li>
+</ul>
+<h4 id="关键对象"><a href="#关键对象" class="headerlink" title="关键对象"></a>关键对象</h4><table>
+<thead>
+<tr>
+<th>对象</th>
+<th>名称</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Deployment</td>
+<td>流程部署对象</td>
+<td>部署一个流程时创建</td>
+</tr>
+<tr>
+<td>ProcessDefinitions</td>
+<td>流程定义</td>
+<td>部署成功后自动创建</td>
+</tr>
+<tr>
+<td>ProcessInstances</td>
+<td>流程实例</td>
+<td>启动流程时创建</td>
+</tr>
+<tr>
+<td>Task</td>
+<td>任务</td>
+<td>在 Activiti 中的 Task 仅指有角色参与的任务(UserTask)</td>
+</tr>
+<tr>
+<td>Execution</td>
+<td>执行计划</td>
+<td>流程实例和流程执行中的所有节点都是 Execution,如 UserTask,ServiceTask 等</td>
+</tr>
+</tbody></table>
+<h4 id="服务接口"><a href="#服务接口" class="headerlink" title="服务接口"></a>服务接口</h4><table>
+<thead>
+<tr>
+<th>接口名称</th>
+<th>功能</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ProcessEngine</td>
+<td>流程引擎的抽象,通过它可以获得需要的一切服务</td>
+<td></td>
+</tr>
+<tr>
+<td>RepositoryService</td>
+<td>Activiti 中每一个不同版本的业务流程的定义都需要使用一些定义文件,部署文件和支持数据(例如 BPMN2.0 XML 文件,表单定义文件,流程定义图像文件等),这些文件都存储在 Activiti 内建的 Repository 中.RepositoryService 提供对 repository 的存取服务.</td>
+<td></td>
+</tr>
+<tr>
+<td>RuntimeService</td>
+<td>在 Activiti 中,每当一个流程定义被启动一次之后,都会生成一个相应的流程对象实例.RuntimeService 提供了启动流程,查询流程实例,设置获取流程实例变量等功能.此外它还提供了对流程部署,流程定义和流程实例的存取服务.</td>
+<td></td>
+</tr>
+<tr>
+<td>TaskService</td>
+<td>在 Activiti 中业务流程定义中的每一个执行节点被称为一个 Task,对流程中的数据存取,状态变更等操作均需要在 Task 中完成.TaskService 提供了对用户 Task 和 Form 相关的操作.它提供了运行时任务查询,领取,完成,删除以及变量设置等功能.</td>
+<td></td>
+</tr>
+<tr>
+<td>IdentityService</td>
+<td>Activiti 中内置了用户以及组管理的功能,必须使用这些用户和组的信息才能获取到相应的 Task.IdentityService 提供了对 Activiti 系统中的用户和组的管理功能.</td>
+<td></td>
+</tr>
+<tr>
+<td>ManagementService</td>
+<td>ManagementService 提供了对 Activiti 流程引擎的管理和维护功能,这些功能不在工作流驱动的应用程序中使用,主要用于 Activiti 系统的日常维护.</td>
+<td></td>
+</tr>
+<tr>
+<td>HistoryService</td>
+<td>HistoryService 用于获取正在运行或已经完成的流程实例的信息,与 RuntimeService 中获取的流程信息不同,历史信息包含已经持久化存储的永久信息,并已经被针对查询优化.</td>
+<td></td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="2-Java-使用"><a href="#2-Java-使用" class="headerlink" title="2. Java 使用"></a>2. Java 使用</h3><p><a target="_blank" rel="noopener" href="https://github.com/cs12110/activiti-project">github 地址</a>,模块: <code>activiti-javase</code>,运行程序为:<code>com.pkgs.VacationApp</code></p>
+<h4 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h4><p><img src="/images/javaee-images/activiti-vaction.png" alt="流程图"></p>
+<p>详细代码请参考 github 或者本文档最后提供的流程 xml 代码.</p>
+<h4 id="任务设置"><a href="#任务设置" class="headerlink" title="任务设置"></a>任务设置</h4><p><strong>设置填写请求单节点</strong>ß</p>
+<p><img src="/images/javaee-images/activiti-apply-node.png"></p>
+<p>Q: 那么在什么指定了申请的学生是谁?</p>
+<p>A: 请看<code>VacationApp#studentApply</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> Map&lt;String, Object&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;(<span class="number">8</span>);</span><br><span class="line"><span class="comment">// 对应申请节点的参数</span></span><br><span class="line">map.put(<span class="string">&quot;applyStudent&quot;</span>, studentNo);</span><br><span class="line">map.put(<span class="string">&quot;days&quot;</span>, days[index]);</span><br><span class="line">map.put(<span class="string">&quot;reason&quot;</span>, <span class="string">&quot;卧槽,批假呀&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 指定审批班主任是谁</span></span><br><span class="line">map.put(<span class="string">&quot;classMonitor&quot;</span>, classMonitor);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 启动流程,指定申请学生</span></span><br><span class="line"><span class="type">ProcessInstance</span> <span class="variable">instance</span> <span class="operator">=</span> runtimeService.startProcessInstanceByKey(<span class="string">&quot;vacation&quot;</span>, studentNo, map);</span><br></pre></td></tr></table></figure>
+
+<p><strong>班主任审批节点设置</strong></p>
+<p><img src="/images/javaee-images/activiti-first-audit.png"></p>
+<p>设置任务监听器(用于通知学生被审批通过的场景)</p>
+<p><img src="/images/javaee-images/actitviti-listner.png"></p>
+<p><strong>排他网关设置</strong></p>
+<p><img src="/images/javaee-images/activitivi-gateway-c1.png"><br><img src="/images/javaee-images/activitivi-gateway-c2.png"></p>
+<p><strong>级主任审批节点设置</strong></p>
+<p>任务类型为:<code>Parallel</code>(会签任务),例如多少人通过才算通过这种场景,或者多个审批人,一个通过就通过</p>
+<p><img src="/images/javaee-images/activiti-grade-node.png"></p>
+<p>Completion condition (Multi-instance)参数解析</p>
+<ul>
+<li>nrOfInstances:当前节点的任务实例总数</li>
+<li>nrOfCompletedInstances:当前节点的任务实例总数中已经完成的实例数</li>
+<li>nrOfActiveInstances:当前节点的任务实例中活跃的实例个数</li>
+</ul>
+<p>例如: 多个用户任务完成流转到下一个流程节点的条件,设置为<code>$&#123;nrOfCompletedInstances/nrOfInstances == 1 &#125;</code>表示所有任务都被执行才流转到下一个节点,<code>$&#123;nrOfCompletedInstances/nrOfInstances &lt;= 0.5 &#125;</code>表示假如总共 4 个任务,执行了 2 个任务之后就流转到下一个节点.</p>
+<p>在代码设置多个审批人,<code>VacationApp#classAudit</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 动态指定多个级主任</span></span><br><span class="line">List&lt;String&gt; list = Arrays.asList(gradeMonitor.split(<span class="string">&quot;,&quot;</span>));</span><br><span class="line">map.put(<span class="string">&quot;gradeMonitorList&quot;</span>, list);</span><br><span class="line">map.put(<span class="string">&quot;applyInfo&quot;</span>, applyInfo);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 同意学生请假,流转到级主任节点</span></span><br><span class="line">taskService.complete(task.getId(), map);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-整合-Spring"><a href="#3-整合-Spring" class="headerlink" title="3. 整合 Spring"></a>3. 整合 Spring</h3><p><a target="_blank" rel="noopener" href="https://github.com/cs12110/activiti-project">github 地址</a>,模块: <code>activiti-javaee</code>,运行程序为:<code>com.pkgs.App</code>.</p>
+<p>总体来看整合 springboot 之后使用起来更简单了.</p>
+<h4 id="3-1-配置文件"><a href="#3-1-配置文件" class="headerlink" title="3.1 配置文件"></a>3.1 配置文件</h4><p>maven 依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencyManagement</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.4.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">type</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>import<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencyManagement</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.activiti<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>activiti-spring-boot-starter-basic<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>6.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>application.properties</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 项目基础配置</span></span><br><span class="line"><span class="attr">server.port</span>=<span class="string">8090</span></span><br><span class="line"><span class="attr">spring.application.name</span>=<span class="string">springboot-activiti</span></span><br><span class="line"><span class="attr">server.servlet.context-path</span>=<span class="string">/api/activiti/</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"># activiti配置</span></span><br><span class="line"><span class="comment"># 自动检查,部署流程文件</span></span><br><span class="line"><span class="attr">spring.activiti.check-process-definitions</span>=<span class="string">true</span></span><br><span class="line"><span class="comment"># 自动更新数据库结构</span></span><br><span class="line"><span class="attr">spring.activiti.database-schema-update</span>=<span class="string">true</span></span><br><span class="line"><span class="comment"># 定义流程文件存放目录</span></span><br><span class="line"><span class="attr">spring.activiti.process-definition-location-prefix</span>=<span class="string">classpath:/workflow/</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"># 配置数据源</span></span><br><span class="line"><span class="attr">spring.datasource.driver-class-name</span>=<span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line"><span class="attr">spring.datasource.url</span>=<span class="string">jdbc:mysql://118.89.113.147:3306/spring_act_db?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false</span></span><br><span class="line"><span class="attr">spring.datasource.username</span>=<span class="string">root</span></span><br><span class="line"><span class="attr">spring.datasource.password</span>=<span class="string">Team@3306</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"># 日志配置</span></span><br><span class="line"><span class="attr">logging.config</span>=<span class="string">classpath:logback.xml</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-监听器配置"><a href="#3-2-监听器配置" class="headerlink" title="3.2 监听器配置"></a>3.2 监听器配置</h4><p>修改为 bean 的名称即可.</p>
+<p><img src="/images/javaee-images/activiti-spring-listener.png"></p>
+<h4 id="3-3-测试运行"><a href="#3-3-测试运行" class="headerlink" title="3.3 测试运行"></a>3.3 测试运行</h4><p><strong>学生请假</strong></p>
+<p>请求地址:<code>127.0.0.1:8090/api/activiti/apply/start</code></p>
+<p>请求参数:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;applyStudent&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cs12110&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;days&quot;</span><span class="punctuation">:</span> <span class="number">20</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;reason&quot;</span><span class="punctuation">:</span> <span class="string">&quot;要搬砖解决温饱&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>返回参数</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;已提交请求申请,申请Id:5&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>班主任审批</strong></p>
+<p>获取审批数据请求地址:<code>127.0.0.1:8090/api/activiti/audit/tasks?user=haiyan</code></p>
+<p>返回参数:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;75&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;applyStudent&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cs12110&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;days&quot;</span><span class="punctuation">:</span> <span class="number">20</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;reason&quot;</span><span class="punctuation">:</span> <span class="string">&quot;要搬砖解决温饱&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;applyDate&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2020-08-02T06:08:40.159+0000&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>审批接口请求地址:<code>127.0.0.1:8090/api/activiti/audit/agree</code></p>
+<p>请求数据:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;75&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;agree&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;comment&quot;</span><span class="punctuation">:</span> <span class="string">&quot;班主任同意&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>返回参数</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;审批通过&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>级主任审批</strong></p>
+<p>获取审批数据请求地址:<code>127.0.0.1:8090/api/activiti/audit/tasks?user=haiyan</code></p>
+<p>返回参数:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;102&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;applyStudent&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cs12110&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;days&quot;</span><span class="punctuation">:</span> <span class="number">20</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;reason&quot;</span><span class="punctuation">:</span> <span class="string">&quot;要搬砖解决温饱&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;applyDate&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2020-08-02T06:11:38.454+0000&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>审批接口请求地址:<code>127.0.0.1:8090/api/activiti/audit/agree</code></p>
+<p>请求数据:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;102&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;agree&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;comment&quot;</span><span class="punctuation">:</span> <span class="string">&quot;级主任同意&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>返回参数:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;审批通过&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>历史查询</strong></p>
+<p>请求地址:<code>127.0.0.1:8090/api/activiti/history/trace?processId=60</code></p>
+<p>返回数据:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;taskName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;级主任审批&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;startTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2020-08-02 14:11:38&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;assignee&quot;</span><span class="punctuation">:</span> <span class="string">&quot;3307&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;endTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2020-08-02 14:12:35&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;localVars&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;taskName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;级主任审批&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;startTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2020-08-02 14:11:38&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;assignee&quot;</span><span class="punctuation">:</span> <span class="string">&quot;3306&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;endTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2020-08-02 14:12:35&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;localVars&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;gradeMonitorList&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;3306&quot;</span><span class="punctuation">,</span> <span class="string">&quot;3307&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;level&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;comment&quot;</span><span class="punctuation">:</span> <span class="string">&quot;级主任同意&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;102&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;agree&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;taskName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;班主任审批&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;startTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2020-08-02 14:08:40&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;assignee&quot;</span><span class="punctuation">:</span> <span class="string">&quot;haiyan&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;endTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2020-08-02 14:11:38&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;localVars&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;gradeMonitorList&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;3306&quot;</span><span class="punctuation">,</span> <span class="string">&quot;3307&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;level&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;comment&quot;</span><span class="punctuation">:</span> <span class="string">&quot;班主任同意&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;75&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;agree&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;taskName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;填写请求单&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;startTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2020-08-02 14:08:37&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;assignee&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cs12110&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;endTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2020-08-02 14:08:40&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;localVars&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;reason&quot;</span><span class="punctuation">:</span> <span class="string">&quot;要搬砖解决温饱&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;classMonitor&quot;</span><span class="punctuation">:</span> <span class="string">&quot;haiyan&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;days&quot;</span><span class="punctuation">:</span> <span class="number">20</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;applyStudent&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cs12110&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-参考文档"><a href="#4-参考文档" class="headerlink" title="4. 参考文档"></a>4. 参考文档</h3><p>a. <a target="_blank" rel="noopener" href="https://www.activiti.org/quick-start">Activiti 官方文档</a></p>
+<p>b. <a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000013839729">Activiti 参考文档</a></p>
+<hr>
+<h3 id="5-流程图代码"><a href="#5-流程图代码" class="headerlink" title="5. 流程图代码"></a>5. 流程图代码</h3><h4 id="vacation"><a href="#vacation" class="headerlink" title="vacation"></a>vacation</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">definitions</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;</span> <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:xsd</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span> <span class="attr">xmlns:activiti</span>=<span class="string">&quot;http://activiti.org/bpmn&quot;</span> <span class="attr">xmlns:bpmndi</span>=<span class="string">&quot;http://www.omg.org/spec/BPMN/20100524/DI&quot;</span> <span class="attr">xmlns:omgdc</span>=<span class="string">&quot;http://www.omg.org/spec/DD/20100524/DC&quot;</span> <span class="attr">xmlns:omgdi</span>=<span class="string">&quot;http://www.omg.org/spec/DD/20100524/DI&quot;</span> <span class="attr">typeLanguage</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span> <span class="attr">expressionLanguage</span>=<span class="string">&quot;http://www.w3.org/1999/XPath&quot;</span> <span class="attr">targetNamespace</span>=<span class="string">&quot;http://www.activiti.org/processdef&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">process</span> <span class="attr">id</span>=<span class="string">&quot;vacation&quot;</span> <span class="attr">name</span>=<span class="string">&quot;vacation&quot;</span> <span class="attr">isExecutable</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">documentation</span>&gt;</span>vacation flow work<span class="tag">&lt;/<span class="name">documentation</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">startEvent</span> <span class="attr">id</span>=<span class="string">&quot;start&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">startEvent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">userTask</span> <span class="attr">id</span>=<span class="string">&quot;firstAudit&quot;</span> <span class="attr">name</span>=<span class="string">&quot;班主任审批&quot;</span> <span class="attr">activiti:assignee</span>=<span class="string">&quot;$&#123;classMonitor&#125;&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">extensionElements</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activiti:executionListener</span> <span class="attr">event</span>=<span class="string">&quot;end&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.pkgs.listener.VacationExecutionListener&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">activiti:executionListener</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activiti:taskListener</span> <span class="attr">event</span>=<span class="string">&quot;complete&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.pkgs.listener.VacationTaskListener&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">activiti:taskListener</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">modeler:initiator-can-complete</span> <span class="attr">xmlns:modeler</span>=<span class="string">&quot;http://activiti.com/modeler&quot;</span>&gt;</span>&lt;![CDATA[false]]&gt;<span class="tag">&lt;/<span class="name">modeler:initiator-can-complete</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">extensionElements</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">userTask</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">userTask</span> <span class="attr">id</span>=<span class="string">&quot;gradeAudit&quot;</span> <span class="attr">name</span>=<span class="string">&quot;级主任审批&quot;</span> <span class="attr">activiti:assignee</span>=<span class="string">&quot;$&#123;gradeMonitorValue&#125;&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">extensionElements</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activiti:taskListener</span> <span class="attr">event</span>=<span class="string">&quot;complete&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.pkgs.listener.VacationTaskListener&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">activiti:taskListener</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">modeler:initiator-can-complete</span> <span class="attr">xmlns:modeler</span>=<span class="string">&quot;http://activiti.com/modeler&quot;</span>&gt;</span>&lt;![CDATA[false]]&gt;<span class="tag">&lt;/<span class="name">modeler:initiator-can-complete</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">extensionElements</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">multiInstanceLoopCharacteristics</span> <span class="attr">isSequential</span>=<span class="string">&quot;false&quot;</span> <span class="attr">activiti:collection</span>=<span class="string">&quot;$&#123;gradeMonitorList&#125;&quot;</span> <span class="attr">activiti:elementVariable</span>=<span class="string">&quot;gradeMonitorValue&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">completionCondition</span>&gt;</span>$&#123;nrOfCompletedInstances<span class="symbol">&amp;gt;</span>0&#125;<span class="tag">&lt;/<span class="name">completionCondition</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">multiInstanceLoopCharacteristics</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">userTask</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">exclusiveGateway</span> <span class="attr">id</span>=<span class="string">&quot;sid-3FC5E931-3647-4A80-BE58-D777D2159392&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">exclusiveGateway</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sequenceFlow</span> <span class="attr">id</span>=<span class="string">&quot;sid-C297E320-8846-4684-AADB-27FCEB2F7694&quot;</span> <span class="attr">sourceRef</span>=<span class="string">&quot;vacationApply&quot;</span> <span class="attr">targetRef</span>=<span class="string">&quot;firstAudit&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">sequenceFlow</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sequenceFlow</span> <span class="attr">id</span>=<span class="string">&quot;sid-D4EE0B4C-8690-481C-84A3-93DD9DAA16B4&quot;</span> <span class="attr">sourceRef</span>=<span class="string">&quot;start&quot;</span> <span class="attr">targetRef</span>=<span class="string">&quot;vacationApply&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">sequenceFlow</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">endEvent</span> <span class="attr">id</span>=<span class="string">&quot;sid-E7C08E26-4376-4375-8E3E-CABB34576008&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">endEvent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sequenceFlow</span> <span class="attr">id</span>=<span class="string">&quot;sid-233578BE-63EC-4CBA-9AD0-764508976569&quot;</span> <span class="attr">sourceRef</span>=<span class="string">&quot;firstAudit&quot;</span> <span class="attr">targetRef</span>=<span class="string">&quot;sid-3FC5E931-3647-4A80-BE58-D777D2159392&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">sequenceFlow</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">userTask</span> <span class="attr">id</span>=<span class="string">&quot;vacationApply&quot;</span> <span class="attr">name</span>=<span class="string">&quot;填写请求单&quot;</span> <span class="attr">activiti:assignee</span>=<span class="string">&quot;$&#123;applyStudent&#125;&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">extensionElements</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">modeler:initiator-can-complete</span> <span class="attr">xmlns:modeler</span>=<span class="string">&quot;http://activiti.com/modeler&quot;</span>&gt;</span>&lt;![CDATA[false]]&gt;<span class="tag">&lt;/<span class="name">modeler:initiator-can-complete</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">extensionElements</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">userTask</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sequenceFlow</span> <span class="attr">id</span>=<span class="string">&quot;sid-14CBDEB8-9291-4C80-A87A-CD1B7DCFC5F1&quot;</span> <span class="attr">name</span>=<span class="string">&quot;$&#123;days<span class="symbol">&amp;lt;</span>=3&#125;&quot;</span> <span class="attr">sourceRef</span>=<span class="string">&quot;sid-3FC5E931-3647-4A80-BE58-D777D2159392&quot;</span> <span class="attr">targetRef</span>=<span class="string">&quot;sid-E7C08E26-4376-4375-8E3E-CABB34576008&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">conditionExpression</span> <span class="attr">xsi:type</span>=<span class="string">&quot;tFormalExpression&quot;</span>&gt;</span>&lt;![CDATA[$&#123;days&lt;=3&#125;]]&gt;<span class="tag">&lt;/<span class="name">conditionExpression</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">sequenceFlow</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sequenceFlow</span> <span class="attr">id</span>=<span class="string">&quot;sid-05ADCC85-060C-4546-83B3-B16D4B2A0B87&quot;</span> <span class="attr">name</span>=<span class="string">&quot;$&#123;days<span class="symbol">&amp;gt;</span>3&#125;&quot;</span> <span class="attr">sourceRef</span>=<span class="string">&quot;sid-3FC5E931-3647-4A80-BE58-D777D2159392&quot;</span> <span class="attr">targetRef</span>=<span class="string">&quot;gradeAudit&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">conditionExpression</span> <span class="attr">xsi:type</span>=<span class="string">&quot;tFormalExpression&quot;</span>&gt;</span>&lt;![CDATA[$&#123;days&gt;3&#125;]]&gt;<span class="tag">&lt;/<span class="name">conditionExpression</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">sequenceFlow</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sequenceFlow</span> <span class="attr">id</span>=<span class="string">&quot;sid-2F8E0CB4-9F3B-4A4C-8585-CEB75CE8E876&quot;</span> <span class="attr">sourceRef</span>=<span class="string">&quot;gradeAudit&quot;</span> <span class="attr">targetRef</span>=<span class="string">&quot;sid-E7C08E26-4376-4375-8E3E-CABB34576008&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">sequenceFlow</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">process</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">bpmndi:BPMNDiagram</span> <span class="attr">id</span>=<span class="string">&quot;BPMNDiagram_vacation&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bpmndi:BPMNPlane</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;vacation&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNPlane_vacation&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNShape</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;start&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNShape_start&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdc:Bounds</span> <span class="attr">height</span>=<span class="string">&quot;30.0&quot;</span> <span class="attr">width</span>=<span class="string">&quot;30.0&quot;</span> <span class="attr">x</span>=<span class="string">&quot;45.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;55.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdc:Bounds</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNShape</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNShape</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;firstAudit&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNShape_firstAudit&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdc:Bounds</span> <span class="attr">height</span>=<span class="string">&quot;80.0&quot;</span> <span class="attr">width</span>=<span class="string">&quot;100.0&quot;</span> <span class="attr">x</span>=<span class="string">&quot;330.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;30.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdc:Bounds</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNShape</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNShape</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;gradeAudit&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNShape_gradeAudit&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdc:Bounds</span> <span class="attr">height</span>=<span class="string">&quot;80.0&quot;</span> <span class="attr">width</span>=<span class="string">&quot;100.0&quot;</span> <span class="attr">x</span>=<span class="string">&quot;435.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;180.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdc:Bounds</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNShape</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNShape</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-3FC5E931-3647-4A80-BE58-D777D2159392&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNShape_sid-3FC5E931-3647-4A80-BE58-D777D2159392&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdc:Bounds</span> <span class="attr">height</span>=<span class="string">&quot;40.0&quot;</span> <span class="attr">width</span>=<span class="string">&quot;40.0&quot;</span> <span class="attr">x</span>=<span class="string">&quot;465.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;45.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdc:Bounds</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNShape</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNShape</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-E7C08E26-4376-4375-8E3E-CABB34576008&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNShape_sid-E7C08E26-4376-4375-8E3E-CABB34576008&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdc:Bounds</span> <span class="attr">height</span>=<span class="string">&quot;28.0&quot;</span> <span class="attr">width</span>=<span class="string">&quot;28.0&quot;</span> <span class="attr">x</span>=<span class="string">&quot;700.5&quot;</span> <span class="attr">y</span>=<span class="string">&quot;53.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdc:Bounds</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNShape</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNShape</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;vacationApply&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNShape_vacationApply&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdc:Bounds</span> <span class="attr">height</span>=<span class="string">&quot;80.0&quot;</span> <span class="attr">width</span>=<span class="string">&quot;100.0&quot;</span> <span class="attr">x</span>=<span class="string">&quot;150.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;30.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdc:Bounds</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNShape</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNEdge</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-233578BE-63EC-4CBA-9AD0-764508976569&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNEdge_sid-233578BE-63EC-4CBA-9AD0-764508976569&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;430.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;67.61904761904762&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;465.9090909090909&quot;</span> <span class="attr">y</span>=<span class="string">&quot;65.9090909090909&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNEdge</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNEdge</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-05ADCC85-060C-4546-83B3-B16D4B2A0B87&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNEdge_sid-05ADCC85-060C-4546-83B3-B16D4B2A0B87&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;485.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;85.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;485.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;180.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNEdge</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNEdge</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-2F8E0CB4-9F3B-4A4C-8585-CEB75CE8E876&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNEdge_sid-2F8E0CB4-9F3B-4A4C-8585-CEB75CE8E876&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;535.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;186.66666666666666&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;702.8512958792702&quot;</span> <span class="attr">y</span>=<span class="string">&quot;74.76580274715323&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNEdge</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNEdge</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-C297E320-8846-4684-AADB-27FCEB2F7694&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNEdge_sid-C297E320-8846-4684-AADB-27FCEB2F7694&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;250.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;70.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;330.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;70.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNEdge</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNEdge</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-14CBDEB8-9291-4C80-A87A-CD1B7DCFC5F1&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNEdge_sid-14CBDEB8-9291-4C80-A87A-CD1B7DCFC5F1&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;504.8272138228942&quot;</span> <span class="attr">y</span>=<span class="string">&quot;65.17278617710583&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;700.5005315791224&quot;</span> <span class="attr">y</span>=<span class="string">&quot;66.87800027519933&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNEdge</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNEdge</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-D4EE0B4C-8690-481C-84A3-93DD9DAA16B4&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNEdge_sid-D4EE0B4C-8690-481C-84A3-93DD9DAA16B4&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;75.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;70.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;150.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;70.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNEdge</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bpmndi:BPMNPlane</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">bpmndi:BPMNDiagram</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">definitions</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="spring-vacation"><a href="#spring-vacation" class="headerlink" title="spring-vacation"></a>spring-vacation</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">definitions</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;</span> <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:xsd</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span> <span class="attr">xmlns:activiti</span>=<span class="string">&quot;http://activiti.org/bpmn&quot;</span> <span class="attr">xmlns:bpmndi</span>=<span class="string">&quot;http://www.omg.org/spec/BPMN/20100524/DI&quot;</span> <span class="attr">xmlns:omgdc</span>=<span class="string">&quot;http://www.omg.org/spec/DD/20100524/DC&quot;</span> <span class="attr">xmlns:omgdi</span>=<span class="string">&quot;http://www.omg.org/spec/DD/20100524/DI&quot;</span> <span class="attr">typeLanguage</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span> <span class="attr">expressionLanguage</span>=<span class="string">&quot;http://www.w3.org/1999/XPath&quot;</span> <span class="attr">targetNamespace</span>=<span class="string">&quot;http://www.activiti.org/processdef&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">process</span> <span class="attr">id</span>=<span class="string">&quot;spring-vacation&quot;</span> <span class="attr">name</span>=<span class="string">&quot;spring-vacation&quot;</span> <span class="attr">isExecutable</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">documentation</span>&gt;</span>vacation flow work<span class="tag">&lt;/<span class="name">documentation</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">startEvent</span> <span class="attr">id</span>=<span class="string">&quot;start&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">startEvent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">userTask</span> <span class="attr">id</span>=<span class="string">&quot;firstAudit&quot;</span> <span class="attr">name</span>=<span class="string">&quot;班主任审批&quot;</span> <span class="attr">activiti:assignee</span>=<span class="string">&quot;$&#123;classMonitor&#125;&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">extensionElements</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activiti:executionListener</span> <span class="attr">event</span>=<span class="string">&quot;end&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.pkgs.listener.VacationExecutionListener&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">activiti:executionListener</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activiti:taskListener</span> <span class="attr">event</span>=<span class="string">&quot;complete&quot;</span> <span class="attr">delegateExpression</span>=<span class="string">&quot;$&#123;vacationTaskListener&#125;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">activiti:taskListener</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">modeler:initiator-can-complete</span> <span class="attr">xmlns:modeler</span>=<span class="string">&quot;http://activiti.com/modeler&quot;</span>&gt;</span>&lt;![CDATA[false]]&gt;<span class="tag">&lt;/<span class="name">modeler:initiator-can-complete</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">extensionElements</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">userTask</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">userTask</span> <span class="attr">id</span>=<span class="string">&quot;gradeAudit&quot;</span> <span class="attr">name</span>=<span class="string">&quot;级主任审批&quot;</span> <span class="attr">activiti:assignee</span>=<span class="string">&quot;$&#123;gradeMonitorValue&#125;&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">extensionElements</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activiti:taskListener</span> <span class="attr">event</span>=<span class="string">&quot;complete&quot;</span> <span class="attr">delegateExpression</span>=<span class="string">&quot;$&#123;vacationTaskListener&#125;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">activiti:taskListener</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">modeler:initiator-can-complete</span> <span class="attr">xmlns:modeler</span>=<span class="string">&quot;http://activiti.com/modeler&quot;</span>&gt;</span>&lt;![CDATA[false]]&gt;<span class="tag">&lt;/<span class="name">modeler:initiator-can-complete</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">extensionElements</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">multiInstanceLoopCharacteristics</span> <span class="attr">isSequential</span>=<span class="string">&quot;false&quot;</span> <span class="attr">activiti:collection</span>=<span class="string">&quot;$&#123;gradeMonitorList&#125;&quot;</span> <span class="attr">activiti:elementVariable</span>=<span class="string">&quot;gradeMonitorValue&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">completionCondition</span>&gt;</span>$&#123;nrOfCompletedInstances<span class="symbol">&amp;gt;</span>0&#125;<span class="tag">&lt;/<span class="name">completionCondition</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">multiInstanceLoopCharacteristics</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">userTask</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">exclusiveGateway</span> <span class="attr">id</span>=<span class="string">&quot;sid-3FC5E931-3647-4A80-BE58-D777D2159392&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">exclusiveGateway</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sequenceFlow</span> <span class="attr">id</span>=<span class="string">&quot;sid-C297E320-8846-4684-AADB-27FCEB2F7694&quot;</span> <span class="attr">sourceRef</span>=<span class="string">&quot;vacationApply&quot;</span> <span class="attr">targetRef</span>=<span class="string">&quot;firstAudit&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">sequenceFlow</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sequenceFlow</span> <span class="attr">id</span>=<span class="string">&quot;sid-D4EE0B4C-8690-481C-84A3-93DD9DAA16B4&quot;</span> <span class="attr">sourceRef</span>=<span class="string">&quot;start&quot;</span> <span class="attr">targetRef</span>=<span class="string">&quot;vacationApply&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">sequenceFlow</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">endEvent</span> <span class="attr">id</span>=<span class="string">&quot;sid-E7C08E26-4376-4375-8E3E-CABB34576008&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">endEvent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sequenceFlow</span> <span class="attr">id</span>=<span class="string">&quot;sid-233578BE-63EC-4CBA-9AD0-764508976569&quot;</span> <span class="attr">sourceRef</span>=<span class="string">&quot;firstAudit&quot;</span> <span class="attr">targetRef</span>=<span class="string">&quot;sid-3FC5E931-3647-4A80-BE58-D777D2159392&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">sequenceFlow</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">userTask</span> <span class="attr">id</span>=<span class="string">&quot;vacationApply&quot;</span> <span class="attr">name</span>=<span class="string">&quot;填写请求单&quot;</span> <span class="attr">activiti:assignee</span>=<span class="string">&quot;$&#123;applyStudent&#125;&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">extensionElements</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">modeler:initiator-can-complete</span> <span class="attr">xmlns:modeler</span>=<span class="string">&quot;http://activiti.com/modeler&quot;</span>&gt;</span>&lt;![CDATA[false]]&gt;<span class="tag">&lt;/<span class="name">modeler:initiator-can-complete</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">extensionElements</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">userTask</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sequenceFlow</span> <span class="attr">id</span>=<span class="string">&quot;sid-2F8E0CB4-9F3B-4A4C-8585-CEB75CE8E876&quot;</span> <span class="attr">sourceRef</span>=<span class="string">&quot;gradeAudit&quot;</span> <span class="attr">targetRef</span>=<span class="string">&quot;sid-E7C08E26-4376-4375-8E3E-CABB34576008&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">sequenceFlow</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sequenceFlow</span> <span class="attr">id</span>=<span class="string">&quot;sid-05ADCC85-060C-4546-83B3-B16D4B2A0B87&quot;</span> <span class="attr">name</span>=<span class="string">&quot;$&#123;days<span class="symbol">&amp;gt;</span>3&#125;&quot;</span> <span class="attr">sourceRef</span>=<span class="string">&quot;sid-3FC5E931-3647-4A80-BE58-D777D2159392&quot;</span> <span class="attr">targetRef</span>=<span class="string">&quot;gradeAudit&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">conditionExpression</span> <span class="attr">xsi:type</span>=<span class="string">&quot;tFormalExpression&quot;</span>&gt;</span>&lt;![CDATA[$&#123;days&gt;3&#125;]]&gt;<span class="tag">&lt;/<span class="name">conditionExpression</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">sequenceFlow</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sequenceFlow</span> <span class="attr">id</span>=<span class="string">&quot;sid-14CBDEB8-9291-4C80-A87A-CD1B7DCFC5F1&quot;</span> <span class="attr">name</span>=<span class="string">&quot;$&#123;days<span class="symbol">&amp;lt;</span>=3&#125;&quot;</span> <span class="attr">sourceRef</span>=<span class="string">&quot;sid-3FC5E931-3647-4A80-BE58-D777D2159392&quot;</span> <span class="attr">targetRef</span>=<span class="string">&quot;sid-E7C08E26-4376-4375-8E3E-CABB34576008&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">conditionExpression</span> <span class="attr">xsi:type</span>=<span class="string">&quot;tFormalExpression&quot;</span>&gt;</span>&lt;![CDATA[$&#123;days&lt;=3&#125;]]&gt;<span class="tag">&lt;/<span class="name">conditionExpression</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">sequenceFlow</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">process</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">bpmndi:BPMNDiagram</span> <span class="attr">id</span>=<span class="string">&quot;BPMNDiagram_spring-vacation&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bpmndi:BPMNPlane</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;spring-vacation&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNPlane_spring-vacation&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNShape</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;start&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNShape_start&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdc:Bounds</span> <span class="attr">height</span>=<span class="string">&quot;30.0&quot;</span> <span class="attr">width</span>=<span class="string">&quot;30.0&quot;</span> <span class="attr">x</span>=<span class="string">&quot;45.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;55.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdc:Bounds</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNShape</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNShape</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;firstAudit&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNShape_firstAudit&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdc:Bounds</span> <span class="attr">height</span>=<span class="string">&quot;80.0&quot;</span> <span class="attr">width</span>=<span class="string">&quot;100.0&quot;</span> <span class="attr">x</span>=<span class="string">&quot;319.4039767913553&quot;</span> <span class="attr">y</span>=<span class="string">&quot;30.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdc:Bounds</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNShape</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNShape</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;gradeAudit&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNShape_gradeAudit&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdc:Bounds</span> <span class="attr">height</span>=<span class="string">&quot;80.00000000000003&quot;</span> <span class="attr">width</span>=<span class="string">&quot;100.0&quot;</span> <span class="attr">x</span>=<span class="string">&quot;435.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;165.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdc:Bounds</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNShape</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNShape</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-3FC5E931-3647-4A80-BE58-D777D2159392&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNShape_sid-3FC5E931-3647-4A80-BE58-D777D2159392&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdc:Bounds</span> <span class="attr">height</span>=<span class="string">&quot;40.0&quot;</span> <span class="attr">width</span>=<span class="string">&quot;40.0&quot;</span> <span class="attr">x</span>=<span class="string">&quot;465.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;50.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdc:Bounds</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNShape</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNShape</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-E7C08E26-4376-4375-8E3E-CABB34576008&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNShape_sid-E7C08E26-4376-4375-8E3E-CABB34576008&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdc:Bounds</span> <span class="attr">height</span>=<span class="string">&quot;28.0&quot;</span> <span class="attr">width</span>=<span class="string">&quot;28.0&quot;</span> <span class="attr">x</span>=<span class="string">&quot;700.5&quot;</span> <span class="attr">y</span>=<span class="string">&quot;53.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdc:Bounds</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNShape</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNShape</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;vacationApply&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNShape_vacationApply&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdc:Bounds</span> <span class="attr">height</span>=<span class="string">&quot;80.0&quot;</span> <span class="attr">width</span>=<span class="string">&quot;100.0&quot;</span> <span class="attr">x</span>=<span class="string">&quot;135.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;30.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdc:Bounds</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNShape</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNEdge</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-233578BE-63EC-4CBA-9AD0-764508976569&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNEdge_sid-233578BE-63EC-4CBA-9AD0-764508976569&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;419.4039767913553&quot;</span> <span class="attr">y</span>=<span class="string">&quot;70.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;465.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;70.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNEdge</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNEdge</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-05ADCC85-060C-4546-83B3-B16D4B2A0B87&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNEdge_sid-05ADCC85-060C-4546-83B3-B16D4B2A0B87&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;485.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;90.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;485.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;165.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNEdge</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNEdge</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-2F8E0CB4-9F3B-4A4C-8585-CEB75CE8E876&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNEdge_sid-2F8E0CB4-9F3B-4A4C-8585-CEB75CE8E876&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;535.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;174.9346405228758&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;702.5020238270478&quot;</span> <span class="attr">y</span>=<span class="string">&quot;74.21446933275558&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNEdge</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNEdge</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-C297E320-8846-4684-AADB-27FCEB2F7694&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNEdge_sid-C297E320-8846-4684-AADB-27FCEB2F7694&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;235.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;70.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;319.4039767913553&quot;</span> <span class="attr">y</span>=<span class="string">&quot;70.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNEdge</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNEdge</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-14CBDEB8-9291-4C80-A87A-CD1B7DCFC5F1&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNEdge_sid-14CBDEB8-9291-4C80-A87A-CD1B7DCFC5F1&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;504.741935483871&quot;</span> <span class="attr">y</span>=<span class="string">&quot;69.74193548387098&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;700.5011959678819&quot;</span> <span class="attr">y</span>=<span class="string">&quot;67.18299090238064&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNEdge</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">bpmndi:BPMNEdge</span> <span class="attr">bpmnElement</span>=<span class="string">&quot;sid-D4EE0B4C-8690-481C-84A3-93DD9DAA16B4&quot;</span> <span class="attr">id</span>=<span class="string">&quot;BPMNEdge_sid-D4EE0B4C-8690-481C-84A3-93DD9DAA16B4&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;75.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;70.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">omgdi:waypoint</span> <span class="attr">x</span>=<span class="string">&quot;135.0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;70.0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">omgdi:waypoint</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">bpmndi:BPMNEdge</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bpmndi:BPMNPlane</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">bpmndi:BPMNDiagram</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">definitions</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2025/07/08/javaee-activiti/" title="工作流(Activiti)" target="_blank" rel="external">http://example.com/2025/07/08/javaee-activiti/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/cs12110" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/12764287.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/cs12110" target="_blank"><span class="text-dark">cs12110</span><small class="ml-1x"></small></a></h3>
+        <div>就一打字的</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2025/07/08/javaee-apis/" title="Api文档"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2025/07/08/javaee-basic/" title="分布式基础知识"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

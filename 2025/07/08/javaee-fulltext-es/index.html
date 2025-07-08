@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>ElasticSearch 文档 | mini-docs</title>
+  <meta name="description" content="ElasticSearch 文档Elasticsearch 是建立在全文搜索引擎Apache Lucene™基础上的搜索引擎,用它做全文搜索只需要使用统一开发好的 API 即可,而不需要了解 Lucene 的运行原理. Elasticsearch 是一个实时的分布式搜索和分析引擎.它可以帮助你用前所未有的速度去处理大规模数据. Elasticsearch 并不仅仅是 Lucene 这么简单,它不但">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ElasticSearch 文档">
+<meta property="og:url" content="http://example.com/2025/07/08/javaee-fulltext-es/index.html">
+<meta property="og:site_name" content="mini-docs">
+<meta property="og:description" content="ElasticSearch 文档Elasticsearch 是建立在全文搜索引擎Apache Lucene™基础上的搜索引擎,用它做全文搜索只需要使用统一开发好的 API 即可,而不需要了解 Lucene 的运行原理. Elasticsearch 是一个实时的分布式搜索和分析引擎.它可以帮助你用前所未有的速度去处理大规模数据. Elasticsearch 并不仅仅是 Lucene 这么简单,它不但">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/fullsearch.png">
+<meta property="og:image" content="http://example.com/img/search-process.png">
+<meta property="og:image" content="http://example.com/img/index-process.png">
+<meta property="og:image" content="http://example.com/img/reverse-index.png">
+<meta property="og:image" content="http://example.com/img/reverse-search.png">
+<meta property="og:image" content="http://example.com/img/es-solr-compare.png">
+<meta property="og:image" content="http://example.com/img/tiny-search.png">
+<meta property="og:image" content="http://example.com/img/elk-struct.png">
+<meta property="article:published_time" content="2025-07-08T12:46:25.000Z">
+<meta property="article:modified_time" content="2025-07-08T10:04:48.928Z">
+<meta property="article:author" content="cs12110@163.com">
+<meta property="article:tag" content="ElasticSearch">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/fullsearch.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2025/07/08/javaee-fulltext-es/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="mini-docs" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/cs12110" target="_blank">
+          <img class="img-circle img-rotate" src="/images/12764287.png" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">cs12110</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Macondo</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>就一打字的!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaEE/">JavaEE</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/KillMe/">KillMe</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ai/">ai</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/database/">database</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/server/">server</a><span class="category-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/" rel="tag">AOP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Arthas/" rel="tag">Arthas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/" rel="tag">ClassLoader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docsify/" rel="tag">Docsify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GC/" rel="tag">GC</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/" rel="tag">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/" rel="tag">Go</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC/" rel="tag">IOC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOs/" rel="tag">IOs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E5%8A%A0%E5%AF%86/" rel="tag">Java 加密</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E6%9E%9A%E4%B8%BE/" rel="tag">Java 枚举</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaEE/" rel="tag">JavaEE</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E4%BC%98%E5%8C%96/" rel="tag">Java优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">Java设计模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmeter/" rel="tag">Jmeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmh/" rel="tag">Jmh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">Json 序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/" rel="tag">MQ</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mockito/" rel="tag">Mockito</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" rel="tag">Mybatis 源码阅读</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shiro/" rel="tag">Shiro</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Springboot/" rel="tag">Springboot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/" rel="tag">Thrift</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dify/" rel="tag">dify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo/" rel="tag">dubbo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ftp/" rel="tag">ftp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/" rel="tag">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">lambda表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lanproxy/" rel="tag">lanproxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/myabtis/" rel="tag">myabtis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/websocket/" rel="tag">websocket</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xxljob/" rel="tag">xxljob</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zipkin/" rel="tag">zipkin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" rel="tag">代码生成器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" rel="tag">分库分表</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" rel="tag">多数据源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="tag">工作流</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" rel="tag">布隆过滤器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" rel="tag">微信对接</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" rel="tag">日志框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" rel="tag">规则引擎</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/AOP/" style="font-size: 13px;">AOP</a> <a href="/tags/Arthas/" style="font-size: 13px;">Arthas</a> <a href="/tags/ClassLoader/" style="font-size: 13px;">ClassLoader</a> <a href="/tags/Docsify/" style="font-size: 13px;">Docsify</a> <a href="/tags/ElasticSearch/" style="font-size: 13.17px;">ElasticSearch</a> <a href="/tags/GC/" style="font-size: 13.17px;">GC</a> <a href="/tags/Game/" style="font-size: 13px;">Game</a> <a href="/tags/Go/" style="font-size: 13.5px;">Go</a> <a href="/tags/Gogs/" style="font-size: 13px;">Gogs</a> <a href="/tags/IOC/" style="font-size: 13px;">IOC</a> <a href="/tags/IOs/" style="font-size: 13px;">IOs</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/JWT/" style="font-size: 13px;">JWT</a> <a href="/tags/Java-%E5%8A%A0%E5%AF%86/" style="font-size: 13px;">Java 加密</a> <a href="/tags/Java-%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">Java 枚举</a> <a href="/tags/JavaEE/" style="font-size: 13.17px;">JavaEE</a> <a href="/tags/Java%E4%BC%98%E5%8C%96/" style="font-size: 13px;">Java优化</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 14px;">Java基础</a> <a href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13px;">Java设计模式</a> <a href="/tags/Jmeter/" style="font-size: 13px;">Jmeter</a> <a href="/tags/Jmh/" style="font-size: 13px;">Jmh</a> <a href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 13px;">Json 序列化</a> <a href="/tags/Leetcode/" style="font-size: 13px;">Leetcode</a> <a href="/tags/MQ/" style="font-size: 13.83px;">MQ</a> <a href="/tags/Mockito/" style="font-size: 13px;">Mockito</a> <a href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" style="font-size: 13px;">Mybatis 源码阅读</a> <a href="/tags/PostgreSQL/" style="font-size: 13px;">PostgreSQL</a> <a href="/tags/RabbitMQ/" style="font-size: 13.33px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 13.5px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 13.17px;">RocketMQ</a> <a href="/tags/Shiro/" style="font-size: 13px;">Shiro</a> <a href="/tags/Spring/" style="font-size: 13.67px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 13px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 13.67px;">SpringCloud</a> <a href="/tags/Springboot/" style="font-size: 13.17px;">Springboot</a> <a href="/tags/Thrift/" style="font-size: 13px;">Thrift</a> <a href="/tags/Zookeeper/" style="font-size: 13px;">Zookeeper</a> <a href="/tags/dify/" style="font-size: 13px;">dify</a> <a href="/tags/docker/" style="font-size: 13.17px;">docker</a> <a href="/tags/dubbo/" style="font-size: 13px;">dubbo</a> <a href="/tags/ftp/" style="font-size: 13px;">ftp</a> <a href="/tags/git/" style="font-size: 13px;">git</a> <a href="/tags/jenkins/" style="font-size: 13px;">jenkins</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/lanproxy/" style="font-size: 13px;">lanproxy</a> <a href="/tags/linux/" style="font-size: 13px;">linux</a> <a href="/tags/maven/" style="font-size: 13.33px;">maven</a> <a href="/tags/myabtis/" style="font-size: 13px;">myabtis</a> <a href="/tags/mysql/" style="font-size: 13.83px;">mysql</a> <a href="/tags/nacos/" style="font-size: 13px;">nacos</a> <a href="/tags/nginx/" style="font-size: 13px;">nginx</a> <a href="/tags/redis/" style="font-size: 13.33px;">redis</a> <a href="/tags/tomcat/" style="font-size: 13px;">tomcat</a> <a href="/tags/websocket/" style="font-size: 13px;">websocket</a> <a href="/tags/xxljob/" style="font-size: 13px;">xxljob</a> <a href="/tags/zipkin/" style="font-size: 13px;">zipkin</a> <a href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" style="font-size: 13px;">代码生成器</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" style="font-size: 13px;">分布式事务</a> <a href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" style="font-size: 13.17px;">分库分表</a> <a href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" style="font-size: 13px;">多数据源</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" style="font-size: 13px;">工作流</a> <a href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" style="font-size: 13px;">布隆过滤器</a> <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" style="font-size: 13px;">微信对接</a> <a href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">日志框架</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 13px;">爬虫</a> <a href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" style="font-size: 13px;">规则引擎</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">七月 2025</a><span class="archive-list-count">105</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-thread/" class="title">Go 多线程</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-web/" class="title">Go Web</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-classloder/" class="title">ClassLoader</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-encode/" class="title">Java 加密</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-enum/" class="title">Java 枚举</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-javaee-fulltext-es" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ElasticSearch 文档
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2025/07/08/javaee-fulltext-es/" class="article-date">
+	  <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/JavaEE/">JavaEE</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2025/07/08/javaee-fulltext-es/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="ElasticSearch-文档"><a href="#ElasticSearch-文档" class="headerlink" title="ElasticSearch 文档"></a>ElasticSearch 文档</h1><p>Elasticsearch 是建立在全文搜索引擎<code>Apache Lucene™</code>基础上的搜索引擎,用它做全文搜索只需要使用统一开发好的 API 即可,而不需要了解 Lucene 的运行原理.</p>
+<p>Elasticsearch 是一个<strong>实时的分布式搜索和分析引擎</strong>.它可以帮助你用前所未有的速度去处理大规模数据.</p>
+<p>Elasticsearch 并不仅仅是 Lucene 这么简单,它不但包括了全文搜索功能,还可以:</p>
+<ul>
+<li><p>分布式实时文件存储,并将每一个字段都编入索引,使其可以被搜索.</p>
+</li>
+<li><p>实时分析的分布式搜索引擎.</p>
+</li>
+<li><p>可以扩展到上百台服务器,处理 PB 级别的结构化或非结构化数据.</p>
+</li>
+</ul>
+<p>Java 参考代码:<a target="_blank" rel="noopener" href="https://github.com/cs12110/demo-box/tree/master/elasticsearch-demo">github 地址</a></p>
+<p>入坑: <strong>你甚至可以拥有自己的搜索引擎. :”}</strong></p>
+<hr>
+<h2 id="1-全文检索"><a href="#1-全文检索" class="headerlink" title="1. 全文检索"></a>1. 全文检索</h2><h3 id="1-1-基本概念"><a href="#1-1-基本概念" class="headerlink" title="1.1 基本概念"></a>1.1 基本概念</h3><p>现实中的数据结构分为两种: <code>结构化数据</code> 和 <code>非结构化数据</code>.</p>
+<ul>
+<li>结构化数据:  指具有固定格式或有限长度的数据,如数据库,元数据等.</li>
+<li>非结构化数据: 指不定长或无固定格式的数据,如邮件,word 文档等.</li>
+</ul>
+<p>说明: <strong>非结构化数据又一种叫法叫全文数据</strong></p>
+<p>按照数据的分类,搜索也分为两种:</p>
+<ul>
+<li>对结构化数据的搜索  : 如对数据库的搜索,用 SQL 语句.再如对元数据的搜索,如利用 windows 搜索对文件名,类型,修改时间进行搜索等.</li>
+<li>对非结构化数据的搜索: 如利用 windows 的搜索也可以搜索文件内容,Linux 下的 grep 命令,再如用 Google 和百度可以搜索大量内容数据.</li>
+</ul>
+<p>对全文数据的搜索主要有两种方法:</p>
+<p>a. <strong>顺序扫描法</strong> :   所谓顺序扫描,比如要找内容包含某一个字符串的文件,就是一个文档一个文档的看,对于每一个文档,从头看到尾,如果此文档包含此字符串,则此文档为我们要找的文件,接着看下一个文件,直到扫描完所有的文件.</p>
+<p>b. <strong>全文索引法</strong>：将非结构化数据中的一部分信息提取出来,重新组织,使其变得有一定结构,然后对此有一定结构的数据进行搜索,从而达到搜索相对较快的目的.这种先建立索引,再对索引进行搜索的过程就叫全文检索(Full-text Search).</p>
+<p>索引概念: 从非结构化数据中提取出的然后重新组织的信息,我们称之<strong>索引</strong> .</p>
+<p>举个栗子</p>
+<blockquote>
+<p>比如字典,字典的拼音表和部首检字表就相当于字典的索引,对每一个字的解释是非结构化的,如果字典没有音节表和部首检字表,在茫茫辞海中找一个字只能顺序扫描.然而字的某些信息可以提取出来进行结构化处理,比如读音,就比较结构化,分声母和韵母,分别只有几种可以一一列举,于是将读音拿出来按一定的顺序排列,每一项读音都指向此字的详细解释的页数.我们搜索时按结构化的拼音搜到读音,然后按其指向的页数,便可找到我们的非结构化数据——也即对字的解释</p>
+</blockquote>
+<h3 id="1-2-全文检索流程"><a href="#1-2-全文检索流程" class="headerlink" title="1.2 全文检索流程"></a>1.2 全文检索流程</h3><p>大致流程如下</p>
+<p><img src="/img/fullsearch.png"></p>
+<p>细分流程如下</p>
+<p>建立索引流程: 1-&gt;4</p>
+<p>搜索流程: a -&gt; g</p>
+<p><img src="/img/search-process.png" alt="1531704553052"></p>
+<h3 id="1-3-索引相关概念"><a href="#1-3-索引相关概念" class="headerlink" title="1.3 索引相关概念"></a>1.3 索引相关概念</h3><p><strong>索引概念</strong>: 从非结构化数据中提取出的然后重新组织的信息,我们称之<strong>索引</strong> .</p>
+<p>在全文检索里面,会出现一个叫<strong>反向索引</strong>的东西? 那么反向索引是什么呢?</p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/23202010/answer/23901671">知乎用户耗子的回答 link</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">渣翻译的例子之一.</span><br><span class="line"></span><br><span class="line">英文原名Inverted index,大概因为 Invert 有颠倒的意思,就被翻译成了倒排.</span><br><span class="line">但是倒排这个名称很容易让人理解为从A-Z颠倒成Z-A.</span><br><span class="line"></span><br><span class="line">个人认为翻译成转置索引可能比较合适.</span><br><span class="line"></span><br><span class="line">一个未经处理的数据库中,一般是以文档ID作为索引,以文档内容作为记录.</span><br><span class="line"></span><br><span class="line">而Inverted index 指的是将单词或记录作为索引,将文档ID作为记录,这样便可以方便地通过单词或记录查找到其所在的文档.</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/23202010/answer/23928943">知乎用户良张的回答 link</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">我喜欢叫她&quot;反向索引&quot;(索引那么萌的东西,当然要用“她”啦！^_^ )</span><br><span class="line">常规的索引是文档到关键词的映射：</span><br><span class="line">           文档——&gt;关键词</span><br><span class="line">但是这样检索关键词的时候很费力，要一个文档一个文档的遍历一遍。(这事不能忍~)</span><br><span class="line">于是人们发明了倒排索引~</span><br><span class="line">倒排索引是关键词到文档的映射</span><br><span class="line">          关键词——&gt;文档</span><br><span class="line">这样，只要有关键词，立马就能找到她在那个文档里出现过，剩下的事就是把她揪出来了~~~</span><br><span class="line">可能是因为将正常的索引倒过来了吧，所以大家叫他倒排索引，可我依然喜欢叫他反向索引~</span><br></pre></td></tr></table></figure>
+
+<p><strong>索引创建流程</strong></p>
+<p>创建索引流程如下图所示:</p>
+<p><img src="/img/index-process.png" alt="54"></p>
+<p><strong>分词组件</strong>[此过程称为 Tokenize]</p>
+<blockquote>
+<p>a. 将文档分成一个一个单独的单词;</p>
+<p>b. 去除标点符号;</p>
+<p>c. 去除停用词(Stop word);<br>所谓停用词(Stop word)就是一种语言中最普通的一些单词,由于没有特别的意义,因而大多数情况下不能成为搜索的关键词,因而创建索引时,这种词会被去掉而减少索引的大小.<br>英语中停词(Stop word)如：“the”,“a”,“this”等.<br>对于每一种语言的分词组件(Tokenizer),都有一个停词(stop word)集合.<br>经过分词(Tokenizer)后得到的结果称为词次(Token).</p>
+<p>d. 将词次(Token)传给语言处理组件(Linguistic Processor)</p>
+</blockquote>
+<p><strong>语言处理组件(linguistic processor)</strong></p>
+<blockquote>
+<p>对得到的词次(Token)做一些同语言相关的处理.</p>
+<p>对于英语,语言处理组件(Linguistic Processor)一般做以下几点：</p>
+<p>a. 变为小写(Lowercase).</p>
+<p>b. 将单词缩减为词根形式,如“cars”到“car”等.这种操作称为：stemming.</p>
+<p>c. 将单词转变为词根形式,如“drove”到“drive”等.这种操作称为：lemmatization.<br>语言处理组件(linguistic processor)的结果称为词元(Term).</p>
+<p>d. 将词元(Term)传给索引组件(Indexer)</p>
+</blockquote>
+<p><strong>索引组件(Indexer)</strong></p>
+<blockquote>
+<p>a. 利用得到的词(Term)创建一个字典(Term-DocumentID)</p>
+<p>b. 对字典按字母顺序进行排序.</p>
+<p>c. 合并相同的词元(Term)成为文档倒排(Posting List)链表.</p>
+<p>在此表中,有几个定义：</p>
+<p>Document Frequency 即文档频次,表示总共有多少文件包含此词(Term).</p>
+<p>Frequency 即词频率,表示此文件中包含了几个此词(Term).</p>
+</blockquote>
+<p>影响一个词(Term)在一篇文档中的重要性主要有两个因素:</p>
+<ul>
+<li>Term Frequency (tf):即此 Term 在此文档中出现了多少次.tf 越大说明越重要.</li>
+<li>Document Frequency (df):即有多少文档包含次 Term.df 越大说明越不重要.</li>
+</ul>
+<p>词(Term)在文档中出现的次数越多,说明此词(Term)对该文档越重要,如“搜索”这个词,在本文档中出现的次数很多,说明本文档主要就是讲这方面的事的.然而在一篇英语文档中,this 出现的次数更多,就说明越重要吗?不是的,这是由第二个因素进行调整,第二个因素说明,有越多的文档包含此词(Term), 说明此词(Term)太普通,不足以区分这些文档,因而重要性越低.</p>
+<h3 id="1-4-反向索引搜索样例"><a href="#1-4-反向索引搜索样例" class="headerlink" title="1.4 反向索引搜索样例"></a>1.4 反向索引搜索样例</h3><p>例子来自 CSDN 博客: <a target="_blank" rel="noopener" href="https://blog.csdn.net/forfuture1978/article/details/4711308/">博客地址</a></p>
+<p>反向索引保存的信息(词典-倒排表)</p>
+<p>假设文档集合里面有 100 篇文档,为了方便表示,我们为文档编号从 1 到 100,得到下面的结构</p>
+<p><img src="/img/reverse-index.png" alt="img"></p>
+<p>左边保存的是一系列字符串,称为词典.<br>每个字符串都指向包含此字符串的文档(Document)链表,此文档链表称为倒排表(Posting List).<br>有了索引,便使保存的信息和要搜索的信息一致,可以大大加快搜索的速度.</p>
+<p>反向索引查询示例</p>
+<p>比如说,我们要寻找既包含字符串“lucene”又包含字符串“solr”的文档,我们只需要以下几步：</p>
+<p>a. 取出包含字符串“lucene”的文档链表.</p>
+<p>b. 取出包含字符串“solr”的文档链表.</p>
+<p>c. 通过合并链表,找出既包含“lucene”又包含“solr”的文件.<br><img src="/img/reverse-search.png" alt="img"></p>
+<hr>
+<h2 id="2-elasticsearch"><a href="#2-elasticsearch" class="headerlink" title="2. elasticsearch"></a>2. elasticsearch</h2><h3 id="2-1-为什么是-elasticsearch"><a href="#2-1-为什么是-elasticsearch" class="headerlink" title="2.1 为什么是 elasticsearch?"></a>2.1 为什么是 elasticsearch?</h3><p>在 Java 的全文检索里面有两大牛逼玩意,分别是倚天<code>solr</code>和屠龙<code>elasticsearch</code>.</p>
+<p>为什么是 elasticsearch,而不是 solr 呢? 是不是确认过眼神?</p>
+<p>那么来看看 solr 和 elasticsearch 的对比:</p>
+<p><img src="/img/es-solr-compare.png"></p>
+<p>简概对比:</p>
+<p>a. Solr 利用 Zookeeper 进行分布式管理,而 Elasticsearch 自身带有分布式协调管理功能.</p>
+<p>b. Solr 支持更多格式的数据,而 Elasticsearch 仅支持 json 文件格式.</p>
+<p>c. Solr 官方提供的功能更多,而 Elasticsearch 本身更注重于核心功能,高级功能多有第三方插件提供.</p>
+<p>d. Solr 在传统的搜索应用中表现好于 Elasticsearch,但在处理实时搜索应用时效率明显低于 Elasticsearch.</p>
+<p><strong>Solr 是传统搜索应用的有力解决方案,Elasticsearch 更适用于新兴的实时搜索应用.</strong></p>
+<p>因此,我们选用 elasticsearch. :”}</p>
+<p><del>你以为我会说用过 solr 而选 elasticsearch?不可能的,这辈子都不可能说的.</del></p>
+<h3 id="2-2-安装-elasticsearch"><a href="#2-2-安装-elasticsearch" class="headerlink" title="2.2 安装 elasticsearch"></a>2.2 安装 elasticsearch</h3><h4 id="2-2-1-创建用户"><a href="#2-2-1-创建用户" class="headerlink" title="2.2.1 创建用户"></a>2.2.1 创建用户</h4><p>因为 elasticsearch 出于某种考虑,不能使用 root 启动.所以要建立其他的普通用户.</p>
+<p>创建: dev 用户,密码: rojao123.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 ~]# useradd dev</span><br><span class="line">[root@dev-2 ~]# passwd dev</span><br><span class="line">Changing password <span class="keyword">for</span> user dev.</span><br><span class="line">New password:</span><br><span class="line">Retype new password:</span><br><span class="line">passwd: all authentication tokens updated successfully.</span><br><span class="line">[root@dev-2 ~]# <span class="built_in">id</span> dev</span><br><span class="line">uid=1000(dev) gid=1000(dev) <span class="built_in">groups</span>=1000(dev)</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-2-下载-elasticsearch"><a href="#2-2-2-下载-elasticsearch" class="headerlink" title="2.2.2 下载 elasticsearch"></a>2.2.2 下载 elasticsearch</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 elasticsearch]# wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.3.0.tar.gz</span><br><span class="line">--2018-07-04 09:46:33--  https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.3.0.tar.gz</span><br><span class="line">Resolving artifacts.elastic.co (artifacts.elastic.co)... 107.21.253.15, 184.72.242.47, 107.21.237.95, ...</span><br><span class="line">Connecting to artifacts.elastic.co (artifacts.elastic.co)|107.21.253.15|:443... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 91423553 (87M) [application/x-gzip]</span><br><span class="line">Saving to: ‘elasticsearch-6.3.0.tar.gz’</span><br><span class="line"></span><br><span class="line">100%[=====================================================================================================================================================&gt;] 91,423,553   947KB/s   <span class="keyword">in</span> 1m 55s</span><br><span class="line"></span><br><span class="line">2018-07-04 09:48:29 (776 KB/s) - ‘elasticsearch-6.3.0.tar.gz’ saved [91423553/91423553]</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-3-解压并设置环境变量"><a href="#2-2-3-解压并设置环境变量" class="headerlink" title="2.2.3 解压并设置环境变量"></a>2.2.3 解压并设置环境变量</h4><p>解压软件</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 elasticsearch]# tar -xvf elasticsearch-6.3.0.tar.gz</span><br><span class="line">[root@dev-2 elasticsearch]# <span class="built_in">ls</span></span><br><span class="line">elasticsearch-6.3.0  elasticsearch-6.3.0.tar.gz</span><br><span class="line">[root@dev-2 elasticsearch]# <span class="built_in">cd</span> elasticsearch-6.3.0</span><br><span class="line">[root@dev-2 elasticsearch-6.3.0]# <span class="built_in">ls</span></span><br><span class="line">bin  config  lib  LICENSE.txt  logs  modules  NOTICE.txt  plugins  README.textile</span><br></pre></td></tr></table></figure>
+
+<p>配置环境变量</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 elasticsearch-6.3.0]# vim /etc/profile</span><br><span class="line"><span class="comment"># import elasticsearch</span></span><br><span class="line"><span class="built_in">export</span> SEARCH_HOME=<span class="string">&#x27;/opt/soft/elasticsearch/elasticsearch-6.3.0&#x27;</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$SEARCH_HOME</span>/bin</span><br><span class="line">[root@dev-2 elasticsearch-6.3.0]# <span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure>
+
+<p>设置文件夹所有者为<code>dev</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 elasticsearch]# ll</span><br><span class="line">total 89284</span><br><span class="line">drwxr-xr-x. 8 root root      143 Jun 11 19:43 elasticsearch-6.3.0</span><br><span class="line">[root@dev-2 elasticsearch]# <span class="built_in">chown</span> -R dev:dev elasticsearch-6.3.0</span><br><span class="line">[root@dev-2 elasticsearch]# ll</span><br><span class="line">total 89284</span><br><span class="line">drwxr-xr-x. 8 dev  dev       143 Jun 11 19:43 elasticsearch-6.3.0</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-4-配置-ElasticSearch"><a href="#2-2-4-配置-ElasticSearch" class="headerlink" title="2.2.4 配置 ElasticSearch"></a>2.2.4 配置 ElasticSearch</h4><p><strong>修改 JVM 参数</strong></p>
+<p>因为在虚拟机上安装,内存分配了 1G,所以要修改 elasticsearch 的 jvm 启动参数.</p>
+<p>注意: <strong>-Xms 和-Xmx 的值要一致</strong>.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 elasticsearch-6.3.0]# <span class="built_in">cd</span> config/</span><br><span class="line">[root@dev-2 config]# <span class="built_in">ls</span></span><br><span class="line">elasticsearch.yml  jvm.options  log4j2.properties  role_mapping.yml  roles.yml  <span class="built_in">users</span>  users_roles</span><br><span class="line">[root@dev-2 config]# vim jvm.options</span><br><span class="line">-Xms512m</span><br><span class="line">-Xmx512m</span><br></pre></td></tr></table></figure>
+
+<p><strong>修改启动参数</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 config]# vim elasticsearch.yml</span><br><span class="line"><span class="comment"># Set the bind address to a specific IP (IPv4 or IPv6):</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">network.host: 10.33.1.111</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Set a custom port for HTTP:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">http.port: 9200</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 开启跨域访问支持,默认为false</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">http.cors.enabled: <span class="literal">true</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 跨域访问允许的域名地址,(允许所有域名)以上使用正则</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">http.cors.allow-origin: /.*/</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-启动-elasticsearch"><a href="#2-3-启动-elasticsearch" class="headerlink" title="2.3 启动 elasticsearch"></a>2.3 启动 elasticsearch</h3><p>切换到 dev 用户启动.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 elasticsearch-6.3.0]# su dev</span><br><span class="line">[dev@dev-2 elasticsearch-6.3.0]$ elasticsearch</span><br><span class="line">[2018-07-04T10:00:17,771][INFO ][o.e.n.Node               ] [] initializing ...</span><br></pre></td></tr></table></figure>
+
+<p>但在后面出现启动异常,大致如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">2018</span>-<span class="number">07</span>-04T10:<span class="number">00</span>:<span class="number">32</span>,<span class="number">449</span>][INFO ][o.e.b.BootstrapChecks    ] [eme3ye6] bound or publishing to a non-loopback address, enforcing bootstrap checks</span><br><span class="line">ERROR: [<span class="number">4</span>] bootstrap checks failed</span><br><span class="line">[<span class="number">1</span>]: initial heap size [<span class="number">268435456</span>] not equal to maximum heap size [<span class="number">536870912</span>]; <span class="built_in">this</span> can cause resize pauses and prevents mlockall from locking the entire heap</span><br><span class="line">[<span class="number">2</span>]: max file descriptors [<span class="number">4096</span>] <span class="keyword">for</span> elasticsearch process is too low, increase to at least [<span class="number">65536</span>]</span><br><span class="line">[<span class="number">3</span>]: max number of threads [<span class="number">3852</span>] <span class="keyword">for</span> user [dev] is too low, increase to at least [<span class="number">4096</span>]</span><br><span class="line">[<span class="number">4</span>]: max virtual memory areas vm.max_map_count [<span class="number">65530</span>] is too low, increase to at least [<span class="number">262144</span>]</span><br><span class="line">[<span class="number">2018</span>-<span class="number">07</span>-04T10:<span class="number">00</span>:<span class="number">32</span>,<span class="number">504</span>][INFO ][o.e.n.Node               ] [eme3ye6] stopping ...</span><br><span class="line">[<span class="number">2018</span>-<span class="number">07</span>-04T10:<span class="number">00</span>:<span class="number">32</span>,<span class="number">606</span>][INFO ][o.e.n.Node               ] [eme3ye6] stopped</span><br><span class="line">[<span class="number">2018</span>-<span class="number">07</span>-04T10:<span class="number">00</span>:<span class="number">32</span>,<span class="number">606</span>][INFO ][o.e.n.Node               ] [eme3ye6] closing ...</span><br><span class="line">[<span class="number">2018</span>-<span class="number">07</span>-04T10:<span class="number">00</span>:<span class="number">32</span>,<span class="number">619</span>][INFO ][o.e.n.Node               ] [eme3ye6] closed</span><br></pre></td></tr></table></figure>
+
+<p>请按照如下修改</p>
+<p>切换到 root,修改<code>/etc/security/limits.conf </code>文件</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 elasticsearch-6.3.0]#  vim /etc/security/limits.conf</span><br><span class="line">* soft nofile 65536</span><br><span class="line">* hard nofile 131072</span><br><span class="line">* soft <span class="built_in">nproc</span> 2048</span><br><span class="line">* hard <span class="built_in">nproc</span> 4096</span><br></pre></td></tr></table></figure>
+
+<p>修改<code>/etc/sysctl.conf</code>文件</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 etc]# vim /etc/sysctl.conf</span><br><span class="line">vm.max_map_count=655360</span><br><span class="line">[root@dev-2 etc]# sysctl -p</span><br><span class="line">vm.max_map_count = 655360</span><br></pre></td></tr></table></figure>
+
+<p>然后再切换 dev 用户启动 Elasticsearch.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[dev@dev-2 elasticsearch-6.3.0]$ <span class="built_in">nohup</span> elasticsearch  &amp;</span><br><span class="line">[dev@dev-2 elasticsearch-6.3.0]$ curl 10.33.1.111:9200</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;name&quot;</span> : <span class="string">&quot;eme3ye6&quot;</span>,</span><br><span class="line">  <span class="string">&quot;cluster_name&quot;</span> : <span class="string">&quot;elasticsearch&quot;</span>,</span><br><span class="line">  <span class="string">&quot;cluster_uuid&quot;</span> : <span class="string">&quot;MuyCFswhRFumWHhvee0Rig&quot;</span>,</span><br><span class="line">  <span class="string">&quot;version&quot;</span> : &#123;</span><br><span class="line">    <span class="string">&quot;number&quot;</span> : <span class="string">&quot;6.3.0&quot;</span>,</span><br><span class="line">    <span class="string">&quot;build_flavor&quot;</span> : <span class="string">&quot;default&quot;</span>,</span><br><span class="line">    <span class="string">&quot;build_type&quot;</span> : <span class="string">&quot;tar&quot;</span>,</span><br><span class="line">    <span class="string">&quot;build_hash&quot;</span> : <span class="string">&quot;424e937&quot;</span>,</span><br><span class="line">    <span class="string">&quot;build_date&quot;</span> : <span class="string">&quot;2018-06-11T23:38:03.357887Z&quot;</span>,</span><br><span class="line">    <span class="string">&quot;build_snapshot&quot;</span> : <span class="literal">false</span>,</span><br><span class="line">    <span class="string">&quot;lucene_version&quot;</span> : <span class="string">&quot;7.3.1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;minimum_wire_compatibility_version&quot;</span> : <span class="string">&quot;5.6.0&quot;</span>,</span><br><span class="line">    <span class="string">&quot;minimum_index_compatibility_version&quot;</span> : <span class="string">&quot;5.0.0&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;tagline&quot;</span> : <span class="string">&quot;You Know, for Search&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-Hello-elasticsearch"><a href="#2-3-Hello-elasticsearch" class="headerlink" title="2.3 Hello elasticsearch"></a>2.3 Hello elasticsearch</h3><p>为了更清楚的了解 elasticsearch 数据,我们这里对 elasticsearch 和关系型数据库数据结构进行对比.</p>
+<table>
+<thead>
+<tr>
+<th>ElasticSearch</th>
+<th>RDBMS</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>索引(index)</td>
+<td>数据库(database)</td>
+<td></td>
+</tr>
+<tr>
+<td>类型(type)</td>
+<td>表(table)</td>
+<td>v7.x 已弃用 <a target="_blank" rel="noopener" href="https://blog.csdn.net/zjx546391707/article/details/78631394">link</a></td>
+</tr>
+<tr>
+<td>文档(document)</td>
+<td>行(row)</td>
+<td></td>
+</tr>
+<tr>
+<td>字段(field)</td>
+<td>列(column)</td>
+<td></td>
+</tr>
+<tr>
+<td>映射(mapping)</td>
+<td>表结构(schema)</td>
+<td></td>
+</tr>
+<tr>
+<td>全文索引</td>
+<td>索引</td>
+<td></td>
+</tr>
+<tr>
+<td>查询 DSL</td>
+<td>SQL</td>
+<td></td>
+</tr>
+<tr>
+<td>GET</td>
+<td>select</td>
+<td></td>
+</tr>
+<tr>
+<td>PUT&#x2F;POST</td>
+<td>update</td>
+<td></td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>delete</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>你看 elaticsearch 是不是和数据库很像呀? :”}</p>
+<p>哔哔了那么多,我们现在来看看 elastic 有哪些数据类型,好不好?</p>
+<p>This way ,sir. elasticsearch 的基本数据类型,官方网站页面,<a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html">请点击</a></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>参数定义</th>
+<th>赋值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>text</td>
+<td>“name”:{“type”:”text”}</td>
+<td>“name”: “zhangsan”</td>
+</tr>
+<tr>
+<td>keyword</td>
+<td>“tags”:{“type”:”keyword”}</td>
+<td>“tags”: “abc”</td>
+</tr>
+<tr>
+<td>date</td>
+<td>“date”:{“type”: “date”}</td>
+<td>“date”:”2015-01-01T12:10:30Z”</td>
+</tr>
+<tr>
+<td>long</td>
+<td>“age”:{“type”:”long”}</td>
+<td>“age” :28</td>
+</tr>
+<tr>
+<td>double</td>
+<td>“score”:{“type”:”double”}</td>
+<td>“score”:98.8</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>“isgirl”: { “type”: “boolean” }</td>
+<td>“isgirl” :true</td>
+</tr>
+<tr>
+<td>ip</td>
+<td>“ip_addr”:{“type”:”ip”}</td>
+<td>“ip_addr”: “192.168.1.1”</td>
+</tr>
+<tr>
+<td>geo_point</td>
+<td>“location”: {“type”:”geo_point”}</td>
+<td>“location”:{“lat”:40.12,”lon”:-71.34}</td>
+</tr>
+</tbody></table>
+<p>elasticsearch 使用 RESTFul 接口进行数据操作.Restful API <code>GET</code>,<code>POST</code>,<code>PUT</code>,<code>DELETE</code>,<code>HEAD</code>含义:</p>
+<ul>
+<li>GET: 获取请求对象的当前状态.</li>
+<li>POST: 改变对象的当前状态.</li>
+<li>PUT: 创建一个对象  .</li>
+<li>DELETE: 销毁对象.</li>
+<li>HEAD: 请求获取对象的基础信息.</li>
+</ul>
+<h3 id="2-4-简单增删改查"><a href="#2-4-简单增删改查" class="headerlink" title="2.4 简单增删改查"></a>2.4 简单增删改查</h3><p>增删改查走起,使用<code>Postman</code>或者<code>Fiddler</code>来推送,去他妈的 head 插件.</p>
+<h4 id="2-4-1-新增"><a href="#2-4-1-新增" class="headerlink" title="2.4.1 新增"></a>2.4.1 新增</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 elasticsearch]# curl -XPUT http://47.98.104.252:9200/blog/art/1 -d <span class="string">&#x27;</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">&quot;title&quot;:&quot;New version of Elasticsearch released!&quot;,</span></span><br><span class="line"><span class="string">&quot;content&quot;:&quot;Version 1.0 released today!&quot;,</span></span><br><span class="line"><span class="string">&quot;tags&quot;:[&quot;announce&quot;,&quot;elasticsearch&quot;,&quot;release&quot;]</span></span><br><span class="line"><span class="string">&#125;&#x27;</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;_index&quot;</span>: <span class="string">&quot;blog&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_type&quot;</span>: <span class="string">&quot;art&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_id&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_version&quot;</span>: 1,</span><br><span class="line">    <span class="string">&quot;result&quot;</span>: <span class="string">&quot;created&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_shards&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;total&quot;</span>: 2,</span><br><span class="line">        <span class="string">&quot;successful&quot;</span>: 1,</span><br><span class="line">        <span class="string">&quot;failed&quot;</span>: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;_seq_no&quot;</span>: 0,</span><br><span class="line">    <span class="string">&quot;_primary_term&quot;</span>: 1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-2-查询"><a href="#2-4-2-查询" class="headerlink" title="2.4.2 查询"></a>2.4.2 查询</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 elasticsearch]# curl -XGET http://47.98.104.252:9200/blog/art/1</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;_index&quot;</span>: <span class="string">&quot;blog&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_type&quot;</span>: <span class="string">&quot;art&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_id&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_version&quot;</span>: 1,</span><br><span class="line">    <span class="string">&quot;found&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;_source&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;New version of Elasticsearch released!&quot;</span>,</span><br><span class="line">        <span class="string">&quot;content&quot;</span>: <span class="string">&quot;Version 1.0 released today!&quot;</span>,</span><br><span class="line">        <span class="string">&quot;tags&quot;</span>: [</span><br><span class="line">            <span class="string">&quot;announce&quot;</span>,</span><br><span class="line">            <span class="string">&quot;elasticsearch&quot;</span>,</span><br><span class="line">            <span class="string">&quot;release&quot;</span></span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-3-更新"><a href="#2-4-3-更新" class="headerlink" title="2.4.3 更新"></a>2.4.3 更新</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 elasticsearch]# curl -XPUT http://10.33.1.111:9200/blog/art/1 -d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">&quot;title&quot;:&quot;just test&quot;,</span></span><br><span class="line"><span class="string">&quot;content&quot;:&quot;this is update content&quot;,</span></span><br><span class="line"><span class="string">&quot;tags&quot;:[&quot;test&quot;,&quot;elasticsearch&quot;,&quot;helloworld&quot;]</span></span><br><span class="line"><span class="string">&#125;&#x27;</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;_index&quot;</span>: <span class="string">&quot;blog&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_type&quot;</span>: <span class="string">&quot;art&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_id&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_version&quot;</span>: 2,</span><br><span class="line">    <span class="string">&quot;result&quot;</span>: <span class="string">&quot;updated&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_shards&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;total&quot;</span>: 2,</span><br><span class="line">        <span class="string">&quot;successful&quot;</span>: 1,</span><br><span class="line">        <span class="string">&quot;failed&quot;</span>: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;_seq_no&quot;</span>: 1,</span><br><span class="line">    <span class="string">&quot;_primary_term&quot;</span>: 1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-4-删除"><a href="#2-4-4-删除" class="headerlink" title="2.4.4 删除"></a>2.4.4 删除</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 elasticsearch]# curl -XDELETE http://10.33.1.111:9200/blog/art/1</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;_index&quot;</span>: <span class="string">&quot;blog&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_type&quot;</span>: <span class="string">&quot;art&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_id&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_version&quot;</span>: 3,</span><br><span class="line">    <span class="string">&quot;result&quot;</span>: <span class="string">&quot;deleted&quot;</span>,</span><br><span class="line">    <span class="string">&quot;_shards&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;total&quot;</span>: 2,</span><br><span class="line">        <span class="string">&quot;successful&quot;</span>: 1,</span><br><span class="line">        <span class="string">&quot;failed&quot;</span>: 0</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;_seq_no&quot;</span>: 2,</span><br><span class="line">    <span class="string">&quot;_primary_term&quot;</span>: 1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-中文分词"><a href="#3-中文分词" class="headerlink" title="3. 中文分词"></a>3. 中文分词</h2><p>不管是<code>Solr</code>还是<code>elasticsearch</code>自带的分词器对中文的分词支持都不好,那怎么办呢?</p>
+<p>当然是自己写一个啦!!!(这里的自己是指开发 IK 分词器的各位大牛 笑哭脸.jpg)</p>
+<h3 id="3-1-默认分词"><a href="#3-1-默认分词" class="headerlink" title="3.1 默认分词"></a>3.1 默认分词</h3><p>这世界,对我们并不怎么好,这有分词点扯,嘿嘿嘿.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 elasticsearch]# curl -H <span class="string">&#x27;Content-type:application/json&#x27;</span> http://10.33.1.111:9200/book_index/_analyze?pretty=<span class="string">&#x27;true&#x27;</span> -d <span class="string">&#x27;&#123;&quot;text&quot;:&quot;我要解决温饱&quot;&#125;&#x27;</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;tokens&quot;</span> : [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;我&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 0,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 1,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;&lt;IDEOGRAPHIC&gt;&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;要&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 1,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 2,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;&lt;IDEOGRAPHIC&gt;&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;解&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 2,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 3,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;&lt;IDEOGRAPHIC&gt;&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 2</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;决&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 3,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 4,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;&lt;IDEOGRAPHIC&gt;&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 3</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;温&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 4,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 5,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;&lt;IDEOGRAPHIC&gt;&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 4</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;饱&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 5,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 6,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;&lt;IDEOGRAPHIC&gt;&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 5</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>是时候召唤传说中的 IK 分词器了.</p>
+<h3 id="3-2-安装-IK-分词器"><a href="#3-2-安装-IK-分词器" class="headerlink" title="3.2 安装 IK 分词器"></a>3.2 安装 IK 分词器</h3><p><strong>Github 下载和 Elasticsearch 相同版本的 IK 分词器</strong>: <a target="_blank" rel="noopener" href="https://github.com/medcl/elasticsearch-analysis-ik/releases">下载地址</a></p>
+<p>在<code>plugins/</code>文件夹下建立<code>ik</code>文件夹,并把压缩包内容解压到<code>ik</code>文件夹.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-2 plugins]# <span class="built_in">pwd</span></span><br><span class="line">/opt/soft/elasticsearch/elasticsearch-6.3.0/plugins</span><br><span class="line">[dev@dev-2 plugins]$ <span class="built_in">mkdir</span> ik</span><br><span class="line">[dev@dev-2 plugins]$ <span class="built_in">cd</span> ik</span><br><span class="line">[dev@dev-2 ik]$ unzip elasticsearch-analysis-ik-6.3.0.zip  -d .</span><br><span class="line">[dev@dev-2 ik]$  <span class="built_in">ls</span></span><br><span class="line">commons-codec-1.9.jar    config                               httpclient-4.5.2.jar  plugin-descriptor.properties</span><br><span class="line">commons-logging-1.2.jar  elasticsearch-analysis-ik-6.3.0.jar  httpcore-4.4.4.jar</span><br></pre></td></tr></table></figure>
+
+<p>重新启动 ElasticSearch</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[dev@dev-2 elasticsearch-6.3.0]$ <span class="built_in">nohup</span> bin/elasticsearch &amp;</span><br><span class="line">[1] 17149</span><br><span class="line">[dev@dev-2 elasticsearch-6.3.0]$ jps</span><br><span class="line">17236 Jps</span><br><span class="line">17149 Elasticsearch</span><br><span class="line">[dev@dev-2 elasticsearch-6.3.0]$ <span class="built_in">cat</span> nohup.out |grep ik</span><br><span class="line">[2018-07-05T02:32:17,317][INFO ][o.e.p.PluginsService     ] [eme3ye6] loaded plugin [analysis-ik]</span><br><span class="line">[2018-07-05T02:32:29,379][INFO ][o.w.a.d.Monitor          ] try load config from /opt/soft/elasticsearch/elasticsearch-6.3.0/config/analysis-ik/IKAnalyzer.cfg.xml</span><br><span class="line">[2018-07-05T02:32:29,381][INFO ][o.w.a.d.Monitor          ] try load config from /opt/soft/elasticsearch/elasticsearch-6.3.0/plugins/ik/config/https://blog.csdn.net/z90818/article/details/78644293.cfg.xml</span><br><span class="line">[dev@dev-2 elasticsearch-6.3.0]$</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-IK-分词器分词"><a href="#3-3-IK-分词器分词" class="headerlink" title="3.3 IK 分词器分词"></a>3.3 IK 分词器分词</h3><p>在安装好 IK 分词之后,就可以使用 IK 分词了.</p>
+<p>测试使用:<strong>ik_smart</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">[dev@dev-2 elasticsearch-6.3.0]$ curl -H <span class="string">&#x27;Content-type:application/json&#x27;</span> http://10.33.1.111:9200/_analyze?pretty -d <span class="string">&#x27;&#123;   &quot;analyzer&quot;: &quot;ik_smart&quot;,    &quot;text&quot;:&quot;我要解决温饱,哈哈哈哈&quot; &#125;&#x27;</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;tokens&quot;</span> : [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;我&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 0,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 1,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_CHAR&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;要&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 1,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 2,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_CHAR&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;解决&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 2,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 4,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_WORD&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 2</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;温饱&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 4,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 6,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_WORD&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 3</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;哈哈哈哈&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 7,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 11,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_WORD&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 4</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line">[dev@dev-2 elasticsearch-6.3.0]$</span><br></pre></td></tr></table></figure>
+
+<p>测试使用:<strong>ik_max_word</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">[dev@dev-2 elasticsearch-6.3.0]$ curl -H <span class="string">&#x27;Content-type:application/json&#x27;</span> http://10.33.1.111:9200/_analyze?pretty -d <span class="string">&#x27;&#123;   &quot;analyzer&quot;: &quot;ik_max_word&quot;,    &quot;text&quot;:&quot;我要解决温饱,哈哈哈哈&quot; &#125;&#x27;</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;tokens&quot;</span> : [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;我&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 0,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 1,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_CHAR&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 0</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;要&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 1,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 2,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_CHAR&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 1</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;解决&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 2,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 4,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_WORD&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 2</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;温饱&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 4,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 6,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_WORD&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 3</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;哈哈哈哈&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 7,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 11,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_WORD&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 4</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;哈哈哈&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 7,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 10,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_WORD&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 5</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;哈哈&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 7,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 9,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_WORD&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 6</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;哈哈哈&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 8,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 11,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_WORD&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 7</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;哈哈&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 8,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 10,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_WORD&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 8</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;token&quot;</span> : <span class="string">&quot;哈哈&quot;</span>,</span><br><span class="line">      <span class="string">&quot;start_offset&quot;</span> : 9,</span><br><span class="line">      <span class="string">&quot;end_offset&quot;</span> : 11,</span><br><span class="line">      <span class="string">&quot;type&quot;</span> : <span class="string">&quot;CN_WORD&quot;</span>,</span><br><span class="line">      <span class="string">&quot;position&quot;</span> : 9</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结论:<strong>ik_max_word</strong>比<strong>ik_smart</strong>细分粒度更大.一般来说<strong>ik_smart</strong>就足够了.</p>
+<h3 id="3-4-具体使用"><a href="#3-4-具体使用" class="headerlink" title="3.4 具体使用"></a>3.4 具体使用</h3><p>Q: 怎么使用 IK 分词器对自己需要存放的数据进行分词和查询?</p>
+<p>A: <strong>在创建 index 和 type 的时候,就指定 type 里面的字段是否需要分词.就像我们在 mysql 数据库先搭建表结构一样. :”}</strong></p>
+<p>举个栗子: 指定 Index 为<code>index</code>,type 为<code>fulltext</code>里面的字段<code>content</code>使用<code>ik_max_word</code>分词存储和搜索.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST http://localhost:9200/index/fulltext/_mapping -H <span class="string">&#x27;Content-Type:application/json&#x27;</span> -d<span class="string">&#x27;</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">        &quot;properties&quot;: &#123;</span></span><br><span class="line"><span class="string">            &quot;content&quot;: &#123;</span></span><br><span class="line"><span class="string">                &quot;type&quot;: &quot;text&quot;,</span></span><br><span class="line"><span class="string">                &quot;analyzer&quot;: &quot;ik_max_word&quot;,</span></span><br><span class="line"><span class="string">                &quot;search_analyzer&quot;: &quot;ik_max_word&quot;</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>详细栗子: <a target="_blank" rel="noopener" href="https://github.com/medcl/elasticsearch-analysis-ik">IK github 地址</a></p>
+<p>Q: 要是动态搭建 index 和 type 呢?或者 type 里面的数据结构不定呢?</p>
+<p>A: <strong>我拒绝回答这个问题!!!</strong></p>
+<hr>
+<h2 id="4-应用场景"><a href="#4-应用场景" class="headerlink" title="4. 应用场景"></a>4. 应用场景</h2><h3 id="4-1-简单搜索引擎"><a href="#4-1-简单搜索引擎" class="headerlink" title="4.1 简单搜索引擎"></a>4.1 简单搜索引擎</h3><p>电影在 elasticsearch 里面进行索引,实现简单的 Elasticsearch 搜索.</p>
+<p>是不是自己都可以做一个类似磁力网站的东西了? :”}</p>
+<p>演示地址: <a target="_blank" rel="noopener" href="http://47.98.104.252:8080/search-view/search.html">阿里云演示地址</a></p>
+<p><strong>movie_fields.json</strong>文件内容如下</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;mappings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;movies&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;properties&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;keyword&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;searchName&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;text&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;analyzer&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ik_smart&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;search_analyzer&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ik_smart&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;region&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;keyword&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;score&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;double&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;director&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;keyword&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;actors&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;keyword&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;tag&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;keyword&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;summary&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;text&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;analyzer&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ik_smart&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;search_analyzer&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ik_smart&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>创建 type</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT -H <span class="string">&#x27;Content-type:application/json&#x27;</span> <span class="string">&#x27;http://10.33.1.111:9200/movie_lib?pretty&#x27;</span> -d @movie_fields.json</span><br></pre></td></tr></table></figure>
+
+<p>可以使用如下命令查看是否成功执行</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET <span class="string">&#x27;http://10.33.1.111:9200/movie_lib/_mapping/movies?pretty&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>运行页面如下</p>
+<p><img src="/img/tiny-search.png"></p>
+<h3 id="4-2-ELK"><a href="#4-2-ELK" class="headerlink" title="4.2 ELK"></a>4.2 ELK</h3><p>ELK 是 elastic 公司旗下三款产品 ElasticSearch ,Logstash ,Kibana 的首字母组合.</p>
+<ul>
+<li>ElasticSearch 是一个基于 Lucene 构建的开源,分布式,RESTful 搜索引擎.</li>
+<li>Logstash 传输和处理你的日志,事务或其他数据.</li>
+<li>Kibana 将 Elasticsearch 的数据分析并渲染为可视化的报表.</li>
+</ul>
+<p><strong>elk 架构图如下所示</strong></p>
+<p><img src="/img/elk-struct.png"></p>
+<h3 id="4-3-其他应用"><a href="#4-3-其他应用" class="headerlink" title="4.3 其他应用"></a>4.3 其他应用</h3><p>a. 维基百科使用 Elasticsearch 来进行全文搜做并高亮显示关键词,以及提供 search-as-you-type,did-you-mean 等搜索建议功能.</p>
+<p>b. GitHub 使用 Elasticsearch 来检索超过 1300 亿行代码.</p>
+<p>c. <a target="_blank" rel="noopener" href="https://tech.meituan.com/spark_streaming_es.html">美团 App 异常监控平台</a></p>
+<hr>
+<h2 id="5-常用命令"><a href="#5-常用命令" class="headerlink" title="5. 常用命令"></a>5. 常用命令</h2><p>构建 type</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT -H <span class="string">&#x27;Content-type:application/json&#x27;</span> <span class="string">&#x27;http://10.33.1.111:9200/movie_lib?pretty&#x27;</span> -d @movie_fields.json</span><br></pre></td></tr></table></figure>
+
+<p>获取所有的 index</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET <span class="string">&#x27;http://47.98.104.252:9200/_cat/indices?pretty&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>获取 type 的 mapping 结构</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET <span class="string">&#x27;http://10.33.1.111:9200/movie_lib/_mapping/movies?pretty&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>删除 index</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XDELETE <span class="string">&#x27;http://10.33.1.111:9200/movie_lib?pretty&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>删除某个<code>type</code>下的所有数据</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST <span class="string">&#x27;http://10.33.1.111:9200/movie_lib/movies/_delete_by_query?pretty&#x27;</span> -H <span class="string">&#x27;Content-Type: application/json&#x27;</span> -d<span class="string">&#x27;</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">  &quot;query&quot;: &#123;</span></span><br><span class="line"><span class="string">    &quot;match_all&quot;: &#123;&#125;</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="6-参考资料"><a href="#6-参考资料" class="headerlink" title="6. 参考资料"></a>6. 参考资料</h2><p>a. <a target="_blank" rel="noopener" href="https://blog.csdn.net/tomorrow_c/article/details/62240383">全文检索原理优秀博客</a></p>
+<p>b. <a target="_blank" rel="noopener" href="https://blog.csdn.net/Aliloke/article/details/78244426">solr 与 elasticsearch 对比</a></p>
+<p>c. <a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html">elasticsearch 官方文档</a></p>
+<p>d. <a target="_blank" rel="noopener" href="https://www.coyee.com/article/10764-23-useful-elasticsearch-example-queries/">elasticsearch 查询样例</a></p>
+<p>e. <a target="_blank" rel="noopener" href="https://blog.csdn.net/forfuture1978/article/details/4711308/"> CSDN 优秀博客</a></p>
+<p>f. <a target="_blank" rel="noopener" href="http://blog.sina.com.cn/s/blog_140c4cf3d0102xdap.html">关于 elasticsearch 实时</a></p>
+<p>g. <a target="_blank" rel="noopener" href="https://yq.aliyun.com/articles/588309">solr 与 elasticsearch 性能比较</a></p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2025/07/08/javaee-fulltext-es/" title="ElasticSearch 文档" target="_blank" rel="external">http://example.com/2025/07/08/javaee-fulltext-es/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/cs12110" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/12764287.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/cs12110" target="_blank"><span class="text-dark">cs12110</span><small class="ml-1x"></small></a></h3>
+        <div>就一打字的</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2025/07/08/javaee-redis-bool/" title="布隆过滤器"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2025/07/08/javaee-redis-import/" title="Redis 数据导入优化"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

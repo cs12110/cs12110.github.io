@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>PostgreSQL | mini-docs</title>
+  <meta name="description" content="PostgreSQLPostgreSQL:免费的对象-关系数据库服务器(ORDBMS),Slogan 是 &quot;世界上最先进的开源关系型数据库&quot;. By the way,please call me: post-gress-ql. 此篇文档建立在熟悉 SQL 语法的前提上,请知悉.  1. 安装 PostgreSQL操作系统为: centos7,请知悉. 1.1 下载安装资源123">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PostgreSQL">
+<meta property="og:url" content="http://example.com/2025/07/08/postgresql/index.html">
+<meta property="og:site_name" content="mini-docs">
+<meta property="og:description" content="PostgreSQLPostgreSQL:免费的对象-关系数据库服务器(ORDBMS),Slogan 是 &quot;世界上最先进的开源关系型数据库&quot;. By the way,please call me: post-gress-ql. 此篇文档建立在熟悉 SQL 语法的前提上,请知悉.  1. 安装 PostgreSQL操作系统为: centos7,请知悉. 1.1 下载安装资源123">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-08T12:46:25.000Z">
+<meta property="article:modified_time" content="2025-07-08T09:07:27.954Z">
+<meta property="article:author" content="cs12110@163.com">
+<meta property="article:tag" content="PostgreSQL">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2025/07/08/postgresql/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="mini-docs" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/cs12110" target="_blank">
+          <img class="img-circle img-rotate" src="/images/12764287.png" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">cs12110</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Macondo</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>就一打字的!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaEE/">JavaEE</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/KillMe/">KillMe</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ai/">ai</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/database/">database</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/server/">server</a><span class="category-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/" rel="tag">AOP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Arthas/" rel="tag">Arthas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/" rel="tag">ClassLoader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docsify/" rel="tag">Docsify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GC/" rel="tag">GC</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/" rel="tag">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/" rel="tag">Go</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC/" rel="tag">IOC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOs/" rel="tag">IOs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E5%8A%A0%E5%AF%86/" rel="tag">Java 加密</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E6%9E%9A%E4%B8%BE/" rel="tag">Java 枚举</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaEE/" rel="tag">JavaEE</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E4%BC%98%E5%8C%96/" rel="tag">Java优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">Java设计模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmeter/" rel="tag">Jmeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmh/" rel="tag">Jmh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">Json 序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/" rel="tag">MQ</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mockito/" rel="tag">Mockito</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" rel="tag">Mybatis 源码阅读</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shiro/" rel="tag">Shiro</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Springboot/" rel="tag">Springboot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/" rel="tag">Thrift</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dify/" rel="tag">dify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo/" rel="tag">dubbo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ftp/" rel="tag">ftp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/" rel="tag">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">lambda表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lanproxy/" rel="tag">lanproxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/myabtis/" rel="tag">myabtis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/websocket/" rel="tag">websocket</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xxljob/" rel="tag">xxljob</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zipkin/" rel="tag">zipkin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" rel="tag">代码生成器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" rel="tag">分库分表</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" rel="tag">多数据源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="tag">工作流</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" rel="tag">布隆过滤器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" rel="tag">微信对接</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" rel="tag">日志框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" rel="tag">规则引擎</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/AOP/" style="font-size: 13px;">AOP</a> <a href="/tags/Arthas/" style="font-size: 13px;">Arthas</a> <a href="/tags/ClassLoader/" style="font-size: 13px;">ClassLoader</a> <a href="/tags/Docsify/" style="font-size: 13px;">Docsify</a> <a href="/tags/ElasticSearch/" style="font-size: 13.17px;">ElasticSearch</a> <a href="/tags/GC/" style="font-size: 13.17px;">GC</a> <a href="/tags/Game/" style="font-size: 13px;">Game</a> <a href="/tags/Go/" style="font-size: 13.5px;">Go</a> <a href="/tags/Gogs/" style="font-size: 13px;">Gogs</a> <a href="/tags/IOC/" style="font-size: 13px;">IOC</a> <a href="/tags/IOs/" style="font-size: 13px;">IOs</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/JWT/" style="font-size: 13px;">JWT</a> <a href="/tags/Java-%E5%8A%A0%E5%AF%86/" style="font-size: 13px;">Java 加密</a> <a href="/tags/Java-%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">Java 枚举</a> <a href="/tags/JavaEE/" style="font-size: 13.17px;">JavaEE</a> <a href="/tags/Java%E4%BC%98%E5%8C%96/" style="font-size: 13px;">Java优化</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 14px;">Java基础</a> <a href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13px;">Java设计模式</a> <a href="/tags/Jmeter/" style="font-size: 13px;">Jmeter</a> <a href="/tags/Jmh/" style="font-size: 13px;">Jmh</a> <a href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 13px;">Json 序列化</a> <a href="/tags/Leetcode/" style="font-size: 13px;">Leetcode</a> <a href="/tags/MQ/" style="font-size: 13.83px;">MQ</a> <a href="/tags/Mockito/" style="font-size: 13px;">Mockito</a> <a href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" style="font-size: 13px;">Mybatis 源码阅读</a> <a href="/tags/PostgreSQL/" style="font-size: 13px;">PostgreSQL</a> <a href="/tags/RabbitMQ/" style="font-size: 13.33px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 13.5px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 13.17px;">RocketMQ</a> <a href="/tags/Shiro/" style="font-size: 13px;">Shiro</a> <a href="/tags/Spring/" style="font-size: 13.67px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 13px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 13.67px;">SpringCloud</a> <a href="/tags/Springboot/" style="font-size: 13.17px;">Springboot</a> <a href="/tags/Thrift/" style="font-size: 13px;">Thrift</a> <a href="/tags/Zookeeper/" style="font-size: 13px;">Zookeeper</a> <a href="/tags/dify/" style="font-size: 13px;">dify</a> <a href="/tags/docker/" style="font-size: 13.17px;">docker</a> <a href="/tags/dubbo/" style="font-size: 13px;">dubbo</a> <a href="/tags/ftp/" style="font-size: 13px;">ftp</a> <a href="/tags/git/" style="font-size: 13px;">git</a> <a href="/tags/jenkins/" style="font-size: 13px;">jenkins</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/lanproxy/" style="font-size: 13px;">lanproxy</a> <a href="/tags/linux/" style="font-size: 13px;">linux</a> <a href="/tags/maven/" style="font-size: 13.33px;">maven</a> <a href="/tags/myabtis/" style="font-size: 13px;">myabtis</a> <a href="/tags/mysql/" style="font-size: 13.83px;">mysql</a> <a href="/tags/nacos/" style="font-size: 13px;">nacos</a> <a href="/tags/nginx/" style="font-size: 13px;">nginx</a> <a href="/tags/redis/" style="font-size: 13.33px;">redis</a> <a href="/tags/tomcat/" style="font-size: 13px;">tomcat</a> <a href="/tags/websocket/" style="font-size: 13px;">websocket</a> <a href="/tags/xxljob/" style="font-size: 13px;">xxljob</a> <a href="/tags/zipkin/" style="font-size: 13px;">zipkin</a> <a href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" style="font-size: 13px;">代码生成器</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" style="font-size: 13px;">分布式事务</a> <a href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" style="font-size: 13.17px;">分库分表</a> <a href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" style="font-size: 13px;">多数据源</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" style="font-size: 13px;">工作流</a> <a href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" style="font-size: 13px;">布隆过滤器</a> <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" style="font-size: 13px;">微信对接</a> <a href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">日志框架</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 13px;">爬虫</a> <a href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" style="font-size: 13px;">规则引擎</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">七月 2025</a><span class="archive-list-count">105</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-thread/" class="title">Go 多线程</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-web/" class="title">Go Web</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-classloder/" class="title">ClassLoader</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-encode/" class="title">Java 加密</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-enum/" class="title">Java 枚举</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-postgresql" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      PostgreSQL
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2025/07/08/postgresql/" class="article-date">
+	  <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/database/">database</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2025/07/08/postgresql/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="PostgreSQL"><a href="#PostgreSQL" class="headerlink" title="PostgreSQL"></a>PostgreSQL</h1><p>PostgreSQL:<code>免费的对象-关系数据库服务器(ORDBMS),Slogan 是 &quot;世界上最先进的开源关系型数据库&quot;.</code></p>
+<p>By the way,please call me: <code>post-gress-ql</code>.</p>
+<p>此篇文档建立在熟悉 SQL 语法的前提上,请知悉.</p>
+<hr>
+<h2 id="1-安装-PostgreSQL"><a href="#1-安装-PostgreSQL" class="headerlink" title="1. 安装 PostgreSQL"></a>1. 安装 PostgreSQL</h2><p>操作系统为: <code>centos7</code>,请知悉.</p>
+<h3 id="1-1-下载安装资源"><a href="#1-1-下载安装资源" class="headerlink" title="1.1 下载安装资源"></a>1.1 下载安装资源</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 下载安装资源</span></span><br><span class="line"><span class="comment"># root @ team-2 in /opt/soft/postgresql [17:02:06]</span></span><br><span class="line">$ yum install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装postgresql</span></span><br><span class="line"><span class="comment"># root @ team-2 in /opt/soft/postgresql [17:02:37]</span></span><br><span class="line">$ yum install postgresql12</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装PostgreSQL-server,足足等下载都1个世纪了</span></span><br><span class="line"><span class="comment"># root @ team-2 in /opt/soft/postgresql [17:09:35]</span></span><br><span class="line">$ yum install postgresql12-server</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化数据库</span></span><br><span class="line"><span class="comment"># root @ team-2 in /opt/soft/postgresql [17:17:59]</span></span><br><span class="line">$ /usr/pgsql-12/bin/postgresql-12-setup initdb</span><br><span class="line">Initializing database ... OK</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动postgresql任务</span></span><br><span class="line"><span class="comment"># root @ team-2 in /opt/soft/postgresql [17:19:10]</span></span><br><span class="line">$ systemctl <span class="built_in">enable</span> postgresql-12</span><br><span class="line">$ systemctl start postgresql-12</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看服务状态</span></span><br><span class="line"><span class="comment"># root @ team-2 in /opt/soft/postgresql [17:20:27]</span></span><br><span class="line">$ systemctl status postgresql-12</span><br><span class="line">● postgresql-12.service - PostgreSQL 12 database server</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/postgresql-12.service; enabled; vendor preset: disabled)</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-服务命令"><a href="#1-2-服务命令" class="headerlink" title="1.2 服务命令"></a>1.2 服务命令</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里面有一个有毒的地方,就是root没有权限进入psql,我擦</span></span><br><span class="line"><span class="comment"># 所以得使用postgres用户(安装时默认创建),然后再启动postgresql服务</span></span><br><span class="line"><span class="comment"># root @ team-2 in /opt/soft/postgresql [17:22:10]</span></span><br><span class="line">$ su - postgres</span><br><span class="line">-bash-4.2$ psql</span><br><span class="line">psql (12.2)</span><br><span class="line">Type <span class="string">&quot;help&quot;</span> <span class="keyword">for</span> <span class="built_in">help</span>.</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建root为superuser</span></span><br><span class="line">postgres=# create user root superuser;</span><br><span class="line">CREATE ROLE</span><br><span class="line"></span><br><span class="line"><span class="comment"># \q退出界面</span></span><br><span class="line">postgres=# \q</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开启postgresql服务</span></span><br><span class="line"><span class="comment"># root @ team-2 in /opt/soft/postgresql [17:22:10]</span></span><br><span class="line">$ systemctl start postgresql-12</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启服务</span></span><br><span class="line"><span class="comment"># root @ team-2 in /opt/soft/postgresql [17:22:10]</span></span><br><span class="line">$ systemctl restart postgresql-12</span><br><span class="line"></span><br><span class="line"><span class="comment"># 关闭postgresql服务</span></span><br><span class="line"><span class="comment"># root @ team-2 in /opt/soft/postgresql [17:21:03]</span></span><br><span class="line">$ systemctl stop postgresql-12</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-开启远程访问"><a href="#1-3-开启远程访问" class="headerlink" title="1.3 开启远程访问"></a>1.3 开启远程访问</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 找到配置文件位置</span></span><br><span class="line"><span class="comment"># root @ team-2 in /usr/pgsql-12/lib [14:42:09]</span></span><br><span class="line">$ find / -name postgresql.conf</span><br><span class="line">/var/lib/pgsql/12/data/postgresql.conf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改postgresql.conf</span></span><br><span class="line"><span class="comment"># root @ team-2 in /var/lib/pgsql/12/data [14:43:51]</span></span><br><span class="line">$ vim postgresql.conf</span><br><span class="line"></span><br><span class="line">listen_addresses = <span class="string">&#x27;*&#x27;</span></span><br><span class="line">port = 5432</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改pg_hba.conf</span></span><br><span class="line"><span class="comment"># root @ team-2 in /var/lib/pgsql/12/data [14:46:49]</span></span><br><span class="line">$ vim pg_hba.conf</span><br><span class="line"><span class="built_in">local</span>   replication     all                                     peer</span><br><span class="line">host    all             all             127.0.0.1/32            ident</span><br><span class="line">host    all             all             0.0.0.0/0               md5</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改密码</span></span><br><span class="line">postgres=# alter role postgres with password <span class="string">&#x27;postgres@5432&#x27;</span>;</span><br><span class="line">ALTER ROLE</span><br><span class="line">postgres=# \q</span><br></pre></td></tr></table></figure>
+
+<p>重启<code>postgresql</code>服务之后,就可以使用远程登录了</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-bash-4.2$ ./psql -h 47.98.104.252 -p 5432 -U postgres  pg_db;</span><br><span class="line">Password <span class="keyword">for</span> user postgres:</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-postgrsql-语法"><a href="#2-postgrsql-语法" class="headerlink" title="2. postgrsql 语法"></a>2. postgrsql 语法</h2><p>postgresql 常用命令.</p>
+<h3 id="2-1-数据库操作"><a href="#2-1-数据库操作" class="headerlink" title="2.1 数据库操作"></a>2.1 数据库操作</h3><p>postgresql 连接远程数据库: <code>psql -h localhost -p 5432 -U postgress dbName</code></p>
+<ul>
+<li>-h: 数据库地址</li>
+<li>-p: 端口号,默认为<code>5432</code></li>
+<li>-U: 登录用户</li>
+</ul>
+<h5 id="显示数据库"><a href="#显示数据库" class="headerlink" title="显示数据库"></a>显示数据库</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建数据库</span></span><br><span class="line">postgres=# create database pg_db;</span><br><span class="line">CREATE DATABASE</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示数据库</span></span><br><span class="line">postgres=# \l</span><br><span class="line">                                  List of databases</span><br><span class="line">   Name    |  Owner   | Encoding |   Collate   |    Ctype    |   Access privileges</span><br><span class="line">-----------+----------+----------+-------------+-------------+-----------------------</span><br><span class="line"> pg_db     | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |</span><br></pre></td></tr></table></figure>
+
+<h5 id="进入数据库"><a href="#进入数据库" class="headerlink" title="进入数据库"></a>进入数据库</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># \c dbName</span></span><br><span class="line">postgres=# \c pg_db;</span><br><span class="line">You are now connected to database <span class="string">&quot;pg_db&quot;</span> as user <span class="string">&quot;postgres&quot;</span>.</span><br><span class="line">pg_db=#</span><br></pre></td></tr></table></figure>
+
+<h5 id="删除数据库"><a href="#删除数据库" class="headerlink" title="删除数据库"></a>删除数据库</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">postgres=# drop database <span class="keyword">if</span> exists pg_db;</span><br><span class="line">DROP DATABASE</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-表操作"><a href="#2-2-表操作" class="headerlink" title="2.2 表操作"></a>2.2 表操作</h3><p>关于数据表的操作.</p>
+<h5 id="显示表"><a href="#显示表" class="headerlink" title="显示表"></a>显示表</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># \d: 显示表,想mysql的show tables</span></span><br><span class="line"><span class="comment"># \d tableName:显示表的信息</span></span><br><span class="line">pg_db=# \d</span><br><span class="line">Did not find any relations.</span><br></pre></td></tr></table></figure>
+
+<h5 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建表</span></span><br><span class="line">pg_db=# create table <span class="keyword">if</span> not exists t_person_info(</span><br><span class="line"><span class="built_in">id</span> smallint primary key not null,</span><br><span class="line">name varchar(128) ,</span><br><span class="line">age int not null,</span><br><span class="line">address text</span><br><span class="line">);</span><br><span class="line">CREATE TABLE</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示数据库的表</span></span><br><span class="line">pg_db=# \d</span><br><span class="line">             List of relations</span><br><span class="line"> Schema |     Name      | Type  |  Owner</span><br><span class="line">--------+---------------+-------+----------</span><br><span class="line"> public | t_person_info | table | postgres</span><br><span class="line">(1 row)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示表的详情</span></span><br><span class="line">pg_db=# \d t_person_info</span><br><span class="line">                   Table <span class="string">&quot;public.t_person_info&quot;</span></span><br><span class="line"> Column  |          Type          | Collation | Nullable | Default</span><br><span class="line">---------+------------------------+-----------+----------+---------</span><br><span class="line"> <span class="built_in">id</span>      | smallint               |           | not null |</span><br><span class="line"> name    | character varying(128) |           |          |</span><br><span class="line"> age     | <span class="built_in">integer</span>                |           | not null |</span><br><span class="line"> address | text                   |           |          |</span><br><span class="line">Indexes:</span><br><span class="line">    <span class="string">&quot;t_person_info_pkey&quot;</span> PRIMARY KEY, btree (<span class="built_in">id</span>)</span><br></pre></td></tr></table></figure>
+
+<p>Q: 如果要设置 id 自增该怎么办?</p>
+<p>A: 可以使用 <code>SERIAL</code>.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># id声明为serial</span></span><br><span class="line">pg_db=#</span><br><span class="line">create table t_bank_card_info(</span><br><span class="line"><span class="built_in">id</span> serial primary key,</span><br><span class="line">bank_name varchar(128) not null,</span><br><span class="line">card_no varchar(32) not null);</span><br><span class="line"></span><br><span class="line">CREATE TABLE</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示表信息,默认创建了t_bank_card_info_id_seq序列</span></span><br><span class="line">pg_db=# \d t_bank_card_info</span><br><span class="line">                                     Table <span class="string">&quot;public.t_bank_card_info&quot;</span></span><br><span class="line">  Column   |          Type          | Collation | Nullable |                   Default</span><br><span class="line">-----------+------------------------+-----------+----------+----------------------------------------------</span><br><span class="line"> <span class="built_in">id</span>        | <span class="built_in">integer</span>                |           | not null | nextval(<span class="string">&#x27;t_bank_card_info_id_seq&#x27;</span>::regclass)</span><br><span class="line"> bank_name | character varying(128) |           | not null |</span><br><span class="line"> card_no   | character varying(32)  |           | not null |</span><br><span class="line">Indexes:</span><br><span class="line">    <span class="string">&quot;t_bank_card_info_pkey&quot;</span> PRIMARY KEY, btree (<span class="built_in">id</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 插入数据</span></span><br><span class="line">pg_db=# insert into t_bank_card_info(bank_name,card_no) values(<span class="string">&#x27;工商银行&#x27;</span>,<span class="string">&#x27;112358&#x27;</span>);</span><br><span class="line">INSERT 0 1</span><br><span class="line">pg_db=# <span class="keyword">select</span> * from t_bank_card_info;</span><br><span class="line"> <span class="built_in">id</span> | bank_name | card_no</span><br><span class="line">----+-----------+---------</span><br><span class="line">  1 | 工商银行  | 112358</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="删除表"><a href="#删除表" class="headerlink" title="删除表"></a>删除表</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pg_db=# drop table <span class="keyword">if</span> exists t_person_info;</span><br><span class="line">DROP TABLE</span><br></pre></td></tr></table></figure>
+
+<h5 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h5><p>在 postgresql 里面的注释和 mysql 的差别比较大.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 给表t_person_info添加注释</span></span><br><span class="line">pg_db=# comment on table t_person_info is <span class="string">&#x27;person info table&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 给表t_person_info的name字段添加注解</span></span><br><span class="line">pg_db=# comment on column t_person_info.name is <span class="string">&#x27;name of person&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>Q: 那不是很简单吗?</p>
+<p>A: 但你能想到<code>\d t_person_info</code>看不到注释吗?</p>
+<p>Q: What???</p>
+<p>A: 所以要用特殊的方式来看了.流下来没有技术的眼泪.jpg</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查看表的注释</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	relname <span class="keyword">AS</span> tabname,</span><br><span class="line">	<span class="built_in">cast</span>( obj_description ( relfilenode, <span class="string">&#x27;pg_class&#x27;</span> ) <span class="keyword">AS</span> <span class="type">VARCHAR</span> ) <span class="keyword">AS</span> COMMENT</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	pg_class c</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	relname <span class="operator">=</span> <span class="string">&#x27;t_person_info&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--  查看表字段的注解</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	attr_t.attname <span class="keyword">AS</span> column_name,</span><br><span class="line">	desc_t.description <span class="keyword">AS</span> column_desc</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	pg_class class_t,</span><br><span class="line">	pg_attribute attr_t,</span><br><span class="line">	pg_type type_t,</span><br><span class="line">	pg_description desc_t</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	attr_t.attnum <span class="operator">&gt;</span> <span class="number">0</span></span><br><span class="line">	<span class="keyword">AND</span> attr_t.attrelid <span class="operator">=</span> class_t.oid</span><br><span class="line">	<span class="keyword">AND</span> attr_t.atttypid <span class="operator">=</span> type_t.oid</span><br><span class="line">	<span class="keyword">AND</span> desc_t.objoid <span class="operator">=</span> attr_t.attrelid</span><br><span class="line">	<span class="keyword">AND</span> desc_t.objsubid <span class="operator">=</span> attr_t.attnum</span><br><span class="line">	<span class="keyword">AND</span> class_t.relname <span class="operator">=</span> <span class="string">&#x27;t_person_info&#x27;</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span></span><br><span class="line">	class_t.relname <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="表结构操作"><a href="#表结构操作" class="headerlink" title="表结构操作"></a>表结构操作</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改表名称: t_asset_info -&gt; t_asset</span></span><br><span class="line">pg_db=# alter table t_asset_info rename to t_asset</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改表字段名称</span></span><br><span class="line">pg_db=# alter table t_asset_info rename personid to person_id;</span><br></pre></td></tr></table></figure>
+
+<h5 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h5><p>表里面需要 <strong><code>足够多的数据</code></strong> 才会走索引,泪目.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 数据表里面有10001条数据</span></span><br><span class="line">pg_db=# <span class="keyword">select</span> count(1) as num from t_asset_info;</span><br><span class="line">  num</span><br><span class="line">-------</span><br><span class="line"> 10001</span><br><span class="line"></span><br><span class="line"><span class="comment"># 表结构,owner_id没添加索引</span></span><br><span class="line">g_db=# \d t_asset_info;</span><br><span class="line">                                         Table <span class="string">&quot;public.t_asset_info&quot;</span></span><br><span class="line">   Column    |            Type             | Collation | Nullable |                 Default</span><br><span class="line">-------------+-----------------------------+-----------+----------+------------------------------------------</span><br><span class="line"> <span class="built_in">id</span>          | <span class="built_in">integer</span>                     |           | not null | nextval(<span class="string">&#x27;t_asset_info_id_seq&#x27;</span>::regclass)</span><br><span class="line"> owner_id    | character varying(32)       |           | not null |</span><br><span class="line"> asset_name  | character varying(128)      |           | not null |</span><br><span class="line"> price       | money                       |           | not null |</span><br><span class="line"> create_time | timestamp without <span class="keyword">time</span> zone |           |          |</span><br></pre></td></tr></table></figure>
+
+<p>在<code>owner_id</code>没有索引的情况下,执行计划:<code>Seq Scan</code>全表扫描.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pg_db=# explain analyze <span class="keyword">select</span> * from t_asset_info <span class="built_in">where</span> owner_id =<span class="string">&#x27;OWNER-1000&#x27;</span>;</span><br><span class="line">                                               QUERY PLAN</span><br><span class="line">---------------------------------------------------------------------------------------------------------</span><br><span class="line"> Seq Scan on t_asset_info  (cost=0.00..218.01 rows=1 width=40) (actual <span class="keyword">time</span>=0.222..2.132 rows=1 loops=1)</span><br><span class="line">   Filter: ((owner_id)::text = &#x27;OWNER-<span class="number">1000</span>&#x27;::text)</span><br><span class="line">   Rows Removed by Filter: <span class="number">10000</span></span><br><span class="line"> Planning Time: <span class="number">2.886</span> ms</span><br><span class="line"> Execution Time: <span class="number">2.192</span> ms</span><br></pre></td></tr></table></figure>
+
+<p>在<code>owner_id</code>有索引的情况下,执行计划:<code>Index Cond</code>.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加索引</span></span><br><span class="line">pg_db=# create index idx_t_asset_info_owener_id on t_asset_info(owner_id);</span><br><span class="line">CREATE INDEX</span><br><span class="line">pg_db=# \d t_asset_info;</span><br><span class="line">                                         Table <span class="string">&quot;public.t_asset_info&quot;</span></span><br><span class="line">   Column    |            Type             | Collation | Nullable |                 Default</span><br><span class="line">-------------+-----------------------------+-----------+----------+------------------------------------------</span><br><span class="line"> <span class="built_in">id</span>          | <span class="built_in">integer</span>                     |           | not null | nextval(<span class="string">&#x27;t_asset_info_id_seq&#x27;</span>::regclass)</span><br><span class="line"> owner_id    | character varying(32)       |           | not null |</span><br><span class="line"> asset_name  | character varying(128)      |           | not null |</span><br><span class="line"> price       | money                       |           | not null |</span><br><span class="line"> create_time | timestamp without <span class="keyword">time</span> zone |           |          |</span><br><span class="line">Indexes:</span><br><span class="line">    <span class="string">&quot;idx_t_asset_info_owener_id&quot;</span> btree (owner_id)</span><br><span class="line"></span><br><span class="line">pg_db=# explain analyze <span class="keyword">select</span> * from t_asset_info <span class="built_in">where</span> owner_id =<span class="string">&#x27;OWNER-1000&#x27;</span>;</span><br><span class="line">                                                                QUERY PLAN</span><br><span class="line"></span><br><span class="line">-----------------------------------------------------------------------------------------------------------------------------------------</span><br><span class="line">-</span><br><span class="line"> Index Scan using idx_t_asset_info_owener_id on t_asset_info  (cost=0.29..8.30 rows=1 width=40) (actual <span class="keyword">time</span>=0.139..0.140 rows=1 loops=1)</span><br><span class="line">   Index Cond: ((owner_id)::text = &#x27;OWNER-<span class="number">1000</span>&#x27;::text)</span><br><span class="line"> Planning Time: <span class="number">8.327</span> ms</span><br><span class="line"> Execution Time: <span class="number">0.194</span> ms</span><br><span class="line">(<span class="number">4</span> rows)</span><br></pre></td></tr></table></figure>
+
+<p>Q: 那我不要想要这些索引了,该怎么删除呀?</p>
+<p>A: 当初叫人家小索引….</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果要删除索引,这有点奇怪,如果多张表有同一个名称的索引,怎么办???</span></span><br><span class="line">pg_db=# drop index idx_person_id ;</span><br><span class="line">DROP INDEX</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-增删改查"><a href="#3-增删改查" class="headerlink" title="3. 增删改查"></a>3. 增删改查</h2><p>Here we go.</p>
+<p>使用表结构如下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pg_db=# \d t_person_info;</span><br><span class="line">                   Table <span class="string">&quot;public.t_person_info&quot;</span></span><br><span class="line"> Column |          Type          | Collation | Nullable | Default</span><br><span class="line">--------+------------------------+-----------+----------+---------</span><br><span class="line"> <span class="built_in">id</span>     | <span class="built_in">integer</span>                |           | not null |</span><br><span class="line"> name   | character varying(128) |           | not null |</span><br><span class="line"> age    | smallint               |           | not null |</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pg_db=# \d t_asset_info;</span><br><span class="line">                     Table <span class="string">&quot;public.t_asset_info&quot;</span></span><br><span class="line">   Column   |          Type          | Collation | Nullable | Default</span><br><span class="line">------------+------------------------+-----------+----------+---------</span><br><span class="line"> <span class="built_in">id</span>         | <span class="built_in">integer</span>                |           | not null |</span><br><span class="line"> personid   | <span class="built_in">integer</span>                |           | not null |</span><br><span class="line"> asset_name | character varying(256) |           | not null |</span><br><span class="line"> price      | money                  |           | not null |</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-1-增加数据"><a href="#3-1-增加数据" class="headerlink" title="3.1 增加数据"></a>3.1 增加数据</h4><p>看起来这个和 mysql 的语法没什么区别.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 新增数据</span></span><br><span class="line">pg_db=# insert into t_person_info(<span class="built_in">id</span>,name,age) values(1,<span class="string">&#x27;3306&#x27;</span>,33);</span><br><span class="line">INSERT 0 1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查询数据</span></span><br><span class="line">pg_db=# <span class="keyword">select</span> <span class="built_in">id</span> as pid,name ,age from t_person_info <span class="built_in">where</span> <span class="built_in">id</span> =1;</span><br><span class="line"> pid | name | age</span><br><span class="line">-----+------+-----</span><br><span class="line">   1 | 3306 |  33</span><br><span class="line">(1 row)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 批量插入数据</span></span><br><span class="line">pg_db=# insert into t_person_info(<span class="built_in">id</span>,name,age) values(2,<span class="string">&#x27;haiyan&#x27;</span>,30),(3,<span class="string">&#x27;Aya&#x27;</span>,20);</span><br><span class="line">INSERT 0 2</span><br><span class="line">pg_db=# <span class="keyword">select</span> <span class="built_in">id</span> as pid,name ,age from t_person_info;</span><br><span class="line"> pid |  name  | age</span><br><span class="line">-----+--------+-----</span><br><span class="line">   1 | 3306   |  33</span><br><span class="line">   2 | haiyan |  30</span><br><span class="line">   3 | Aya    |  **20**</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-删除数据"><a href="#3-2-删除数据" class="headerlink" title="3.2 删除数据"></a>3.2 删除数据</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 删除名称不为<span class="string">&#x27;haiyan&#x27;</span>的数据</span><br><span class="line">pg_db<span class="operator">=</span># <span class="keyword">delete</span> <span class="keyword">from</span> t_person_info <span class="keyword">where</span> name <span class="keyword">not</span> <span class="keyword">like</span> <span class="string">&#x27;haiyan&#x27;</span>;</span><br><span class="line"><span class="keyword">DELETE</span> <span class="number">2</span></span><br><span class="line"></span><br><span class="line">pg_db<span class="operator">=</span># <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_person_info;</span><br><span class="line"> id <span class="operator">|</span>  name  <span class="operator">|</span> age</span><br><span class="line"><span class="comment">----+--------+-----</span></span><br><span class="line">  <span class="number">2</span> <span class="operator">|</span> haiyan <span class="operator">|</span>  <span class="number">30</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-更新数据"><a href="#3-3-更新数据" class="headerlink" title="3.3 更新数据"></a>3.3 更新数据</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">g_db<span class="operator">=</span># <span class="keyword">update</span> t_person_info <span class="keyword">set</span> age <span class="operator">=</span> <span class="number">18</span> <span class="keyword">where</span> id <span class="operator">=</span><span class="number">2</span> ;</span><br><span class="line"><span class="keyword">UPDATE</span> <span class="number">1</span></span><br><span class="line">pg_db<span class="operator">=</span># <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_person_info;</span><br><span class="line"> id <span class="operator">|</span>  name  <span class="operator">|</span> age</span><br><span class="line"><span class="comment">----+--------+-----</span></span><br><span class="line">  <span class="number">2</span> <span class="operator">|</span> haiyan <span class="operator">|</span>  <span class="number">18</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-4-查询数据"><a href="#3-4-查询数据" class="headerlink" title="3.4 查询数据"></a>3.4 查询数据</h4><p>关联多表查询的<code>join</code>和 SQL 里面的<code>join</code>相似,请知悉.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 资产表信息</span></span><br><span class="line">pg_db=# insert into t_asset_info(<span class="built_in">id</span>,personid,asset_name,price) values(1,2,<span class="string">&#x27;car&#x27;</span>,1900.90);</span><br><span class="line">INSERT 0 1</span><br><span class="line">pg_db=# <span class="keyword">select</span> * from t_asset_info;</span><br><span class="line"> <span class="built_in">id</span> | personid | asset_name |   price</span><br><span class="line">----+----------+------------+-----------</span><br><span class="line">  1 |        2 | car        | <span class="variable">$1</span>,900.90</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查询</span></span><br><span class="line">pg_db=# <span class="keyword">select</span> t_person_info.id ,t_person_info.name , t_person_info.age ,t_asset_info.asset_name , t_asset_info.price  from t_person_info left <span class="built_in">join</span> t_asset_info on t_asset_info.personid = t_person_info.id;</span><br><span class="line"> <span class="built_in">id</span> |  name  | age | asset_name |   price</span><br><span class="line">----+--------+-----+------------+-----------</span><br><span class="line">  2 | haiyan |  18 | car        | <span class="variable">$1</span>,900.90</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-J-P"><a href="#4-J-P" class="headerlink" title="4. J&amp;P"></a>4. J&amp;P</h2><p>Java say hi to postgresql.</p>
+<p>在 java 处理 postgresql 的 money 类型的数据时候,使用 double 获取会出现问题,需要进行转换,心累</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> create_time,price::<span class="type">numeric</span> <span class="keyword">from</span> t_asset_info <span class="keyword">where</span> owner_id <span class="operator">=</span> ?</span><br></pre></td></tr></table></figure>
+
+<p>在程序里面然后可以使用<code>BigDecimal</code>处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Date</span> <span class="variable">createTime</span> <span class="operator">=</span> (Date) resultSet.getObject(<span class="string">&quot;create_time&quot;</span>);</span><br><span class="line"><span class="type">BigDecimal</span> <span class="variable">price</span> <span class="operator">=</span> (BigDecimal) resultSet.getObject(<span class="string">&quot;price&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-1-deps"><a href="#4-1-deps" class="headerlink" title="4.1 deps"></a>4.1 deps</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.postgresql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>postgresql<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">version</span>&gt;</span>42.1.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-code"><a href="#4-2-code" class="headerlink" title="4.2 code"></a>4.2 code</h4><h5 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.pg;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 create at 2020/3/16 10:12</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PostgresqlConf</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * URL地址</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">URL</span> <span class="operator">=</span> <span class="string">&quot;jdbc:postgresql://47.98.104.252:5432/pg_db&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 数据库用户</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">USER</span> <span class="operator">=</span> <span class="string">&quot;postgres&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 登录密码</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">PASSWORD</span> <span class="operator">=</span> <span class="string">&quot;postgres@5432&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="工具类"><a href="#工具类" class="headerlink" title="工具类"></a>工具类</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.pg;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.sql.Connection;</span><br><span class="line"><span class="keyword">import</span> java.sql.DriverManager;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 create at 2020/3/16 10:10</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PostgresqlFactory</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 数据库连接驱动名称</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">POSTGRESQL_DRIVER_NAME</span> <span class="operator">=</span> <span class="string">&quot;org.postgresql.Driver&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取数据库连接</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> url      url</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> user     user</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> password password</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Connection</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Connection <span class="title function_">getConnection</span><span class="params">(String url, String user, String password)</span> &#123;</span><br><span class="line">        <span class="type">Connection</span> <span class="variable">conn</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Class.forName(POSTGRESQL_DRIVER_NAME);</span><br><span class="line">            conn = DriverManager.getConnection(url, user, password);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> conn;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="测试使用"><a href="#测试使用" class="headerlink" title="测试使用"></a>测试使用</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.pg;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.sql.Connection;</span><br><span class="line"><span class="keyword">import</span> java.sql.PreparedStatement;</span><br><span class="line"><span class="keyword">import</span> java.sql.ResultSet;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 create at 2020/3/16 10:15</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PostgresqlMocker</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> (</span><br><span class="line">                <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> PostgresqlFactory.getConnection(</span><br><span class="line">                        PostgresqlConf.URL,</span><br><span class="line">                        PostgresqlConf.USER,</span><br><span class="line">                        PostgresqlConf.PASSWORD</span><br><span class="line">                )) &#123;</span><br><span class="line"></span><br><span class="line">            select(connection);</span><br><span class="line">            update(connection);</span><br><span class="line">            insert(connection);</span><br><span class="line">            delete(connection);</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 选择数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> connection connection</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">select</span><span class="params">(Connection connection)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;select * from t_person_info where id = ?&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">PreparedStatement</span> <span class="variable">preparedStatement</span> <span class="operator">=</span> connection.prepareStatement(sql);</span><br><span class="line">            preparedStatement.setObject(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">            <span class="type">ResultSet</span> <span class="variable">resultSet</span> <span class="operator">=</span> preparedStatement.executeQuery();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span> (resultSet.next()) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;Person name: &quot;</span> + resultSet.getString(<span class="string">&quot;name&quot;</span>));</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            preparedStatement.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 更新数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> connection connection</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">update</span><span class="params">(Connection connection)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;update t_person_info set name = ? where id = ?&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">PreparedStatement</span> <span class="variable">preparedStatement</span> <span class="operator">=</span> connection.prepareStatement(sql);</span><br><span class="line">            preparedStatement.setObject(<span class="number">1</span>, <span class="string">&quot;Miss haiyan&quot;</span>);</span><br><span class="line">            preparedStatement.setObject(<span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">            <span class="type">int</span> <span class="variable">update</span> <span class="operator">=</span> preparedStatement.executeUpdate();</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">&quot;Update result: &quot;</span> + update);</span><br><span class="line"></span><br><span class="line">            preparedStatement.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 新增数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> connection connection</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">insert</span><span class="params">(Connection connection)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;insert into t_person_info (id,name,age) values(?,?,?)&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">PreparedStatement</span> <span class="variable">preparedStatement</span> <span class="operator">=</span> connection.prepareStatement(sql);</span><br><span class="line">            preparedStatement.setObject(<span class="number">1</span>, <span class="number">10</span>);</span><br><span class="line">            preparedStatement.setObject(<span class="number">2</span>, <span class="string">&quot;Mr 3306&quot;</span>);</span><br><span class="line">            preparedStatement.setObject(<span class="number">3</span>, <span class="number">36</span>);</span><br><span class="line"></span><br><span class="line">            <span class="type">int</span> <span class="variable">update</span> <span class="operator">=</span> preparedStatement.executeUpdate();</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">&quot;Insert result: &quot;</span> + update);</span><br><span class="line"></span><br><span class="line">            preparedStatement.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 删除数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> connection connection</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">(Connection connection)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;delete from t_person_info where id = ? &quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">PreparedStatement</span> <span class="variable">preparedStatement</span> <span class="operator">=</span> connection.prepareStatement(sql);</span><br><span class="line">            preparedStatement.setObject(<span class="number">1</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">            <span class="type">int</span> <span class="variable">update</span> <span class="operator">=</span> preparedStatement.executeUpdate();</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">&quot;Delete result: &quot;</span> + update);</span><br><span class="line"></span><br><span class="line">            preparedStatement.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-碎碎念"><a href="#4-3-碎碎念" class="headerlink" title="4.3 碎碎念"></a>4.3 碎碎念</h3><p>哈,在这里我们要怎么获取出来自动增长的 key 呢?就像 mybatis 插入数据后,会组装 id 到对象里面,很惊艳,对不对?</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 新增数据</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> connection connection</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">insert</span><span class="params">(Connection connection)</span> &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;insert into t_asset_info (owner_id,asset_name ,price,create_time) values(?,?,?,now())&quot;</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 使用参数: Statement.RETURN_GENERATED_KEYS,设置返回主键</span></span><br><span class="line">        <span class="type">PreparedStatement</span> <span class="variable">preparedStatement</span> <span class="operator">=</span> connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> <span class="number">0</span>; index &lt; <span class="number">10</span>; index++) &#123;</span><br><span class="line">            preparedStatement.setObject(<span class="number">1</span>, <span class="string">&quot;OWNER-&quot;</span> + index);</span><br><span class="line">            preparedStatement.setObject(<span class="number">2</span>, <span class="string">&quot;ASSET-&quot;</span> + index);</span><br><span class="line">            preparedStatement.setObject(<span class="number">3</span>, BigDecimal.valueOf(index));</span><br><span class="line">            preparedStatement.addBatch();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 执行批量查询操作,并获取插入数据主键的result set</span></span><br><span class="line">        <span class="type">int</span>[] values = preparedStatement.executeBatch();</span><br><span class="line">        <span class="type">ResultSet</span> <span class="variable">generatedKeys</span> <span class="operator">=</span> preparedStatement.getGeneratedKeys();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 获取自动增长的组建</span></span><br><span class="line">        List&lt;Object&gt; genIdList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">while</span> (generatedKeys.next()) &#123;</span><br><span class="line">            genIdList.add(generatedKeys.getObject(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(JSON.toJSONString(genIdList));</span><br><span class="line">        System.out.println(<span class="string">&quot;Insert result: &quot;</span> + JSON.toJSONString(values));</span><br><span class="line">        preparedStatement.close();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="5-参考资料"><a href="#5-参考资料" class="headerlink" title="5. 参考资料"></a>5. 参考资料</h2><p>a. <a target="_blank" rel="noopener" href="https://www.postgresql.org/docs/manuals/">postgresql 官网</a></p>
+<p>b. <a target="_blank" rel="noopener" href="https://www.runoob.com/postgresql/postgresql-tutorial.html">菜鸟教程 postgresql 教程</a></p>
+<p>c. <a target="_blank" rel="noopener" href="https://blog.csdn.net/JAVA528416037/article/details/91998019">postgresql 执行计划</a></p>
+<p>d. <a target="_blank" rel="noopener" href="https://blog.csdn.net/u011042248/article/details/49422305">postgresql 主键自增</a></p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2025/07/08/postgresql/" title="PostgreSQL" target="_blank" rel="external">http://example.com/2025/07/08/postgresql/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/cs12110" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/12764287.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/cs12110" target="_blank"><span class="text-dark">cs12110</span><small class="ml-1x"></small></a></h3>
+        <div>就一打字的</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2025/07/08/ollama-deepseek-dify/" title="ollama+dify+deepseek 搭建个人知识库"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2025/07/08/rabbitmq-ee/" title="Springboot 与 Rabbitmq 整合"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

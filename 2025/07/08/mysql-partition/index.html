@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Mysql 分区 | mini-docs</title>
+  <meta name="description" content="mysql 分区觉得分区有点像单库的分表. 主要适用场景: 归档数据, 冷热隔离数据.  1. 基础知识1.1 使用案例1234567891011CREATE TABLE t_partition_info (    id INT auto_increment,    content VARCHAR(50) default null comment &#x27;名称&#x27;,    create">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql 分区">
+<meta property="og:url" content="http://example.com/2025/07/08/mysql-partition/index.html">
+<meta property="og:site_name" content="mini-docs">
+<meta property="og:description" content="mysql 分区觉得分区有点像单库的分表. 主要适用场景: 归档数据, 冷热隔离数据.  1. 基础知识1.1 使用案例1234567891011CREATE TABLE t_partition_info (    id INT auto_increment,    content VARCHAR(50) default null comment &#x27;名称&#x27;,    create">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-08T12:46:25.000Z">
+<meta property="article:modified_time" content="2025-07-08T09:07:37.848Z">
+<meta property="article:author" content="cs12110@163.com">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2025/07/08/mysql-partition/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="mini-docs" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/cs12110" target="_blank">
+          <img class="img-circle img-rotate" src="/images/12764287.png" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">cs12110</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Macondo</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>就一打字的!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaEE/">JavaEE</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/KillMe/">KillMe</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ai/">ai</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/database/">database</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/server/">server</a><span class="category-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/" rel="tag">AOP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Arthas/" rel="tag">Arthas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/" rel="tag">ClassLoader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docsify/" rel="tag">Docsify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GC/" rel="tag">GC</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/" rel="tag">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/" rel="tag">Go</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC/" rel="tag">IOC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOs/" rel="tag">IOs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E5%8A%A0%E5%AF%86/" rel="tag">Java 加密</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E6%9E%9A%E4%B8%BE/" rel="tag">Java 枚举</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaEE/" rel="tag">JavaEE</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E4%BC%98%E5%8C%96/" rel="tag">Java优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">Java设计模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmeter/" rel="tag">Jmeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmh/" rel="tag">Jmh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">Json 序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/" rel="tag">MQ</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mockito/" rel="tag">Mockito</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" rel="tag">Mybatis 源码阅读</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shiro/" rel="tag">Shiro</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Springboot/" rel="tag">Springboot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/" rel="tag">Thrift</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dify/" rel="tag">dify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo/" rel="tag">dubbo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ftp/" rel="tag">ftp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/" rel="tag">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">lambda表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lanproxy/" rel="tag">lanproxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/myabtis/" rel="tag">myabtis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/websocket/" rel="tag">websocket</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xxljob/" rel="tag">xxljob</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zipkin/" rel="tag">zipkin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" rel="tag">代码生成器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" rel="tag">分库分表</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" rel="tag">多数据源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="tag">工作流</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" rel="tag">布隆过滤器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" rel="tag">微信对接</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" rel="tag">日志框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" rel="tag">规则引擎</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/AOP/" style="font-size: 13px;">AOP</a> <a href="/tags/Arthas/" style="font-size: 13px;">Arthas</a> <a href="/tags/ClassLoader/" style="font-size: 13px;">ClassLoader</a> <a href="/tags/Docsify/" style="font-size: 13px;">Docsify</a> <a href="/tags/ElasticSearch/" style="font-size: 13.17px;">ElasticSearch</a> <a href="/tags/GC/" style="font-size: 13.17px;">GC</a> <a href="/tags/Game/" style="font-size: 13px;">Game</a> <a href="/tags/Go/" style="font-size: 13.5px;">Go</a> <a href="/tags/Gogs/" style="font-size: 13px;">Gogs</a> <a href="/tags/IOC/" style="font-size: 13px;">IOC</a> <a href="/tags/IOs/" style="font-size: 13px;">IOs</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/JWT/" style="font-size: 13px;">JWT</a> <a href="/tags/Java-%E5%8A%A0%E5%AF%86/" style="font-size: 13px;">Java 加密</a> <a href="/tags/Java-%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">Java 枚举</a> <a href="/tags/JavaEE/" style="font-size: 13.17px;">JavaEE</a> <a href="/tags/Java%E4%BC%98%E5%8C%96/" style="font-size: 13px;">Java优化</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 14px;">Java基础</a> <a href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13px;">Java设计模式</a> <a href="/tags/Jmeter/" style="font-size: 13px;">Jmeter</a> <a href="/tags/Jmh/" style="font-size: 13px;">Jmh</a> <a href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 13px;">Json 序列化</a> <a href="/tags/Leetcode/" style="font-size: 13px;">Leetcode</a> <a href="/tags/MQ/" style="font-size: 13.83px;">MQ</a> <a href="/tags/Mockito/" style="font-size: 13px;">Mockito</a> <a href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" style="font-size: 13px;">Mybatis 源码阅读</a> <a href="/tags/PostgreSQL/" style="font-size: 13px;">PostgreSQL</a> <a href="/tags/RabbitMQ/" style="font-size: 13.33px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 13.5px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 13.17px;">RocketMQ</a> <a href="/tags/Shiro/" style="font-size: 13px;">Shiro</a> <a href="/tags/Spring/" style="font-size: 13.67px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 13px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 13.67px;">SpringCloud</a> <a href="/tags/Springboot/" style="font-size: 13.17px;">Springboot</a> <a href="/tags/Thrift/" style="font-size: 13px;">Thrift</a> <a href="/tags/Zookeeper/" style="font-size: 13px;">Zookeeper</a> <a href="/tags/dify/" style="font-size: 13px;">dify</a> <a href="/tags/docker/" style="font-size: 13.17px;">docker</a> <a href="/tags/dubbo/" style="font-size: 13px;">dubbo</a> <a href="/tags/ftp/" style="font-size: 13px;">ftp</a> <a href="/tags/git/" style="font-size: 13px;">git</a> <a href="/tags/jenkins/" style="font-size: 13px;">jenkins</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/lanproxy/" style="font-size: 13px;">lanproxy</a> <a href="/tags/linux/" style="font-size: 13px;">linux</a> <a href="/tags/maven/" style="font-size: 13.33px;">maven</a> <a href="/tags/myabtis/" style="font-size: 13px;">myabtis</a> <a href="/tags/mysql/" style="font-size: 13.83px;">mysql</a> <a href="/tags/nacos/" style="font-size: 13px;">nacos</a> <a href="/tags/nginx/" style="font-size: 13px;">nginx</a> <a href="/tags/redis/" style="font-size: 13.33px;">redis</a> <a href="/tags/tomcat/" style="font-size: 13px;">tomcat</a> <a href="/tags/websocket/" style="font-size: 13px;">websocket</a> <a href="/tags/xxljob/" style="font-size: 13px;">xxljob</a> <a href="/tags/zipkin/" style="font-size: 13px;">zipkin</a> <a href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" style="font-size: 13px;">代码生成器</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" style="font-size: 13px;">分布式事务</a> <a href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" style="font-size: 13.17px;">分库分表</a> <a href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" style="font-size: 13px;">多数据源</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" style="font-size: 13px;">工作流</a> <a href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" style="font-size: 13px;">布隆过滤器</a> <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" style="font-size: 13px;">微信对接</a> <a href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">日志框架</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 13px;">爬虫</a> <a href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" style="font-size: 13px;">规则引擎</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">七月 2025</a><span class="archive-list-count">105</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-thread/" class="title">Go 多线程</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-web/" class="title">Go Web</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-classloder/" class="title">ClassLoader</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-encode/" class="title">Java 加密</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-enum/" class="title">Java 枚举</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-mysql-partition" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Mysql 分区
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2025/07/08/mysql-partition/" class="article-date">
+	  <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/database/">database</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/mysql/" rel="tag">mysql</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2025/07/08/mysql-partition/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="mysql-分区"><a href="#mysql-分区" class="headerlink" title="mysql 分区"></a>mysql 分区</h1><p>觉得分区有点像单库的分表.</p>
+<p>主要适用场景: 归档数据, 冷热隔离数据.</p>
+<hr>
+<h3 id="1-基础知识"><a href="#1-基础知识" class="headerlink" title="1. 基础知识"></a>1. 基础知识</h3><h4 id="1-1-使用案例"><a href="#1-1-使用案例" class="headerlink" title="1.1 使用案例"></a>1.1 使用案例</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> t_partition_info (</span><br><span class="line">    id <span class="type">INT</span> auto_increment,</span><br><span class="line">    content <span class="type">VARCHAR</span>(<span class="number">50</span>) <span class="keyword">default</span> <span class="keyword">null</span> comment <span class="string">&#x27;名称&#x27;</span>,</span><br><span class="line">    create_time datetime <span class="keyword">default</span> <span class="built_in">current_timestamp</span>,</span><br><span class="line">    <span class="keyword">primary key</span> (`id`)</span><br><span class="line">) <span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(create_time)) (</span><br><span class="line">    <span class="keyword">PARTITION</span> p0 <span class="keyword">VALUES</span> LESS THAN (<span class="number">2000</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p1 <span class="keyword">VALUES</span> LESS THAN (<span class="number">2010</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p2 <span class="keyword">VALUES</span> LESS THAN (<span class="number">2020</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p3 <span class="keyword">VALUES</span> LESS THAN MAXVALUE</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>Q: 为啥会出现下面的提示?</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SQL</span> Error [<span class="number">1503</span>] [HY000]: A <span class="keyword">PRIMARY KEY</span> must include <span class="keyword">all</span> columns <span class="keyword">in</span> the <span class="keyword">table</span><span class="string">&#x27;s partitioning function</span></span><br></pre></td></tr></table></figure>
+
+<p>A: 构建分区的字段需要包含主键字段,so, ddl 如下:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> t_partition_info (</span><br><span class="line">    id <span class="type">INT</span> auto_increment,</span><br><span class="line">    content <span class="type">VARCHAR</span>(<span class="number">50</span>) <span class="keyword">default</span> <span class="keyword">null</span> comment <span class="string">&#x27;名称&#x27;</span>,</span><br><span class="line">    create_time datetime <span class="keyword">default</span> <span class="built_in">current_timestamp</span>,</span><br><span class="line">    <span class="keyword">primary key</span> (`id`,`create_time`)</span><br><span class="line">) <span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(create_time)) (</span><br><span class="line">    <span class="keyword">PARTITION</span> p0 <span class="keyword">VALUES</span> LESS THAN (<span class="number">2000</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p1 <span class="keyword">VALUES</span> LESS THAN (<span class="number">2010</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p2 <span class="keyword">VALUES</span> LESS THAN (<span class="number">2020</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p3 <span class="keyword">VALUES</span> LESS THAN MAXVALUE</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT into</span> t_partition_info(id, content, create_time) <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">&#x27;2005年内容&#x27;</span>,<span class="string">&#x27;2005-01-01 12:00:00&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT into</span> t_partition_info(id, content, create_time) <span class="keyword">values</span>(<span class="number">2</span>,<span class="string">&#x27;2015年内容&#x27;</span>,<span class="string">&#x27;2015-01-01 12:00:00&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT into</span> t_partition_info(id, content, create_time) <span class="keyword">values</span>(<span class="number">3</span>,<span class="string">&#x27;2025年内容&#x27;</span>,<span class="string">&#x27;2025-01-01 12:00:00&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 遍历所有分区查询数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_partition_info <span class="keyword">where</span> <span class="number">1</span><span class="operator">=</span><span class="number">1</span> <span class="keyword">and</span> create_time <span class="operator">&gt;=</span><span class="string">&#x27;2015-01-01 00:00:00&#x27;</span> ;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 使用指定分区查询数据, 因为2015在p2分区,所以查询不到数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_partition_info <span class="keyword">PARTITION</span>(p0) <span class="keyword">where</span> <span class="number">1</span><span class="operator">=</span><span class="number">1</span> <span class="keyword">and</span> create_time <span class="operator">&gt;=</span><span class="string">&#x27;2015-01-01 00:00:00&#x27;</span> ;</span><br></pre></td></tr></table></figure>
+
+<p>Q: 怎么知道查询是否使用了分区?</p>
+<p>A: 可以使用 explain 来查看</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 使用全部分区</span></span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_partition_info  <span class="keyword">where</span> <span class="number">1</span><span class="operator">=</span><span class="number">1</span> <span class="keyword">and</span> create_time <span class="operator">&gt;=</span><span class="string">&#x27;2000-01-01 00:00:00&#x27;</span> ;</span><br><span class="line"></span><br><span class="line">id<span class="operator">|</span>select_type<span class="operator">|</span><span class="keyword">table</span>           <span class="operator">|</span>partitions<span class="operator">|</span>type<span class="operator">|</span>possible_keys<span class="operator">|</span>key<span class="operator">|</span>key_len<span class="operator">|</span><span class="keyword">ref</span><span class="operator">|</span><span class="keyword">rows</span><span class="operator">|</span>filtered<span class="operator">|</span>Extra      <span class="operator">|</span></span><br><span class="line"><span class="comment">--+-----------+----------------+----------+----+-------------+---+-------+---+----+--------+-----------+</span></span><br><span class="line"> <span class="number">1</span><span class="operator">|</span>SIMPLE     <span class="operator">|</span>t_partition_info<span class="operator">|</span>p1,p2,p3  <span class="operator">|</span><span class="keyword">ALL</span> <span class="operator">|</span>             <span class="operator">|</span>   <span class="operator">|</span>       <span class="operator">|</span>   <span class="operator">|</span>   <span class="number">3</span><span class="operator">|</span>   <span class="number">33.33</span><span class="operator">|</span><span class="keyword">Using</span> <span class="keyword">where</span><span class="operator">|</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 这里只使用到p3分区</span></span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_partition_info  <span class="keyword">where</span> <span class="number">1</span><span class="operator">=</span><span class="number">1</span> <span class="keyword">and</span> create_time <span class="operator">&gt;=</span><span class="string">&#x27;2020-01-01 00:00:00&#x27;</span> ;</span><br><span class="line"></span><br><span class="line">id<span class="operator">|</span>select_type<span class="operator">|</span><span class="keyword">table</span>           <span class="operator">|</span>partitions<span class="operator">|</span>type<span class="operator">|</span>possible_keys<span class="operator">|</span>key<span class="operator">|</span>key_len<span class="operator">|</span><span class="keyword">ref</span><span class="operator">|</span><span class="keyword">rows</span><span class="operator">|</span>filtered<span class="operator">|</span>Extra      <span class="operator">|</span></span><br><span class="line"><span class="comment">--+-----------+----------------+----------+----+-------------+---+-------+---+----+--------+-----------+</span></span><br><span class="line"> <span class="number">1</span><span class="operator">|</span>SIMPLE     <span class="operator">|</span>t_partition_info<span class="operator">|</span>p3        <span class="operator">|</span><span class="keyword">ALL</span> <span class="operator">|</span>             <span class="operator">|</span>   <span class="operator">|</span>       <span class="operator">|</span>   <span class="operator">|</span>   <span class="number">1</span><span class="operator">|</span>   <span class="number">100.0</span><span class="operator">|</span><span class="keyword">Using</span> <span class="keyword">where</span><span class="operator">|</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-多表关联"><a href="#1-2-多表关联" class="headerlink" title="1.2 多表关联"></a>1.2 多表关联</h4><p>Q: 多表关联怎么处理?</p>
+<p>A: 看看下面这个栗子. :”}</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> t_partition_info (</span><br><span class="line">    id <span class="type">INT</span> auto_increment,</span><br><span class="line">    content <span class="type">VARCHAR</span>(<span class="number">50</span>) <span class="keyword">default</span> <span class="keyword">null</span> comment <span class="string">&#x27;名称&#x27;</span>,</span><br><span class="line">    create_time datetime <span class="keyword">default</span> <span class="built_in">current_timestamp</span>,</span><br><span class="line">    <span class="keyword">primary key</span> (`id`,`create_time`)</span><br><span class="line">) engine <span class="operator">=</span> innodb <span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(create_time)) (</span><br><span class="line">    <span class="keyword">PARTITION</span> p0 <span class="keyword">VALUES</span> LESS THAN (<span class="number">2000</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p1 <span class="keyword">VALUES</span> LESS THAN (<span class="number">2010</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p2 <span class="keyword">VALUES</span> LESS THAN (<span class="number">2020</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p3 <span class="keyword">VALUES</span> LESS THAN MAXVALUE</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE TABLE</span> t_ext_info (</span><br><span class="line">    id <span class="type">INT</span> auto_increment,</span><br><span class="line">    info_id <span class="type">INT</span> <span class="keyword">default</span> <span class="keyword">null</span> comment <span class="string">&#x27;t_partition_info.&#x27;</span>,</span><br><span class="line">    content <span class="type">VARCHAR</span>(<span class="number">50</span>) <span class="keyword">default</span> <span class="keyword">null</span> comment <span class="string">&#x27;名称&#x27;</span>,</span><br><span class="line">    create_time datetime <span class="keyword">default</span> <span class="built_in">current_timestamp</span>,</span><br><span class="line">    <span class="keyword">primary key</span> (`id`)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT into</span> t_partition_info(id, content, create_time) <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">&#x27;2005年内容&#x27;</span>,<span class="string">&#x27;2005-01-01 12:00:00&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT into</span> t_partition_info(id, content, create_time) <span class="keyword">values</span>(<span class="number">2</span>,<span class="string">&#x27;2015年内容&#x27;</span>,<span class="string">&#x27;2015-01-01 12:00:00&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT into</span> t_partition_info(id, content, create_time) <span class="keyword">values</span>(<span class="number">3</span>,<span class="string">&#x27;2025年内容&#x27;</span>,<span class="string">&#x27;2025-01-01 12:00:00&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT into</span> t_ext_info(id,info_id, content, create_time) <span class="keyword">values</span>(<span class="number">1</span>,<span class="number">1</span>,<span class="string">&#x27;测试数据1&#x27;</span>,now());</span><br><span class="line"><span class="keyword">INSERT into</span> t_ext_info(id,info_id, content, create_time) <span class="keyword">values</span>(<span class="number">2</span>,<span class="number">1</span>,<span class="string">&#x27;测试数据2&#x27;</span>,now());</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 指定partition,不指定时查询全部partition</span></span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">	<span class="operator">*</span></span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">	t_partition_info <span class="keyword">partition</span>(p1)</span><br><span class="line"><span class="keyword">left</span> <span class="keyword">join</span> t_ext_info <span class="keyword">on</span></span><br><span class="line">	t_partition_info.id <span class="operator">=</span> t_ext_info.info_id</span><br><span class="line"></span><br><span class="line">id<span class="operator">|</span>content<span class="operator">|</span>create_time        <span class="operator">|</span>id<span class="operator">|</span>info_id<span class="operator">|</span>content<span class="operator">|</span>create_time        <span class="operator">|</span></span><br><span class="line"><span class="comment">--+-------+-------------------+--+-------+-------+-------------------+</span></span><br><span class="line"> <span class="number">1</span><span class="operator">|</span><span class="number">2005</span>年内容<span class="operator">|</span><span class="number">2005</span><span class="number">-01</span><span class="number">-01</span> <span class="number">12</span>:<span class="number">00</span>:<span class="number">00</span><span class="operator">|</span> <span class="number">1</span><span class="operator">|</span>      <span class="number">1</span><span class="operator">|</span>测试数据<span class="number">1</span>  <span class="operator">|</span><span class="number">2024</span><span class="number">-01</span><span class="number">-15</span> <span class="number">21</span>:<span class="number">33</span>:<span class="number">52</span><span class="operator">|</span></span><br><span class="line"> <span class="number">1</span><span class="operator">|</span><span class="number">2005</span>年内容<span class="operator">|</span><span class="number">2005</span><span class="number">-01</span><span class="number">-01</span> <span class="number">12</span>:<span class="number">00</span>:<span class="number">00</span><span class="operator">|</span> <span class="number">2</span><span class="operator">|</span>      <span class="number">1</span><span class="operator">|</span>测试数据<span class="number">2</span>  <span class="operator">|</span><span class="number">2024</span><span class="number">-01</span><span class="number">-15</span> <span class="number">21</span>:<span class="number">33</span>:<span class="number">52</span><span class="operator">|</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查看执行计划</span></span><br><span class="line">explain <span class="keyword">select</span></span><br><span class="line">	<span class="operator">*</span></span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">	t_partition_info <span class="keyword">partition</span>(p1)</span><br><span class="line"><span class="keyword">left</span> <span class="keyword">join</span> t_ext_info <span class="keyword">on</span></span><br><span class="line">	t_partition_info.id <span class="operator">=</span> t_ext_info.info_id</span><br><span class="line"></span><br><span class="line">id<span class="operator">|</span>select_type<span class="operator">|</span><span class="keyword">table</span>           <span class="operator">|</span>partitions<span class="operator">|</span>type<span class="operator">|</span>possible_keys<span class="operator">|</span>key<span class="operator">|</span>key_len<span class="operator">|</span><span class="keyword">ref</span><span class="operator">|</span><span class="keyword">rows</span><span class="operator">|</span>filtered<span class="operator">|</span>Extra                                             <span class="operator">|</span></span><br><span class="line"><span class="comment">--+-----------+----------------+----------+----+-------------+---+-------+---+----+--------+--------------------------------------------------+</span></span><br><span class="line"> <span class="number">1</span><span class="operator">|</span>SIMPLE     <span class="operator">|</span>t_partition_info<span class="operator">|</span>p1        <span class="operator">|</span><span class="keyword">ALL</span> <span class="operator">|</span>             <span class="operator">|</span>   <span class="operator">|</span>       <span class="operator">|</span>   <span class="operator">|</span>   <span class="number">1</span><span class="operator">|</span>   <span class="number">100.0</span><span class="operator">|</span>                                                  <span class="operator">|</span></span><br><span class="line"> <span class="number">1</span><span class="operator">|</span>SIMPLE     <span class="operator">|</span>t_ext_info      <span class="operator">|</span>          <span class="operator">|</span><span class="keyword">ALL</span> <span class="operator">|</span>             <span class="operator">|</span>   <span class="operator">|</span>       <span class="operator">|</span>   <span class="operator">|</span>   <span class="number">2</span><span class="operator">|</span>   <span class="number">100.0</span><span class="operator">|</span><span class="keyword">Using</span> <span class="keyword">where</span>; <span class="keyword">Using</span> <span class="keyword">join</span> buffer (Block Nested Loop)<span class="operator">|</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-分区字段数据更新"><a href="#1-3-分区字段数据更新" class="headerlink" title="1.3 分区字段数据更新"></a>1.3 分区字段数据更新</h4><p>Q: 分区数据字段更新该咋整?</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- id=1的数据,现在在分区p1里面</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_partition_info;</span><br><span class="line"></span><br><span class="line">id<span class="operator">|</span>content<span class="operator">|</span>create_time        <span class="operator">|</span></span><br><span class="line"><span class="comment">--+-------+-------------------+</span></span><br><span class="line"> <span class="number">1</span><span class="operator">|</span><span class="number">2005</span>年内容<span class="operator">|</span><span class="number">2005</span><span class="number">-01</span><span class="number">-01</span> <span class="number">12</span>:<span class="number">00</span>:<span class="number">00</span><span class="operator">|</span></span><br><span class="line"> <span class="number">2</span><span class="operator">|</span><span class="number">2015</span>年内容<span class="operator">|</span><span class="number">2015</span><span class="number">-01</span><span class="number">-01</span> <span class="number">12</span>:<span class="number">00</span>:<span class="number">00</span><span class="operator">|</span></span><br><span class="line"> <span class="number">3</span><span class="operator">|</span><span class="number">2025</span>年内容<span class="operator">|</span><span class="number">2025</span><span class="number">-01</span><span class="number">-01</span> <span class="number">12</span>:<span class="number">00</span>:<span class="number">00</span><span class="operator">|</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询p1分区,id=1的数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_partition_info <span class="keyword">partition</span>(p1)  <span class="keyword">where</span> id <span class="operator">=</span><span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">id<span class="operator">|</span>content<span class="operator">|</span>create_time        <span class="operator">|</span></span><br><span class="line"><span class="comment">--+-------+-------------------+</span></span><br><span class="line"> <span class="number">1</span><span class="operator">|</span><span class="number">2005</span>年内容<span class="operator">|</span><span class="number">2005</span><span class="number">-01</span><span class="number">-01</span> <span class="number">12</span>:<span class="number">00</span>:<span class="number">00</span><span class="operator">|</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 更新id=1的create_time= &#x27;2024-01-01 12:00:00&#x27;</span></span><br><span class="line"><span class="keyword">update</span> t_partition_info <span class="keyword">set</span> create_time <span class="operator">=</span><span class="string">&#x27;2024-01-15 12:00:00&#x27;</span> <span class="keyword">where</span> id <span class="operator">=</span><span class="string">&#x27;1&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 指定p1分区查询不到数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_partition_info <span class="keyword">partition</span>(p1)  <span class="keyword">where</span> id <span class="operator">=</span><span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 指定p1分区查询不到数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_partition_info <span class="keyword">partition</span>(p1)  <span class="keyword">where</span> id <span class="operator">=</span><span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 指定p3分区能查询到数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_partition_info <span class="keyword">partition</span>(p3)  <span class="keyword">where</span> id <span class="operator">=</span><span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-4-设计案例"><a href="#1-4-设计案例" class="headerlink" title="1.4 设计案例"></a>1.4 设计案例</h4><p>Q: 如果最近一个月的数据放在一个分区,其他日期都放在其他分期要怎么处理?</p>
+<p>A: 可以在分区表达式里面进行相关动态计算划分.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> your_table (</span><br><span class="line">    id <span class="type">INT</span>,</span><br><span class="line">    name <span class="type">VARCHAR</span>(<span class="number">50</span>),</span><br><span class="line">    create_time <span class="type">TIMESTAMP</span>,</span><br><span class="line">    <span class="keyword">value</span> <span class="type">INT</span></span><br><span class="line">) <span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (TO_DAYS(create_time)) (</span><br><span class="line">    <span class="keyword">PARTITION</span> p_past <span class="keyword">VALUES</span> LESS THAN (TO_DAYS(CURDATE() <span class="operator">-</span> <span class="type">INTERVAL</span> <span class="number">1</span> <span class="keyword">MONTH</span>)),</span><br><span class="line">    <span class="keyword">PARTITION</span> p_recent <span class="keyword">VALUES</span> LESS THAN (MAXVALUE)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>我以为可以按照上面这种建分区的,然而,然而:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SQL Error [1064] [42000]: Constant, random or timezone-dependent expressions in (sub)partitioning function are not allowed near &#x27;),</span><br><span class="line">    PARTITION p_recent VALUES LESS THAN (MAXVALUE)</span><br><span class="line">)&#x27; at line 7</span><br></pre></td></tr></table></figure>
+
+<p>说明: TO_DAYS 是 MySQL 中的一个日期函数,它的功能是将日期转换为对应的天数.具体而言,TO_DAYS 返回一个日期的天数表示,从公元 0000-00-00 开始算起,直到指定的日期.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">	DATE_FORMAT(NOW(), <span class="string">&#x27;%Y-%m-%d %H:%i:%s&#x27;</span>) <span class="keyword">AS</span> current_datetime,</span><br><span class="line">	TO_DAYS(CURDATE() <span class="operator">-</span> <span class="type">INTERVAL</span> <span class="number">1</span> <span class="keyword">MONTH</span>) <span class="keyword">as</span> last_of_day,</span><br><span class="line">	TO_DAYS(CURDATE()) current_of_day</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">	dual</span><br><span class="line"></span><br><span class="line">current_datetime   <span class="operator">|</span>last_of_day<span class="operator">|</span>current_of_day<span class="operator">|</span></span><br><span class="line"><span class="comment">-------------------+-----------+--------------+</span></span><br><span class="line"><span class="number">2024</span><span class="number">-01</span><span class="number">-16</span> <span class="number">08</span>:<span class="number">57</span>:<span class="number">57</span><span class="operator">|</span>     <span class="number">739235</span><span class="operator">|</span>        <span class="number">739266</span><span class="operator">|</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-分区策略"><a href="#2-分区策略" class="headerlink" title="2. 分区策略"></a>2. 分区策略</h3><p>Q: 那么分区有哪些策略?</p>
+<p>A:</p>
+<h4 id="2-1-范围分区-Range-Partitioning"><a href="#2-1-范围分区-Range-Partitioning" class="headerlink" title="2.1 范围分区 (Range Partitioning)"></a>2.1 范围分区 (Range Partitioning)</h4><p>范围分区根据某一列的范围进行分区.例如,按照日期列进行范围分区:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> sales (</span><br><span class="line">    id <span class="type">INT</span>,</span><br><span class="line">    sale_date <span class="type">DATE</span>,</span><br><span class="line">    amount <span class="type">DECIMAL</span>(<span class="number">10</span>, <span class="number">2</span>)</span><br><span class="line">) <span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(sale_date)) (</span><br><span class="line">    <span class="keyword">PARTITION</span> p0 <span class="keyword">VALUES</span> LESS THAN (<span class="number">2000</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p1 <span class="keyword">VALUES</span> LESS THAN (<span class="number">2005</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p2 <span class="keyword">VALUES</span> LESS THAN (<span class="number">2010</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p3 <span class="keyword">VALUES</span> LESS THAN MAXVALUE</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-列表分区-List-Partitioning"><a href="#2-2-列表分区-List-Partitioning" class="headerlink" title="2.2 列表分区 (List Partitioning)"></a>2.2 列表分区 (List Partitioning)</h4><p>列表分区根据列中的离散值进行分区.例如,按照区域进行列表分区:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> employees (</span><br><span class="line">    emp_id <span class="type">INT</span>,</span><br><span class="line">    emp_name <span class="type">VARCHAR</span>(<span class="number">50</span>),</span><br><span class="line">    emp_region <span class="type">VARCHAR</span>(<span class="number">20</span>)</span><br><span class="line">) <span class="keyword">PARTITION</span> <span class="keyword">BY</span> LIST (emp_region) (</span><br><span class="line">    <span class="keyword">PARTITION</span> p_east <span class="keyword">VALUES</span> <span class="keyword">IN</span> (<span class="string">&#x27;East&#x27;</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p_west <span class="keyword">VALUES</span> <span class="keyword">IN</span> (<span class="string">&#x27;West&#x27;</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p_central <span class="keyword">VALUES</span> <span class="keyword">IN</span> (<span class="string">&#x27;Central&#x27;</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p_other <span class="keyword">VALUES</span> <span class="keyword">IN</span> (<span class="keyword">DEFAULT</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-散列分区-Hash-Partitioning"><a href="#2-3-散列分区-Hash-Partitioning" class="headerlink" title="2.3 散列分区 (Hash Partitioning)"></a>2.3 散列分区 (Hash Partitioning)</h4><p>散列分区通过对某列的哈希值进行分区,将数据均匀分布到不同分区.例如,按照用户 ID 进行散列分区:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> orders (</span><br><span class="line">    order_id <span class="type">INT</span>,</span><br><span class="line">    user_id <span class="type">INT</span>,</span><br><span class="line">    order_date <span class="type">DATE</span>,</span><br><span class="line">    total_amount <span class="type">DECIMAL</span>(<span class="number">10</span>, <span class="number">2</span>)</span><br><span class="line">) <span class="keyword">PARTITION</span> <span class="keyword">BY</span> HASH (user_id) PARTITIONS <span class="number">4</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-列分区-Key-Partitioning"><a href="#2-4-列分区-Key-Partitioning" class="headerlink" title="2.4 列分区 (Key Partitioning)"></a>2.4 列分区 (Key Partitioning)</h4><p>列分区类似于散列分区,但是它是基于列的哈希值进行的.例如,按照用户 ID 进行列分区:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> transactions (</span><br><span class="line">    trans_id <span class="type">INT</span>,</span><br><span class="line">    user_id <span class="type">INT</span>,</span><br><span class="line">    trans_date <span class="type">DATE</span>,</span><br><span class="line">    trans_amount <span class="type">DECIMAL</span>(<span class="number">10</span>, <span class="number">2</span>)</span><br><span class="line">) <span class="keyword">PARTITION</span> <span class="keyword">BY</span> KEY (user_id);</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-5-查询示例"><a href="#2-5-查询示例" class="headerlink" title="2.5 查询示例"></a>2.5 查询示例</h4><p>对于范围分区,你可以使用以下 SQL 来查询特定分区的数据:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查询范围分区 p1 中的数据</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> sales <span class="keyword">PARTITION</span> (p1)</span><br><span class="line"><span class="keyword">WHERE</span> sale_date <span class="keyword">BETWEEN</span> <span class="string">&#x27;2001-01-01&#x27;</span> <span class="keyword">AND</span> <span class="string">&#x27;2004-12-31&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-参考资料"><a href="#3-参考资料" class="headerlink" title="3. 参考资料"></a>3. 参考资料</h3><p>a. <a target="_blank" rel="noopener" href="https://www.cnblogs.com/mzhaox/p/11201715.html">mysql 分区 blog</a></p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2025/07/08/mysql-partition/" title="Mysql 分区" target="_blank" rel="external">http://example.com/2025/07/08/mysql-partition/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/cs12110" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/12764287.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/cs12110" target="_blank"><span class="text-dark">cs12110</span><small class="ml-1x"></small></a></h3>
+        <div>就一打字的</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2025/07/08/killme-springboot-source/" title="Springboot 源码分析"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2025/07/08/mysql-read-write/" title="Mysql 之读写分离"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

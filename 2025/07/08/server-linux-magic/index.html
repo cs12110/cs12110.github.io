@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Linux 常用命令 | mini-docs</title>
+  <meta name="description" content="服务器本文档主要用于记录服务器相关命令和脚本,请知悉. 以下命令基于centos7操作系统.  1. 设置静态 IP在生产环境里面,服务器设置静态 ip 地址是必不可少的. 1234567891011121314151617181920212223242526272829[root@dev-115 ~]# vi &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-ens33T">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 常用命令">
+<meta property="og:url" content="http://example.com/2025/07/08/server-linux-magic/index.html">
+<meta property="og:site_name" content="mini-docs">
+<meta property="og:description" content="服务器本文档主要用于记录服务器相关命令和脚本,请知悉. 以下命令基于centos7操作系统.  1. 设置静态 IP在生产环境里面,服务器设置静态 ip 地址是必不可少的. 1234567891011121314151617181920212223242526272829[root@dev-115 ~]# vi &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-ens33T">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-08T12:46:25.000Z">
+<meta property="article:modified_time" content="2025-07-08T09:34:26.188Z">
+<meta property="article:author" content="cs12110@163.com">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2025/07/08/server-linux-magic/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="mini-docs" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/cs12110" target="_blank">
+          <img class="img-circle img-rotate" src="/images/12764287.png" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">cs12110</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Macondo</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>就一打字的!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaEE/">JavaEE</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/KillMe/">KillMe</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ai/">ai</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/database/">database</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/server/">server</a><span class="category-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/" rel="tag">AOP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Arthas/" rel="tag">Arthas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/" rel="tag">ClassLoader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docsify/" rel="tag">Docsify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GC/" rel="tag">GC</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/" rel="tag">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/" rel="tag">Go</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC/" rel="tag">IOC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOs/" rel="tag">IOs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E5%8A%A0%E5%AF%86/" rel="tag">Java 加密</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E6%9E%9A%E4%B8%BE/" rel="tag">Java 枚举</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaEE/" rel="tag">JavaEE</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E4%BC%98%E5%8C%96/" rel="tag">Java优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">Java设计模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmeter/" rel="tag">Jmeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmh/" rel="tag">Jmh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">Json 序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/" rel="tag">MQ</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mockito/" rel="tag">Mockito</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" rel="tag">Mybatis 源码阅读</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shiro/" rel="tag">Shiro</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Springboot/" rel="tag">Springboot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/" rel="tag">Thrift</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dify/" rel="tag">dify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo/" rel="tag">dubbo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ftp/" rel="tag">ftp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/" rel="tag">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">lambda表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lanproxy/" rel="tag">lanproxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/myabtis/" rel="tag">myabtis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/websocket/" rel="tag">websocket</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xxljob/" rel="tag">xxljob</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zipkin/" rel="tag">zipkin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" rel="tag">代码生成器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" rel="tag">分库分表</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" rel="tag">多数据源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="tag">工作流</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" rel="tag">布隆过滤器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" rel="tag">微信对接</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" rel="tag">日志框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" rel="tag">规则引擎</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/AOP/" style="font-size: 13px;">AOP</a> <a href="/tags/Arthas/" style="font-size: 13px;">Arthas</a> <a href="/tags/ClassLoader/" style="font-size: 13px;">ClassLoader</a> <a href="/tags/Docsify/" style="font-size: 13px;">Docsify</a> <a href="/tags/ElasticSearch/" style="font-size: 13.17px;">ElasticSearch</a> <a href="/tags/GC/" style="font-size: 13.17px;">GC</a> <a href="/tags/Game/" style="font-size: 13px;">Game</a> <a href="/tags/Go/" style="font-size: 13.5px;">Go</a> <a href="/tags/Gogs/" style="font-size: 13px;">Gogs</a> <a href="/tags/IOC/" style="font-size: 13px;">IOC</a> <a href="/tags/IOs/" style="font-size: 13px;">IOs</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/JWT/" style="font-size: 13px;">JWT</a> <a href="/tags/Java-%E5%8A%A0%E5%AF%86/" style="font-size: 13px;">Java 加密</a> <a href="/tags/Java-%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">Java 枚举</a> <a href="/tags/JavaEE/" style="font-size: 13.17px;">JavaEE</a> <a href="/tags/Java%E4%BC%98%E5%8C%96/" style="font-size: 13px;">Java优化</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 14px;">Java基础</a> <a href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13px;">Java设计模式</a> <a href="/tags/Jmeter/" style="font-size: 13px;">Jmeter</a> <a href="/tags/Jmh/" style="font-size: 13px;">Jmh</a> <a href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 13px;">Json 序列化</a> <a href="/tags/Leetcode/" style="font-size: 13px;">Leetcode</a> <a href="/tags/MQ/" style="font-size: 13.83px;">MQ</a> <a href="/tags/Mockito/" style="font-size: 13px;">Mockito</a> <a href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" style="font-size: 13px;">Mybatis 源码阅读</a> <a href="/tags/PostgreSQL/" style="font-size: 13px;">PostgreSQL</a> <a href="/tags/RabbitMQ/" style="font-size: 13.33px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 13.5px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 13.17px;">RocketMQ</a> <a href="/tags/Shiro/" style="font-size: 13px;">Shiro</a> <a href="/tags/Spring/" style="font-size: 13.67px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 13px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 13.67px;">SpringCloud</a> <a href="/tags/Springboot/" style="font-size: 13.17px;">Springboot</a> <a href="/tags/Thrift/" style="font-size: 13px;">Thrift</a> <a href="/tags/Zookeeper/" style="font-size: 13px;">Zookeeper</a> <a href="/tags/dify/" style="font-size: 13px;">dify</a> <a href="/tags/docker/" style="font-size: 13.17px;">docker</a> <a href="/tags/dubbo/" style="font-size: 13px;">dubbo</a> <a href="/tags/ftp/" style="font-size: 13px;">ftp</a> <a href="/tags/git/" style="font-size: 13px;">git</a> <a href="/tags/jenkins/" style="font-size: 13px;">jenkins</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/lanproxy/" style="font-size: 13px;">lanproxy</a> <a href="/tags/linux/" style="font-size: 13px;">linux</a> <a href="/tags/maven/" style="font-size: 13.33px;">maven</a> <a href="/tags/myabtis/" style="font-size: 13px;">myabtis</a> <a href="/tags/mysql/" style="font-size: 13.83px;">mysql</a> <a href="/tags/nacos/" style="font-size: 13px;">nacos</a> <a href="/tags/nginx/" style="font-size: 13px;">nginx</a> <a href="/tags/redis/" style="font-size: 13.33px;">redis</a> <a href="/tags/tomcat/" style="font-size: 13px;">tomcat</a> <a href="/tags/websocket/" style="font-size: 13px;">websocket</a> <a href="/tags/xxljob/" style="font-size: 13px;">xxljob</a> <a href="/tags/zipkin/" style="font-size: 13px;">zipkin</a> <a href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" style="font-size: 13px;">代码生成器</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" style="font-size: 13px;">分布式事务</a> <a href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" style="font-size: 13.17px;">分库分表</a> <a href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" style="font-size: 13px;">多数据源</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" style="font-size: 13px;">工作流</a> <a href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" style="font-size: 13px;">布隆过滤器</a> <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" style="font-size: 13px;">微信对接</a> <a href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">日志框架</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 13px;">爬虫</a> <a href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" style="font-size: 13px;">规则引擎</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">七月 2025</a><span class="archive-list-count">105</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-thread/" class="title">Go 多线程</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-web/" class="title">Go Web</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-classloder/" class="title">ClassLoader</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-encode/" class="title">Java 加密</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-enum/" class="title">Java 枚举</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-server-linux-magic" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Linux 常用命令
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2025/07/08/server-linux-magic/" class="article-date">
+	  <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/server/">server</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/linux/" rel="tag">linux</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2025/07/08/server-linux-magic/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h1><p>本文档主要用于记录服务器相关命令和脚本,请知悉.</p>
+<p>以下命令基于<code>centos7</code>操作系统.</p>
+<hr>
+<h2 id="1-设置静态-IP"><a href="#1-设置静态-IP" class="headerlink" title="1. 设置静态 IP"></a>1. 设置静态 IP</h2><p>在生产环境里面,服务器设置静态 ip 地址是必不可少的.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-115 ~]# vi /etc/sysconfig/network-scripts/ifcfg-ens33</span><br><span class="line">TYPE=&quot;Ethernet&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置为static</span></span><br><span class="line">BOOTPROTO=&quot;static&quot;</span><br><span class="line">DEFROUTE=&quot;yes&quot;</span><br><span class="line">PEERDNS=&quot;yes&quot;</span><br><span class="line">PEERROUTES=&quot;yes&quot;</span><br><span class="line">IPV4_FAILURE_FATAL=&quot;no&quot;</span><br><span class="line">IPV6INIT=&quot;yes&quot;</span><br><span class="line">IPV6_AUTOCONF=&quot;yes&quot;</span><br><span class="line">IPV6_DEFROUTE=&quot;yes&quot;</span><br><span class="line">IPV6_PEERDNS=&quot;yes&quot;</span><br><span class="line">IPV6_PEERROUTES=&quot;yes&quot;</span><br><span class="line">IPV6_FAILURE_FATAL=&quot;no&quot;</span><br><span class="line">IPV6_ADDR_GEN_MODE=&quot;stable-privacy&quot;</span><br><span class="line">NAME=&quot;ens33&quot;</span><br><span class="line">UUID=&quot;873ced93-6651-4be2-927c-b74fc1ebf786&quot;</span><br><span class="line">DEVICE=&quot;ens33&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">on boot设置为<span class="built_in">yes</span></span></span><br><span class="line">ONBOOT=&quot;yes&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">配置ip地址,子网掩码,网关和dns服务器</span></span><br><span class="line">IPADDR=10.33.1.115</span><br><span class="line">NETMASK=255.255.255.255</span><br><span class="line">GATEWAY=10.33.1.1</span><br><span class="line">DNS1=8.8.8.8</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重启网络服务</span></span><br><span class="line">[root@dev-115 ~]# systemctl restart network</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-CentOS7-与防火墙"><a href="#2-CentOS7-与防火墙" class="headerlink" title="2. CentOS7 与防火墙"></a>2. CentOS7 与防火墙</h2><p>在 CentOS7 里面防火墙的命令变了,很多,很多,很多.</p>
+<h3 id="2-1-常用命令"><a href="#2-1-常用命令" class="headerlink" title="2.1 常用命令"></a>2.1 常用命令</h3><p><strong>查看状态</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# systemctl status firewalld</span><br></pre></td></tr></table></figure>
+
+<p><strong>开启防火墙</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# systemctl start firewalld</span><br></pre></td></tr></table></figure>
+
+<p><strong>关闭防火墙</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# systemctl stop firewalld</span><br></pre></td></tr></table></figure>
+
+<p><strong>禁用防火墙</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# systemctl disable firewalld</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-开启端口"><a href="#2-2-开启端口" class="headerlink" title="2.2 开启端口"></a>2.2 开启端口</h3><p><strong>开启端口</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# firewall-cmd --add-port=7003/tcp --zone=public --permanent</span><br><span class="line">[root@team-2 ~]# firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看已开启端口</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# firewall-cmd --list-port</span><br></pre></td></tr></table></figure>
+
+<p><strong>移除端口</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# firewall-cmd --remove-port=4993/tcp  --zone=public --permanent</span><br><span class="line">[root@team-2 ~]# firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-SuSE-关闭防火墙"><a href="#2-3-SuSE-关闭防火墙" class="headerlink" title="2.3 SuSE 关闭防火墙"></a>2.3 SuSE 关闭防火墙</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop249:/home/bi # rcSuSEfirewall2 stop</span><br></pre></td></tr></table></figure>
+
+<p>常用命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hadoop249:/home/bi # rcSuSEfirewall2 start</span><br><span class="line">hadoop249:/home/bi # rcSuSEfirewall2 stop</span><br><span class="line">hadoop249:/home/bi # rcSuSEfirewall2 restart</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-服务器资源"><a href="#3-服务器资源" class="headerlink" title="3. 服务器资源"></a>3. 服务器资源</h2><p>我们该如何查看服务器中的磁盘和内存呢?</p>
+<h3 id="3-1-磁盘"><a href="#3-1-磁盘" class="headerlink" title="3.1 磁盘"></a>3.1 磁盘</h3><p><strong>查看磁盘容量</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# df -h</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/vda1        40G  7.8G   30G  21% /</span><br><span class="line">devtmpfs        911M     0  911M   0% /dev</span><br><span class="line">tmpfs           920M     0  920M   0% /dev/shm</span><br><span class="line">tmpfs           920M  428K  920M   1% /run</span><br><span class="line">tmpfs           920M     0  920M   0% /sys/fs/cgroup</span><br><span class="line">tmpfs           184M     0  184M   0% /run/user/0</span><br></pre></td></tr></table></figure>
+
+<p><strong>查看当前文件夹占用大小</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 opt]# du -sh *</span><br><span class="line">189M	pkgs</span><br><span class="line">8.0K	server-doc.md</span><br><span class="line">531M	soft</span><br><span class="line">[root@team-2 opt]#</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-内存"><a href="#3-2-内存" class="headerlink" title="3.2 内存"></a>3.2 内存</h3><p><strong>查看内存</strong></p>
+<ul>
+<li><code>-g</code>:按照 GB 来显示.</li>
+<li><code>-m</code>:按照 MB 来显示.</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# free -g</span><br><span class="line">                total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:              1           0           0           0           0           0</span><br><span class="line">Swap:             0           0           0</span><br><span class="line">[root@team-2 ~]# free -m</span><br><span class="line">               total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:           1839         845          86           0         906         810</span><br><span class="line">Swap:           511           0         511</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-top-命令"><a href="#3-3-top-命令" class="headerlink" title="3.3 top 命令"></a>3.3 top 命令</h3><p>使用 top 命令可以查看进程的 cpu 和内存占用比</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# top -u root</span><br><span class="line"></span><br><span class="line">Tasks:  73 total,   1 running,  72 sleeping,   0 stopped,   0 zombie</span><br><span class="line"><span class="meta prompt_">%</span><span class="language-bash">Cpu(s):  0.3 us,  0.7 sy,  0.0 ni, 99.0 <span class="built_in">id</span>,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span></span><br><span class="line">KiB Mem :  1883492 total,    88396 free,   866548 used,   928548 buff/cache</span><br><span class="line">KiB Swap:   524284 total,   524284 free,        0 used.   829512 avail Mem</span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND</span><br><span class="line"> 2342 root      20   0   37212   9824    404 S  0.3  0.5   8:04.28 Linux2.6</span><br><span class="line">18766 root      20   0   85488    828    404 S  0.3  0.0 123:17.20 slm</span><br><span class="line">31198 root      20   0   75248    764    392 S  0.3  0.0  10:48.20 slm</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>VIRT: virtual memory usage 虚拟内存</li>
+<li>RES: resident memory usage 常驻内存</li>
+<li>SHR: shared memory 共享内存</li>
+<li>PR: 优先级,会有两种格式,一种是数字(默认 20),一种是 RT 字符串</li>
+<li>NI: nice 值,负值表示高优先级,正值表示低优先级</li>
+<li>S: 进程状态, D&#x3D;不可终端的睡眠状态,R&#x3D;运行,S&#x3D;睡眠,T&#x3D;跟踪,Z&#x3D;僵尸进程</li>
+<li>TIME+: 进程使用 cpu 时间,单位 1&#x2F;100 秒</li>
+</ul>
+<hr>
+<h2 id="4-查找进程"><a href="#4-查找进程" class="headerlink" title="4. 查找进程"></a>4. 查找进程</h2><p>在服务器中我们该怎么查找到特定的进程?</p>
+<h3 id="4-1-按端口号"><a href="#4-1-按端口号" class="headerlink" title="4.1 按端口号"></a>4.1 按端口号</h3><p>一般<code>netstat</code>命令用来查找端口是否被使用,而使用情况要使用<code>ps</code>命令来查看.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# netstat -lnp|grep 8080</span><br><span class="line">tcp        0      0 0.0.0.0:8080            0.0.0.0:*               LISTEN      11735/java</span><br><span class="line">[root@team-2 ~]# ps -ef|grep 11735</span><br><span class="line">root     11735     1  0 Aug21 ?        00:34:09 /opt/soft/jdk/jdk1.8/bin/java -Djava.util.logging.config.file=/opt/soft/tomcat/tomcat8/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djdk.tls.ephemeralDHKeySize=2048 -Djava.protocol.handler.pkgs=org.apache.catalina.webresources -Dignore.endorsed.dirs= -classpath /opt/soft/tomcat/tomcat8/bin/bootstrap.jar:/opt/soft/tomcat/tomcat8/bin/tomcat-juli.jar -Dcatalina.base=/opt/soft/tomcat/tomcat8 -Dcatalina.home=/opt/soft/tomcat/tomcat8 -Djava.io.tmpdir=/opt/soft/tomcat/tomcat8/temp org.apache.catalina.startup.Bootstrap start</span><br></pre></td></tr></table></figure>
+
+<p>Q: 哈,那样子怎么 win 上面根据端口查找进程呀?</p>
+<p>A: follow me.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\Administrator&gt;netstat -ano|findstr 8800</span><br><span class="line">  TCP    0.0.0.0:8800           0.0.0.0:0              LISTENING       592</span><br><span class="line">  TCP    [::]:8800              [::]:0                 LISTENING       592</span><br><span class="line"></span><br><span class="line">C:\Users\Administrator&gt;taskkill /F /PID 592</span><br><span class="line">成功: 已终止 PID 为 592 的进程。</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-按进程名称"><a href="#4-2-按进程名称" class="headerlink" title="4.2 按进程名称"></a>4.2 按进程名称</h3><ul>
+<li><code>grep -v &#39;str&#39;</code>: 不匹配 str</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# ps -ef |grep english |grep -v &#x27;grep&#x27;</span><br><span class="line">root     30337     1  0 Sep05 ?        00:11:23 java -jar app/english-web-0.0.1-SNAPSHOT.jar</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-jps-命令"><a href="#4-3-jps-命令" class="headerlink" title="4.3 jps 命令"></a>4.3 jps 命令</h3><p>该命令为 java 专有,必须安装<strong>jdk 环境</strong>,且显示出来都是 jvm 的进程.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# jps -lm</span><br><span class="line">30337 app/english-web-0.0.1-SNAPSHOT.jar</span><br><span class="line">11735 org.apache.catalina.startup.Bootstrap start</span><br><span class="line">20665 sun.tools.jps.Jps -lm</span><br><span class="line">11609 org.fengfei.lanproxy.server.ProxyServerContainer</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-4-kill"><a href="#4-4-kill" class="headerlink" title="4.4 kill"></a>4.4 kill</h3><p>用来杀死进程,用来强制杀死进程!!!</p>
+<ul>
+<li>命令格式: <code>kill -9 pid</code></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# kill -9 11735</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="5-服务器文件传输"><a href="#5-服务器文件传输" class="headerlink" title="5. 服务器文件传输"></a>5. 服务器文件传输</h2><h3 id="5-1-文件压缩"><a href="#5-1-文件压缩" class="headerlink" title="5.1 文件压缩"></a>5.1 文件压缩</h3><p>服务器中经常遇到要将多个文件压缩成一个压缩包的情况,仅仅是 tar 只会把文件打包而不会压缩,所以将文件压缩为 gz 的压缩包.</p>
+<p><code>pkgs.tar.gz</code>: 自定义压缩包名称.</p>
+<p><code>pkgs</code>: 将要被压缩的文件夹.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 opt]# tar -zcvf pkgs.tar.gz pkgs/</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-文件解压"><a href="#5-2-文件解压" class="headerlink" title="5.2 文件解压"></a>5.2 文件解压</h3><p>一般压缩包有两种格式:<code>tar</code>和<code>zip</code>,嗯,是的,对<code>rar</code>很排斥.</p>
+<p><strong>解压 tar</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 opt]# tar -xvf pkgs.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p><strong>解压 zip</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 opt]# unzip yourZip.zip</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-服务器之间文件传输"><a href="#5-3-服务器之间文件传输" class="headerlink" title="5.3 服务器之间文件传输"></a>5.3 服务器之间文件传输</h3><p>在服务器之间,怎么传输文件呢?不会是用 U 盘 copy 来 copy 去吧?</p>
+<p>放心,服务器有<code>scp</code>命令, <code>scp -r pkgs 目标服务器用户@目标服务器ip:存放文件夹</code>.</p>
+<ul>
+<li><code>scp file</code>: 传输单个文件.</li>
+<li><code>scp -r pkgs/</code>:传输整一个文件夹.</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# scp -r pkgs/ root@10.10.1.224:/tmp/</span><br></pre></td></tr></table></figure>
+
+<p>哈,scp 不仅可以从本地上传文件到服务器,还可以用服务器下载文件到本地.</p>
+<p>上传本地文件到服务器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# scp -r pkgs/ root@10.10.1.224:/tmp/</span><br></pre></td></tr></table></figure>
+
+<p>下载服务器文件到本地</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# scp -r root@10.10.1.224:/tmp/ pkgs/</span><br></pre></td></tr></table></figure>
+
+<p>你看上传和下载刚好文件夹位置反过来,这么方便的 scp,让我觉得那些前辈太厉害.</p>
+<hr>
+<h2 id="6-服务器用户"><a href="#6-服务器用户" class="headerlink" title="6. 服务器用户"></a>6. 服务器用户</h2><h3 id="6-1-新增用户"><a href="#6-1-新增用户" class="headerlink" title="6.1 新增用户"></a>6.1 新增用户</h3><p><code>useradd -m -d</code>: 创建并指定 home 目录.</p>
+<p><code>passwd user</code>: 为新创建用户创建密码.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hadoop231:~ # useradd haiyan -m -d /opt/haiyan</span><br><span class="line">hadoop231:~ # passwd haiyan</span><br><span class="line">Changing password for haiyan.</span><br><span class="line">New Password:</span><br><span class="line">Bad password: too simple</span><br><span class="line">Reenter New Password:</span><br><span class="line">Password changed.</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-改变目录拥有者"><a href="#6-2-改变目录拥有者" class="headerlink" title="6.2 改变目录拥有者"></a>6.2 改变目录拥有者</h3><p>有些时候,将某些目录赋给某个用户,让用户拥有那个目录的所有权限.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">hadoop231:/opt/soft # mkdir root-dir</span><br><span class="line">hadoop231:/opt/soft # ll</span><br><span class="line">drwxr-xr-x 2 root root 4096 Sep 15 23:15 root-dir</span><br><span class="line">hadoop231:/opt/soft # id haiyan</span><br><span class="line">uid=1001(haiyan) gid=100(users) groups=16(dialout),33(video),100(users)</span><br><span class="line">hadoop231:/opt/soft # chown haiyan:users -R root-dir/</span><br><span class="line">hadoop231:/opt/soft # ll</span><br><span class="line">drwxr-xr-x 2 haiyan users 4096 Sep 15 23:15 root-dir</span><br></pre></td></tr></table></figure>
+
+<p>在 linux 里面,一个文件有<code>r(read)</code>,<code>w(write)</code>,<code>x(execute)</code>分别对应着:4,2,1 数值.</p>
+<p>那么上面的<code>drwxr-xr-x</code>是什么意思呢?</p>
+<p>最前面的<code>d</code>代表<code>文件夹</code>,后面每三个字符为一组,分别代表着:当前用户的拥有的权限,当组用户拥有的权限,其他用户拥有的权限.</p>
+<hr>
+<h2 id="7-maven-打包"><a href="#7-maven-打包" class="headerlink" title="7. maven 打包"></a>7. maven 打包</h2><h3 id="7-1-普通"><a href="#7-1-普通" class="headerlink" title="7.1 普通"></a>7.1 普通</h3><p>下面的命令打包会运行 test 文件夹里面的代码,如果 test 代码要运行很久,请使用<code>6.2</code>的打包方式.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# mvn clean package</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-跳过测试打包"><a href="#7-2-跳过测试打包" class="headerlink" title="7.2 跳过测试打包"></a>7.2 跳过测试打包</h3><p>打包推荐使用如下命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# mvn clean package -Dmaven.test.skip=true</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-3-模块相互依赖打包"><a href="#7-3-模块相互依赖打包" class="headerlink" title="7.3 模块相互依赖打包"></a>7.3 模块相互依赖打包</h3><p>在项目里面,可能会出现<code>mvn-module1</code>依赖<code>mvn-module2</code>的情况.</p>
+<p>如果在<code>mvn-module1</code>目录下打包会出现异常,请在<code>mvn-parent</code>里面打包.</p>
+<p>如下<code>bi-plugins</code>有三个子模块<code>bi-plugins-func</code>,<code>bi-plugins-invoke</code>,<code>bi-plugins-impl</code>.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Administrator@QBKF7V9BTMOUJFI MINGW64 /d/Pro/project/bi/v1.0/trunk/etl/bi-plugins</span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">mvn clean package -Dmaven.test.skip=<span class="literal">true</span></span></span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] Reactor Summary:</span><br><span class="line">[INFO]</span><br><span class="line">[INFO] bi-plugins ......................................... SUCCESS [  0.087 s]</span><br><span class="line">[INFO] bi-plugins-func .................................... SUCCESS [  0.892 s]</span><br><span class="line">[INFO] bi-plugins-invoke .................................. SUCCESS [  1.921 s]</span><br><span class="line">[INFO] bi-plugins-impl .................................... SUCCESS [  0.837 s]</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] BUILD SUCCESS</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] Total time: 3.889 s</span><br><span class="line">[INFO] Finished at: 2018-10-18T11:07:27+08:00</span><br><span class="line">[INFO] Final Memory: 33M/334M</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="8-时间设置"><a href="#8-时间设置" class="headerlink" title="8. 时间设置"></a>8. 时间设置</h2><h3 id="8-1-date"><a href="#8-1-date" class="headerlink" title="8.1 date"></a>8.1 date</h3><p><strong>设置日期</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop235:/etc # date -s  20181008</span><br></pre></td></tr></table></figure>
+
+<p><strong>设置时间</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop235:/etc # date -s  10:19:40</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-2-ntp"><a href="#8-2-ntp" class="headerlink" title="8.2 ntp"></a>8.2 ntp</h3><p>集群里面有些节点的时间可能会出现差异,所以使用阿里云的时间服务器同步互联网时间,用来规范集群里面的每一个节点的时间.</p>
+<p>Suse:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hadoop235:/etc # date -s  10:20:10</span><br><span class="line">Mon Oct  8 10:20:10 CST 2018</span><br><span class="line">hadoop235:/etc # date</span><br><span class="line">Mon Oct  8 10:20:17 CST 2018</span><br><span class="line">hadoop235:/etc # sntp -P no -r ntp1.aliyun.com</span><br><span class="line">hadoop235:/etc # date</span><br><span class="line">Mon Oct  8 10:18:34 CST 2018</span><br></pre></td></tr></table></figure>
+
+<p>CentOS,依赖<code>ntp</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@bi143 hadoop-2.7.3]# ntpdate -u ntp1.aliyun.com</span><br></pre></td></tr></table></figure>
+
+<p>加入定时任务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hadoop235:/etc # crontab -e</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">每五分钟同步一次</span></span><br><span class="line">*/5 * * * * /usr/sbin/sntp -P no -r ntp1.aliyun.com</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-3-crontab"><a href="#8-3-crontab" class="headerlink" title="8.3 crontab"></a>8.3 crontab</h3><p>命令格式: <code>* * * * * command</code></p>
+<blockquote>
+<p>分　 时　 日　 月　 周　 命令</p>
+<p>第 1 列表示分钟 1 ～ 59 每分钟用*或者 *&#x2F;1 表示</p>
+<p>第 2 列表示小时 1 ～ 23（0 表示 0 点）</p>
+<p>第 3 列表示日期 1 ～ 31</p>
+<p>第 4 列表示月份 1 ～ 12</p>
+<p>第 5 列标识号星期 0 ～ 6（0 表示星期天）</p>
+<p>第 6 列要运行的命令</p>
+</blockquote>
+<p>相关例子</p>
+<p>每 5 分钟执行一次: <code>*/5 * * * * sh /home/a.sh</code></p>
+<p>每天凌晨 2 点执行一次: <code>0 2 * * * sh /home/a.sh</code></p>
+<hr>
+<h2 id="9-软件安装"><a href="#9-软件安装" class="headerlink" title="9. 软件安装"></a>9. 软件安装</h2><p>在 linux 上最方便的两种安装软件的方式,编译的那些都是逆天的. :{</p>
+<h3 id="9-1-yum"><a href="#9-1-yum" class="headerlink" title="9.1 yum"></a>9.1 yum</h3><p><strong>查找软件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop235 ~]# yum list git</span><br><span class="line">[root@hadoop235 ~]# yum list |grep git</span><br></pre></td></tr></table></figure>
+
+<p><strong>安装软件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop235 ~]# yum install -y git.x86_64</span><br></pre></td></tr></table></figure>
+
+<p><strong>卸载软件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop235 ~]# yum remove -y git.x86_64</span><br></pre></td></tr></table></figure>
+
+<p><strong>查询本地是否安装</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop235 ~]# yum list  installed |grep git.x86_64</span><br></pre></td></tr></table></figure>
+
+<p><strong>只下载不安装</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop235 ~]# yum install -y --downloadonly --downloaddir=git-rpm/ git.x86_64</span><br></pre></td></tr></table></figure>
+
+<h3 id="9-2-rpm"><a href="#9-2-rpm" class="headerlink" title="9.2 rpm"></a>9.2 rpm</h3><p>切记: <code>能升级更新软件,就绝壁不要强制安装了</code> 笑哭脸.jpg</p>
+<p><strong>安装软件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop235 git-rpm]# rpm -ivh perl-Git-1.8.3.1-14.el7_5.noarch.rpm  git-1.8.3.1-14.el7_5.x86_64.rpm</span><br></pre></td></tr></table></figure>
+
+<p><strong>更新软件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop235 git-rpm]# rpm -Uvh git-1.8.3.1-14.el7_5.x86_64.rpm</span><br></pre></td></tr></table></figure>
+
+<p><strong>查询软件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop235 git-rpm]# rpm -qa|grep git</span><br><span class="line">git-1.8.3.1-14.el7_5.x86_64</span><br></pre></td></tr></table></figure>
+
+<p><strong>卸载软件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop235 git-rpm]# rpm -e --nodeps  git-1.8.3.1-14.el7_5.x86_64</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="10-修改-hostname"><a href="#10-修改-hostname" class="headerlink" title="10. 修改 hostname"></a>10. 修改 hostname</h2><p>有时候需要修改服务器的主机名称,一般是修改<code>/etc/hosts</code>下面的文件,such as</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10.10.1.249     hadoop249</span><br></pre></td></tr></table></figure>
+
+<p>但是如果主机之前设置了其他名称,则不会立刻生效,即使使用<code>service network restart</code>重启网络服务.</p>
+<p>那么我们现在需要使用 hostname 命令来设置一下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hadoop249:/home/bi/.ssh # hostname hadoop249</span><br><span class="line">hadoop249:/home/bi/.ssh # hostname</span><br><span class="line">hadoop249</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="11-找出消耗资源的线程"><a href="#11-找出消耗资源的线程" class="headerlink" title="11. 找出消耗资源的线程"></a>11. 找出消耗资源的线程</h2><p>首先找到 pid</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[bi@bi141 ~]$ jps -lm</span><br><span class="line">11538 org.apache.hadoop.yarn.server.resourcemanager.ResourceManager</span><br><span class="line">12836 org.apache.hadoop.hbase.master.HMaster start</span><br><span class="line">7908 org.apache.hadoop.hdfs.server.namenode.NameNode</span><br><span class="line">8260 org.apache.hadoop.hdfs.qjournal.server.JournalNode</span><br><span class="line">11623 org.apache.hadoop.util.RunJar /opt/bi/kylin/apache-kylin-2.2.0-bin/bin/../tomcat/bin/bootstrap.jar org.apache.catalina.startup.Bootstrap start</span><br><span class="line">1674 org.apache.zookeeper.server.quorum.QuorumPeerMain /opt/bi/zookeeper/zookeeper-3.4.13/bin/../conf/zoo.cfg</span><br><span class="line">18746 org.apache.hadoop.mapreduce.v2.hs.JobHistoryServer</span><br><span class="line">13517 sun.tools.jps.Jps -lm</span><br></pre></td></tr></table></figure>
+
+<p>根据 pid 找到进程里面所有的子线程</p>
+<p>命令: <code>top -H -p [pid]</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[bi@bi143 ~]$ top -H -p 27793</span><br><span class="line">top - 12:02:25 up 6 days,  1:05,  1 user,  load average: 0.01, 0.02, 0.05</span><br><span class="line">Threads:  27 total,   0 running,  27 sleeping,   0 stopped,   0 zombie</span><br><span class="line"><span class="meta prompt_">%</span><span class="language-bash">Cpu(s):  0.2 us,  0.2 sy,  0.0 ni, 99.7 <span class="built_in">id</span>,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span></span><br><span class="line">KiB Mem : 12304688 total,  4511672 free,  1419176 used,  6373840 buff/cache</span><br><span class="line">KiB Swap:  3905532 total,  3861268 free,    44264 used. 10510164 avail Mem</span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND</span><br><span class="line">27793 bi        20   0 5997096 136252  19280 S  0.0  1.1   0:00.00 java</span><br><span class="line">27821 bi        20   0 5997096 136252  19280 S  0.0  1.1   0:01.45 java</span><br><span class="line">27822 bi        20   0 5997096 136252  19280 S  0.0  1.1   0:03.68 java</span><br></pre></td></tr></table></figure>
+
+<p>假设线程:<code>27821</code>占用了 100%的 CPU 资源. 把<code>27821</code>转换成 16 进制:<code>6CAD</code>.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HexStr</span> &#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">var</span> <span class="operator">=</span> <span class="number">27821</span>;</span><br><span class="line">		<span class="type">String</span> <span class="variable">hex</span> <span class="operator">=</span> Integer.toHexString(<span class="keyword">var</span>);</span><br><span class="line">		System.out.println(hex.toUpperCase());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>获取 jvm 里面的堆栈信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[bi@bi143 ~]$ jstack 27793 &gt; stackInfo.txt</span><br><span class="line">[bi@bi143 ~]$ ll stackInfo.txt</span><br><span class="line">-rw-rw-r--. 1 bi bi 14236 Nov  6 12:05 stackInfo.txt</span><br><span class="line">[bi@bi143 ~]$ cat stackInfo.txt |grep -i 6CAD</span><br><span class="line">&quot;main&quot; #1 prio=5 os_prio=0 tid=0x00007fba64010000 nid=0x6cad in Object.wait() [0x00007fba6b00f000]</span><br><span class="line">[bi@bi143 ~]$</span><br></pre></td></tr></table></figure>
+
+<p>可以看出<code>27821</code>是 <code>main</code> 线程.</p>
+<hr>
+<h2 id="12-dump"><a href="#12-dump" class="headerlink" title="12. dump"></a>12. dump</h2><p><code>heap dump</code> 记录内存信息的,<code>thread dump</code> 是记录 CPU 信息的.</p>
+<h3 id="12-1-head-dump"><a href="#12-1-head-dump" class="headerlink" title="12.1 head dump"></a>12.1 head dump</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# jps -lm</span><br><span class="line">545 sun.tools.jps.Jps -lm</span><br><span class="line">11735 org.apache.catalina.startup.Bootstrap start</span><br><span class="line">11609 org.fengfei.lanproxy.server.ProxyServerContainer</span><br><span class="line">[root@team-2 ~]# jmap -dump:format=b,file=11609.hprof 11609</span><br><span class="line">Dumping heap to /root/11609.hprof ...</span><br><span class="line">Heap dump file created</span><br></pre></td></tr></table></figure>
+
+<p>生成 hprof 文件之后,当然要分析啦.</p>
+<p>这里面可以使用 jdk 自带的 jhat 来查看,当然建议使用专业的如 Eclipse MAT 来查看.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# jhat -port 5500 11609.hprof</span><br><span class="line">Reading from 11609.hprof...</span><br><span class="line">Dump file created Fri Nov 23 23:19:26 CST 2018</span><br><span class="line">Snapshot read, resolving...</span><br><span class="line">Resolving 139016 objects...</span><br><span class="line">Chasing references, expect 27 dots...........................</span><br><span class="line">Eliminating duplicate references...........................</span><br><span class="line">Snapshot resolved.</span><br><span class="line">Started HTTP server on port 5500</span><br><span class="line">Server is ready.</span><br></pre></td></tr></table></figure>
+
+<h3 id="12-2-thread-dump"><a href="#12-2-thread-dump" class="headerlink" title="12.2 thread dump"></a>12.2 thread dump</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# jps -lm</span><br><span class="line">11735 org.apache.catalina.startup.Bootstrap start</span><br><span class="line">953 sun.tools.jps.Jps -lm</span><br><span class="line">11609 org.fengfei.lanproxy.server.ProxyServerContainer</span><br><span class="line">[root@team-2 ~]# jstack -l 11609 &gt; 11609stack.info</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="13-查找进程关联文件"><a href="#13-查找进程关联文件" class="headerlink" title="13. 查找进程关联文件"></a>13. 查找进程关联文件</h2><p>使用<code>lsof</code>查找进程关联的文件.</p>
+<p>如果服务器尚未安装 lsof,请先安装,命令如下:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 /]# yum install -y lsof</span><br></pre></td></tr></table></figure>
+
+<p>查看进程关联文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 mini-docs]# lsof -p 1536</span><br><span class="line">COMMAND  PID USER   FD      TYPE DEVICE SIZE/OFF    NODE NAME</span><br><span class="line">node    1536 root  cwd       DIR  253,1     4096  527608 /opt/soft/docsify/mini-docs</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="14-常用脚本"><a href="#14-常用脚本" class="headerlink" title="14. 常用脚本"></a>14. 常用脚本</h2><p>在项目里面需要一个简单的启用脚本的话,这是一个简单的范例. :”}</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /opt/soft/4fun/4fun-zhihu/</span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line"></span><br><span class="line"><span class="comment"># app name</span></span><br><span class="line">app_name=<span class="string">&#x27;4fun-zhihu-0.0.1-SNAPSHOT.jar&#x27;</span></span><br><span class="line">num_regex=<span class="string">&#x27;^[0-9]+$&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># find the pid of app</span></span><br><span class="line">pid=`ps -ef |grep <span class="variable">$app_name</span> |grep -v <span class="string">&#x27;grep&#x27;</span> | awk <span class="string">&#x27;&#123;print $2&#125;&#x27;</span>`</span><br><span class="line"></span><br><span class="line"><span class="comment"># if exists</span></span><br><span class="line"><span class="keyword">if</span> [[ <span class="string">&quot;<span class="variable">$pid</span>&quot;</span> =~ <span class="variable">$num_regex</span> ]];<span class="keyword">then</span></span><br><span class="line">	<span class="built_in">echo</span> -e <span class="string">&quot;\nWe kill: &quot;</span> <span class="variable">$pid</span> <span class="string">&quot; of:&quot;</span> <span class="variable">$app_name</span></span><br><span class="line">	<span class="built_in">kill</span> -9 <span class="variable">$pid</span></span><br><span class="line">	<span class="built_in">rm</span> -rf nohup.out</span><br><span class="line">	<span class="built_in">rm</span> -rf logs/*.<span class="built_in">log</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># start the app</span></span><br><span class="line"><span class="comment"># nohup java -jar app/$app_name &amp;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># nohup java  \</span></span><br><span class="line"><span class="comment"># -Dcom.sun.management.jmxremote.rmi.port=9876 \</span></span><br><span class="line"><span class="comment"># -Dcom.sun.management.jmxremote.port=9876 \</span></span><br><span class="line"><span class="comment"># -Dcom.sun.management.jmxremote.ssl=false \</span></span><br><span class="line"><span class="comment"># -Dcom.sun.management.jmxremote.authenticate=false \</span></span><br><span class="line"><span class="comment"># -Djava.rmi.server.hostname=&quot;47.98.104.252&quot; \</span></span><br><span class="line"><span class="comment"># -jar app/$app_name &gt;/dev/null 2&gt;&amp;1 &amp;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">nohup</span> java -jar app/<span class="variable">$app_name</span> &amp;</span><br><span class="line"></span><br><span class="line"><span class="comment"># sleep five seconds</span></span><br><span class="line"><span class="built_in">sleep</span> 5s</span><br><span class="line"></span><br><span class="line">pid=`ps -ef |grep <span class="variable">$app_name</span> |grep -v <span class="string">&#x27;grep&#x27;</span> | awk <span class="string">&#x27;&#123;print $2&#125;&#x27;</span>`</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [[ <span class="string">&quot;<span class="variable">$pid</span>&quot;</span> =~ <span class="variable">$num_regex</span> ]];<span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> -e <span class="string">&quot;\n--- Start [&quot;</span> <span class="variable">$app_name</span> <span class="string">&quot;] success ----\n&quot;</span></span><br><span class="line">	<span class="built_in">echo</span> -e <span class="string">&quot;\nwith pid: &quot;</span> <span class="variable">$pid</span> <span class="string">&quot;\n&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="built_in">echo</span> -e <span class="string">&quot;\n--- Start [&quot;</span> <span class="variable">$app_name</span> <span class="string">&quot;] failure ----\n&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># the log of start up</span></span><br><span class="line">start_time=`<span class="built_in">date</span> <span class="string">&#x27;+%Y-%m-%d %H:%M:%S&#x27;</span>`</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$start_time</span> &gt; latest-log</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="15-远程监控-jvm"><a href="#15-远程监控-jvm" class="headerlink" title="15. 远程监控 jvm"></a>15. 远程监控 jvm</h2><p>在开启 java 项目的时候,可以开启远程监控,方便查看 jvm 在服务器上面的资源情况.</p>
+<ul>
+<li>Djava.rmi.server.hostname 填写 jvm 所在服务器 ip 地址</li>
+<li>Dcom.sun.management.jmxremote.port 填写监控端口</li>
+</ul>
+<p>例子 1:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">nohup</span> java  \</span><br><span class="line">-Dcom.sun.management.jmxremote.rmi.port=9876 \</span><br><span class="line">-Dcom.sun.management.jmxremote.port=9876 \</span><br><span class="line">-Dcom.sun.management.jmxremote.ssl=<span class="literal">false</span> \</span><br><span class="line">-Dcom.sun.management.jmxremote.authenticate=<span class="literal">false</span> \</span><br><span class="line">-Djava.rmi.server.hostname=<span class="string">&quot;47.98.104.252&quot;</span> \</span><br><span class="line">-jar app/<span class="variable">$app_name</span> &amp;</span><br></pre></td></tr></table></figure>
+
+<p>例子 2:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">nohup</span> java  \</span><br><span class="line">-Dcom.sun.management.jmxremote.rmi.port=9876 \</span><br><span class="line">-Dcom.sun.management.jmxremote.port=9876 \</span><br><span class="line">-Dcom.sun.management.jmxremote.ssl=<span class="literal">false</span> \</span><br><span class="line">-Dcom.sun.management.jmxremote.authenticate=<span class="literal">false</span> \</span><br><span class="line">-Djava.rmi.server.hostname=<span class="string">&quot;47.98.104.252&quot;</span> \</span><br><span class="line">-Xms2048M \</span><br><span class="line">-Xmx20M \</span><br><span class="line">-XX:PermSize=1000M \</span><br><span class="line">-XX:MaxPermSize=1048M \</span><br><span class="line">-XX:MaxDirectMemorySize=64M \</span><br><span class="line">-jar *.jar  &amp;</span><br></pre></td></tr></table></figure>
+
+<p>Q: 为什么在阿里云上面开启这个检测之后,使用远程连接,连接不上?</p>
+<p>A: 因为除了上面的那端口,还有其他通讯端口. <del>,需要在防火墙上开启出来.</del></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 4fun-spider]# jps  -lm |grep 4fun-spider</span><br><span class="line">21825 app/4fun-spider-0.0.1-SNAPSHOT.jar</span><br><span class="line">[root@team-2 4fun-spider]# netstat -lnp|grep 21825</span><br><span class="line">tcp        0      0 0.0.0.0:9876            0.0.0.0:*               LISTEN      21825/java</span><br><span class="line">tcp        0      0 0.0.0.0:37277           0.0.0.0:*               LISTEN      21825/java</span><br></pre></td></tr></table></figure>
+
+<p>As you can see, 开启<code>9876</code>端口 <del>,还开启了<code>37277</code></del>(据说随机开启,冷漠脸).</p>
+<p>netstat 命令解释:</p>
+<ul>
+<li>-n 表示表示输出中不显示主机,端口和用户名.</li>
+<li>-lb 表示只显示监听 listening 端口.</li>
+<li>-t 表示只显示 tcp 协议的端口.</li>
+<li>-p 表示显示进程的 PID 和进程名称.</li>
+</ul>
+<hr>
+<h2 id="16-wget-curl"><a href="#16-wget-curl" class="headerlink" title="16. wget&amp;curl"></a>16. wget&amp;curl</h2><h3 id="16-1-wget"><a href="#16-1-wget" class="headerlink" title="16.1 wget"></a>16.1 wget</h3><p>Q: 如果在服务器要下载网上的资源链接该怎么办呢?</p>
+<p>A: wget,你值得拥有.命令格式: <code>wget &#39;resourceUrl&#39; -O outputFileName</code>,resourceUrl 使用<code>&#39;</code>来包住(<code>-O outputFileName</code>为可选命令,O 为大写字母).</p>
+<p>比如使用服务器下载<code>vscode</code>:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# wget &#x27;https://vscode.cdn.azure.cn/stable/05f146c7a8f7f78e80261aa3b2a2e642586f9eb3/VSCode-win32-x64-1.32.1.zip&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>在网络不稳定的情况下,wget 会出现断开的可能,又要重新下载,这叫我情何以堪.</p>
+<p>所以可以使用 wget 的断点续传功能: <code>wget -c fileUrl</code></p>
+<p>发现下载任务停止之后,使用<code>ctrl+z</code>(不是 ctrl+c)暂停任务,然后再使用<code>wget -c fileUrl</code>来续传下载文件.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# wget -c &#x27;https://vscode.cdn.azure.cn/stable/05f146c7a8f7f78e80261aa3b2a2e642586f9eb3/VSCode-win32-x64-1.32.1.zip&#x27;</span><br></pre></td></tr></table></figure>
+
+<h3 id="16-2-curl"><a href="#16-2-curl" class="headerlink" title="16.2 curl"></a>16.2 curl</h3><p>Q: 在服务器上没有浏览器,该怎么判断服务器上的接口呢?</p>
+<p>A: 都长这么大了,要自己学会 curl 了.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# curl &#x27;127.0.0.1:8081/rest/answers?topicId=35&amp;pageIndex=0&amp;pageSize=5&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>Q: 要是 post 需要带参数怎么办呀?</p>
+<p>A: 例子如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@team-2 ~]# curl -XPOST &#x27;http://10.33.1.111:9200/movie_lib/movies/_delete_by_query?pretty&#x27; -H &#x27;Content-Type: application/json&#x27; -d &#x27;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;query&quot;: &#123;</span><br><span class="line">    &quot;match_all&quot;: &#123;&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="17-nginx"><a href="#17-nginx" class="headerlink" title="17. nginx"></a>17. nginx</h2><p>自从有了服务器之后,就有点飘了.什么域名啦,什么 nginx 啦,什么 Tomcat 啦,什么 mysql 啦,全都 tmd 给我加上.万事有个 but,卧槽.</p>
+<p>Q: 在 Tomcat 里面启动的项目,怎么使用域名访问,而不是每次都是些 ip?</p>
+<p>A: 假设服务器的 tomcat 项目的访问地址为:<code>http://47.98.104.252:8080/schedule/views/Schedule.jsp</code>,那么我们需要在 nginx 加上这个项目的代理即可.</p>
+<p>注意: <strong>location 的路径最好和 proxy_pass 里面的那个一致</strong>.</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">location</span> /schedule/ &#123;</span><br><span class="line">  <span class="attribute">proxy_pass</span> http://127.0.0.1:8080/schedule/;</span><br><span class="line">  <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">  <span class="attribute">proxy_set_header</span> X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">  <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">  <span class="attribute">proxy_set_header</span> X-Forwarded-Proto https;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="18-删除特殊符号文件"><a href="#18-删除特殊符号文件" class="headerlink" title="18. 删除特殊符号文件"></a>18. 删除特殊符号文件</h2><p>在服务器上面有时候存在一个很恼人的情况,就是文件名称含有特殊符号,用 <code>rm -rf fileName</code>删除不了.</p>
+<p>那么,你可以尝试如下的删除操作 :”}</p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/linux/linux-comm-xargs.html">linux xrags 命令 link</a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ls -i 获取文件的iNode</span></span><br><span class="line"><span class="comment"># mr3306 @ mr3306 in /opt/videos [23:13:10]</span></span><br><span class="line">$ <span class="built_in">ls</span> -i</span><br><span class="line">3358869 movies   6943951 test.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除文件</span></span><br><span class="line"><span class="comment"># mr3306 @ mr3306 in /opt/videos [23:13:54]</span></span><br><span class="line">$ <span class="built_in">ls</span> -i |grep 6943951 | awk <span class="string">&#x27;&#123;print $2&#125;&#x27;</span> | xargs <span class="built_in">rm</span> -f</span><br><span class="line"></span><br><span class="line"><span class="comment"># mr3306 @ mr3306 in /opt/videos [23:14:58]</span></span><br><span class="line">$ <span class="built_in">ls</span></span><br><span class="line">movies</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="19-监控网络流量"><a href="#19-监控网络流量" class="headerlink" title="19. 监控网络流量"></a>19. 监控网络流量</h2><p>因为发现服务器的网速变慢了很多,需要监控一下是什么进程占用了大部分流量.</p>
+<p>Q: 那么使用什么软件在 centos 上监控流量比较好呀?</p>
+<p>A: 推荐使用<code>nethogs</code>,因为可以 yum 安装. 流下了没有技术的眼泪.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@izwz9i5n2y2vnpulvrtfirz ~]# yum install -y nethogs</span><br><span class="line">[root@izwz9i5n2y2vnpulvrtfirz ~]# nethogs</span><br><span class="line"></span><br><span class="line">    PID USER     PROGRAM                                        DEV        SENT      RECEIVED</span><br><span class="line">      ? root     172.16.36.35:25165-108.179.219.12:52718                    0.000	0.000 KB/sec</span><br><span class="line">      ? root     172.16.36.35:5949-89.248.160.193:51523                     0.000	0.000 KB/sec</span><br><span class="line">      ? root     172.16.36.35:6336-120.235.177.205:10726                    0.000	0.000 KB/sec</span><br><span class="line">      ? root     172.16.36.35:51910-94.102.51.28:52656                      0.000	0.000 KB/sec</span><br><span class="line">      ? root     172.16.36.35:1433-124.166.252.194:65513                    0.000	0.000 KB/sec</span><br><span class="line">   1283 root     /etc/LINUXTIANFA                               eth0        0.029	0.000 KB/sec</span><br><span class="line">  19419 mysql    /usr/sbin/mysqld                               eth0        0.000	0.000 KB/sec</span><br><span class="line">   1280 root     /etc/LINUXTIANFA                               eth0        0.014	0.000 KB/sec</span><br><span class="line">  20437 root     sshd: root@pts/1                               eth0        0.000	0.000 KB/sec</span><br><span class="line">      ? root     unknown TCP                                                0.000	0.000 KB/sec</span><br><span class="line"></span><br><span class="line">  TOTAL                                                                     0.043       0.000 KB/sec</span><br></pre></td></tr></table></figure>
+
+<p>可惜的是,上面的有一些 pid 都是?,惆怅.</p>
+<hr>
+<h2 id="20-vi-vim-中文乱码"><a href="#20-vi-vim-中文乱码" class="headerlink" title="20. vi&#x2F;vim 中文乱码"></a>20. vi&#x2F;vim 中文乱码</h2><p>Q: vi&#x2F;vim 在编辑的时候会中文乱码,怎么办?</p>
+<p>A: 如果是 vi 的话,在<code>~/</code>创建<code>.virc</code>,如果是 vim 的话,在<code>~/</code>创建<code>.vimrc</code>填写下面的内容</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> encoding=utf-8</span><br><span class="line"><span class="built_in">set</span> fileencoding=utf-8</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2025/07/08/server-linux-magic/" title="Linux 常用命令" target="_blank" rel="external">http://example.com/2025/07/08/server-linux-magic/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/cs12110" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/12764287.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/cs12110" target="_blank"><span class="text-dark">cs12110</span><small class="ml-1x"></small></a></h3>
+        <div>就一打字的</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2025/07/08/rocketmq-pro/" title="RocketMQ 进阶使用"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2025/07/08/server-mvn/" title="Maven 使用手册"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

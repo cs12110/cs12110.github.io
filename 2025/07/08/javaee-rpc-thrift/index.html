@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Rpc 之 Thrift | mini-docs</title>
+  <meta name="description" content="RpcIBM的博客不错呀.详情link RPC:远程过程调用(Remote Procedure Call,RPC)是一个计算机通信协议.该协议允许运行于一台计算机的程序调用另一台计算机的子程序,而程序员无需额外地为这个交互作用编程. 为什么选择 RPC? 提高开发效率,tcp携带数据比http的少,减少网络负载.tcp有着更好的响应速度.  1. 安装Thrift1.1 Apache Thrift">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rpc 之 Thrift">
+<meta property="og:url" content="http://example.com/2025/07/08/javaee-rpc-thrift/index.html">
+<meta property="og:site_name" content="mini-docs">
+<meta property="og:description" content="RpcIBM的博客不错呀.详情link RPC:远程过程调用(Remote Procedure Call,RPC)是一个计算机通信协议.该协议允许运行于一台计算机的程序调用另一台计算机的子程序,而程序员无需额外地为这个交互作用编程. 为什么选择 RPC? 提高开发效率,tcp携带数据比http的少,减少网络负载.tcp有着更好的响应速度.  1. 安装Thrift1.1 Apache Thrift">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/javaee-images/thrift-dispatch.png">
+<meta property="article:published_time" content="2025-07-08T12:46:25.000Z">
+<meta property="article:modified_time" content="2025-07-08T10:10:09.140Z">
+<meta property="article:author" content="cs12110@163.com">
+<meta property="article:tag" content="Thrift">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/javaee-images/thrift-dispatch.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2025/07/08/javaee-rpc-thrift/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="mini-docs" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/cs12110" target="_blank">
+          <img class="img-circle img-rotate" src="/images/12764287.png" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">cs12110</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Macondo</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>就一打字的!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaEE/">JavaEE</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/KillMe/">KillMe</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ai/">ai</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/database/">database</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/server/">server</a><span class="category-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AOP/" rel="tag">AOP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Arthas/" rel="tag">Arthas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/" rel="tag">ClassLoader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docsify/" rel="tag">Docsify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GC/" rel="tag">GC</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/" rel="tag">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/" rel="tag">Go</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOC/" rel="tag">IOC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IOs/" rel="tag">IOs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E5%8A%A0%E5%AF%86/" rel="tag">Java 加密</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java-%E6%9E%9A%E4%B8%BE/" rel="tag">Java 枚举</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaEE/" rel="tag">JavaEE</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E4%BC%98%E5%8C%96/" rel="tag">Java优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">Java设计模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmeter/" rel="tag">Jmeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jmh/" rel="tag">Jmh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">Json 序列化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/" rel="tag">MQ</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mockito/" rel="tag">Mockito</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" rel="tag">Mybatis 源码阅读</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shiro/" rel="tag">Shiro</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Springboot/" rel="tag">Springboot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thrift/" rel="tag">Thrift</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zookeeper/" rel="tag">Zookeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dify/" rel="tag">dify</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dubbo/" rel="tag">dubbo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ftp/" rel="tag">ftp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/" rel="tag">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">lambda表达式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lanproxy/" rel="tag">lanproxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/myabtis/" rel="tag">myabtis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nacos/" rel="tag">nacos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/websocket/" rel="tag">websocket</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xxljob/" rel="tag">xxljob</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zipkin/" rel="tag">zipkin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" rel="tag">代码生成器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="tag">分布式事务</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" rel="tag">分库分表</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" rel="tag">多数据源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="tag">工作流</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" rel="tag">布隆过滤器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" rel="tag">微信对接</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" rel="tag">日志框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" rel="tag">规则引擎</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/AOP/" style="font-size: 13px;">AOP</a> <a href="/tags/Arthas/" style="font-size: 13px;">Arthas</a> <a href="/tags/ClassLoader/" style="font-size: 13px;">ClassLoader</a> <a href="/tags/Docsify/" style="font-size: 13px;">Docsify</a> <a href="/tags/ElasticSearch/" style="font-size: 13.17px;">ElasticSearch</a> <a href="/tags/GC/" style="font-size: 13.17px;">GC</a> <a href="/tags/Game/" style="font-size: 13px;">Game</a> <a href="/tags/Go/" style="font-size: 13.5px;">Go</a> <a href="/tags/Gogs/" style="font-size: 13px;">Gogs</a> <a href="/tags/IOC/" style="font-size: 13px;">IOC</a> <a href="/tags/IOs/" style="font-size: 13px;">IOs</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/JWT/" style="font-size: 13px;">JWT</a> <a href="/tags/Java-%E5%8A%A0%E5%AF%86/" style="font-size: 13px;">Java 加密</a> <a href="/tags/Java-%E6%9E%9A%E4%B8%BE/" style="font-size: 13px;">Java 枚举</a> <a href="/tags/JavaEE/" style="font-size: 13.17px;">JavaEE</a> <a href="/tags/Java%E4%BC%98%E5%8C%96/" style="font-size: 13px;">Java优化</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 14px;">Java基础</a> <a href="/tags/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 13px;">Java设计模式</a> <a href="/tags/Jmeter/" style="font-size: 13px;">Jmeter</a> <a href="/tags/Jmh/" style="font-size: 13px;">Jmh</a> <a href="/tags/Json-%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 13px;">Json 序列化</a> <a href="/tags/Leetcode/" style="font-size: 13px;">Leetcode</a> <a href="/tags/MQ/" style="font-size: 13.83px;">MQ</a> <a href="/tags/Mockito/" style="font-size: 13px;">Mockito</a> <a href="/tags/Mybatis-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" style="font-size: 13px;">Mybatis 源码阅读</a> <a href="/tags/PostgreSQL/" style="font-size: 13px;">PostgreSQL</a> <a href="/tags/RabbitMQ/" style="font-size: 13.33px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 13.5px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 13.17px;">RocketMQ</a> <a href="/tags/Shiro/" style="font-size: 13px;">Shiro</a> <a href="/tags/Spring/" style="font-size: 13.67px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 13px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 13.67px;">SpringCloud</a> <a href="/tags/Springboot/" style="font-size: 13.17px;">Springboot</a> <a href="/tags/Thrift/" style="font-size: 13px;">Thrift</a> <a href="/tags/Zookeeper/" style="font-size: 13px;">Zookeeper</a> <a href="/tags/dify/" style="font-size: 13px;">dify</a> <a href="/tags/docker/" style="font-size: 13.17px;">docker</a> <a href="/tags/dubbo/" style="font-size: 13px;">dubbo</a> <a href="/tags/ftp/" style="font-size: 13px;">ftp</a> <a href="/tags/git/" style="font-size: 13px;">git</a> <a href="/tags/jenkins/" style="font-size: 13px;">jenkins</a> <a href="/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 13px;">lambda表达式</a> <a href="/tags/lanproxy/" style="font-size: 13px;">lanproxy</a> <a href="/tags/linux/" style="font-size: 13px;">linux</a> <a href="/tags/maven/" style="font-size: 13.33px;">maven</a> <a href="/tags/myabtis/" style="font-size: 13px;">myabtis</a> <a href="/tags/mysql/" style="font-size: 13.83px;">mysql</a> <a href="/tags/nacos/" style="font-size: 13px;">nacos</a> <a href="/tags/nginx/" style="font-size: 13px;">nginx</a> <a href="/tags/redis/" style="font-size: 13.33px;">redis</a> <a href="/tags/tomcat/" style="font-size: 13px;">tomcat</a> <a href="/tags/websocket/" style="font-size: 13px;">websocket</a> <a href="/tags/xxljob/" style="font-size: 13px;">xxljob</a> <a href="/tags/zipkin/" style="font-size: 13px;">zipkin</a> <a href="/tags/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" style="font-size: 13px;">代码生成器</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" style="font-size: 13px;">分布式事务</a> <a href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" style="font-size: 13.17px;">分库分表</a> <a href="/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" style="font-size: 13px;">多数据源</a> <a href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/" style="font-size: 13px;">工作流</a> <a href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" style="font-size: 13px;">布隆过滤器</a> <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%AF%B9%E6%8E%A5/" style="font-size: 13px;">微信对接</a> <a href="/tags/%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">日志框架</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 13px;">爬虫</a> <a href="/tags/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8E/" style="font-size: 13px;">规则引擎</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">七月 2025</a><span class="archive-list-count">105</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-thread/" class="title">Go 多线程</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Go/">Go</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/go-web/" class="title">Go Web</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-classloder/" class="title">ClassLoader</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-encode/" class="title">Java 加密</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/07/08/java-enum/" class="title">Java 枚举</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-javaee-rpc-thrift" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Rpc 之 Thrift
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2025/07/08/javaee-rpc-thrift/" class="article-date">
+	  <time datetime="2025-07-08T12:46:25.000Z" itemprop="datePublished">2025-07-08</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/JavaEE/">JavaEE</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Thrift/" rel="tag">Thrift</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2025/07/08/javaee-rpc-thrift/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="Rpc"><a href="#Rpc" class="headerlink" title="Rpc"></a>Rpc</h1><p>IBM的博客不错呀.详情<a target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/">link</a></p>
+<p>RPC:远程过程调用(Remote Procedure Call,RPC)是一个计算机通信协议.该协议允许运行于一台计算机的程序调用另一台计算机的子程序,而程序员无需额外地为这个交互作用编程.</p>
+<p>为什么选择 RPC?</p>
+<p>提高开发效率,tcp携带数据比http的少,减少网络负载.tcp有着更好的响应速度.</p>
+<hr>
+<h2 id="1-安装Thrift"><a href="#1-安装Thrift" class="headerlink" title="1. 安装Thrift"></a>1. 安装Thrift</h2><h3 id="1-1-Apache-Thrift概述"><a href="#1-1-Apache-Thrift概述" class="headerlink" title="1.1 Apache Thrift概述"></a>1.1 Apache Thrift概述</h3><p>Thrift是Facebook实现的一种高效的,支持多种编程语言的远程服务调用的框架.</p>
+<p>Thrift 服务器包含用于绑定协议和传输层的基础架构,它提供阻塞,非阻塞,单线程和多线程的模式运行在服务器上,可以配合服务器 &#x2F; 容器一起运行,可以和现有的 J2EE 服务器 &#x2F;Web 容器无缝的结合.</p>
+<p>在网上的资料看来,Thrift比Google的gRpc性能更高,所以才选择使用的.</p>
+<h3 id="1-2-下载安装包"><a href="#1-2-下载安装包" class="headerlink" title="1.2 下载安装包"></a>1.2 下载安装包</h3><p>下载安装包,官网下载地址<a target="_blank" rel="noopener" href="http://thrift.apache.org/download">link</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-116 thrift]# wget https://www-us.apache.org/dist/thrift/0.11.0/thrift-0.11.0.tar.gz</span><br><span class="line">[root@dev-116 thrift-0.11.0]# tar -xvf thrift-0.11.0.tar.gz </span><br><span class="line">[root@dev-116 thrift-0.11.0]# <span class="built_in">cd</span> thrift-0.11.0</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-安装thrift"><a href="#1-3-安装thrift" class="headerlink" title="1.3 安装thrift"></a>1.3 安装thrift</h3><p>重点: <strong>依赖<code>gcc</code>和<code>gcc-c++</code>编译环境</strong></p>
+<p>如果没有该环境请先安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-116 thrift-0.11.0]# yum install -y gcc</span><br><span class="line">[root@dev-116 thrift-0.11.0]# yum install -y gcc-c++</span><br></pre></td></tr></table></figure>
+
+<p>安装thrift</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-116 thrift-0.11.0]# ./configure</span><br><span class="line">[root@dev-116 thrift-0.11.0]# make </span><br><span class="line">[root@dev-116 thrift-0.11.0]# make install</span><br><span class="line">[root@dev-116 thrift-0.11.0]# thrift</span><br><span class="line">Usage: thrift [options] file</span><br><span class="line">Use thrift -<span class="built_in">help</span> <span class="keyword">for</span> a list of options</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="1-4-测试使用"><a href="#1-4-测试使用" class="headerlink" title="1.4 测试使用"></a>1.4 测试使用</h3><p>创建文件夹</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-116 thrift-0.11.0]# <span class="built_in">cd</span> ..</span><br><span class="line">[root@dev-116 thrift]# <span class="built_in">mkdir</span> thrift-java</span><br><span class="line">[root@dev-116 thrift]# <span class="built_in">cd</span> thrift-java</span><br></pre></td></tr></table></figure>
+
+<p>编写和编译接口</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-116 thrift-java]# <span class="built_in">cat</span> Hello.thrift </span><br><span class="line">namespace java service.demo</span><br><span class="line">service Hello&#123;</span><br><span class="line">    string helloString(1:string para)</span><br><span class="line">&#125;</span><br><span class="line">[root@dev-116 thrift-java]# thrift -r -gen java Hello.thrift </span><br><span class="line">[root@dev-116 thrift-java]# <span class="built_in">ls</span></span><br><span class="line">gen-java  Hello.thrift</span><br><span class="line">[root@dev-116 thrift-java]# <span class="built_in">ls</span> gen-java/service/demo/</span><br><span class="line">Hello.java</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="2-基础知识"><a href="#2-基础知识" class="headerlink" title="2. 基础知识"></a>2. 基础知识</h2><p>简单架构:<strong>服务提供端提供服务给客户端调用.</strong></p>
+<p><img src="/images/javaee-images/thrift-dispatch.png"></p>
+<p>温馨提示: <strong>请结合后面的章节看.</strong></p>
+<h3 id="2-1-数据类型"><a href="#2-1-数据类型" class="headerlink" title="2.1 数据类型"></a>2.1 数据类型</h3><p>基础数据类型如下:</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+<th>Java中对应类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bool</td>
+<td>布尔值,bool or false</td>
+<td>boolean</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>8位有符号整数</td>
+<td>byte</td>
+</tr>
+<tr>
+<td>i16</td>
+<td>16位有符号整数</td>
+<td>short</td>
+</tr>
+<tr>
+<td>i32</td>
+<td>32位有符号整数</td>
+<td>int</td>
+</tr>
+<tr>
+<td>i64</td>
+<td>64位有符号整数</td>
+<td>long</td>
+</tr>
+<tr>
+<td>double</td>
+<td>64位浮点数</td>
+<td>double</td>
+</tr>
+<tr>
+<td>string</td>
+<td>未知编码文本或二进制字符串</td>
+<td>String</td>
+</tr>
+<tr>
+<td>struct</td>
+<td>结构体类型</td>
+<td>JavaBean</td>
+</tr>
+<tr>
+<td>list</td>
+<td>容器类型,数组</td>
+<td>ArrayList</td>
+</tr>
+<tr>
+<td>set</td>
+<td>容器类型,集合</td>
+<td>HashSet</td>
+</tr>
+<tr>
+<td>map</td>
+<td>容器类型,映射</td>
+<td>HashMap</td>
+</tr>
+<tr>
+<td>exception</td>
+<td>异常类型</td>
+<td>Exception</td>
+</tr>
+<tr>
+<td>service</td>
+<td>服务类型,对应服务的类</td>
+<td>无</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-传输协议"><a href="#2-2-传输协议" class="headerlink" title="2.2 传输协议"></a>2.2 传输协议</h3><p>注意: <strong>客户端和服务端都要同一个协议,如要替换请同时替换服务端和客户端协议.</strong></p>
+<p>Thrift 可以让用户选择客户端与服务端之间传输通信协议的类别,在传输协议上总体划分为<code>文本(text)</code> 和<code>二进制(binary)</code> 传输协议,为节约带宽,提高传输效率,一般情况下使用二进制类型的传输协议.常用协议有以下几种:</p>
+<table>
+<thead>
+<tr>
+<th>协议类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TBinaryProtocol</td>
+<td>二进制编码格式进行数据传输</td>
+</tr>
+<tr>
+<td>TCompactProtocol</td>
+<td>高效率的,密集的二进制编码格式进行数据传输</td>
+</tr>
+<tr>
+<td>TJSONProtocol</td>
+<td>使用 JSON 的数据编码协议进行数据传输</td>
+</tr>
+<tr>
+<td>TSimpleJSONProtocol</td>
+<td>只提供 JSON 只写的协议,适用于通过脚本语言解析</td>
+</tr>
+</tbody></table>
+<p>如在<code>PersonServiceClient</code>和<code>PersonServiceServer</code>里面替换为<code>TBinaryProtocol</code>协议.</p>
+<p><code>PersonServiceServer</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置协议工厂为 TBinaryProtocol.Factory</span></span><br><span class="line"><span class="type">Factory</span> <span class="variable">proFactory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TBinaryProtocol</span>.Factory();</span><br></pre></td></tr></table></figure>
+
+<p><code>PersonServiceClient</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">TProtocol</span> <span class="variable">protocol</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TBinaryProtocol</span>(transport);</span><br><span class="line">PersonService.<span class="type">Client</span> <span class="variable">client</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PersonService</span>.Client(protocol);</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-传输层类型"><a href="#2-3-传输层类型" class="headerlink" title="2.3 传输层类型"></a>2.3 传输层类型</h3><p>常用传输层</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TSocket</td>
+<td>使用阻塞式 I&#x2F;O 进行传输,是最常见的模式</td>
+</tr>
+<tr>
+<td>TFramedTransport</td>
+<td>使用非阻塞方式,按块的大小进行传输,类似于 Java 中的 NIO</td>
+</tr>
+<tr>
+<td>TNonblockingTransport</td>
+<td>使用非阻塞方式,用于构建异步客户端</td>
+</tr>
+</tbody></table>
+<p>a. <strong>TSocket使用</strong></p>
+<p>请参考<code>3.4 客户端</code>章节内容.</p>
+<p>b. <strong>TFramedTransport使用</strong></p>
+<p>若使用 TFramedTransport 传输层,其服务器必须修改为非阻塞的服务类型,客户端只需替换清单 TTransport 部分, TNonblockingServerTransport 类是构建非阻塞 socket 的抽象类,TNonblockingServerSocket 类继承 TNonblockingServerTransport</p>
+<p>使用 TFramedTransport 传输层的 HelloServiceServer.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">TNonblockingServerTransport serverTransport= <span class="keyword">new</span> <span class="title class_">TNonblockingServerSocket</span>(<span class="number">10005</span>); </span><br><span class="line">Hello.<span class="type">Processor</span> <span class="variable">processor</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hello</span>.Processor(<span class="keyword">new</span> <span class="title class_">HelloServiceImpl</span>()); </span><br><span class="line"><span class="type">TServer</span> <span class="variable">server</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TNonblockingServer</span>(processor, serverTransport); </span><br><span class="line">System.out.println(<span class="string">&quot;Start server on port 10005 ...&quot;</span>); </span><br><span class="line">server.serve();</span><br></pre></td></tr></table></figure>
+
+<p>使用 TFramedTransport 传输层的 HelloServiceClient.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">TTransport</span> <span class="variable">transport</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TFramedTransport</span>(<span class="keyword">new</span> <span class="title class_">TSocket</span>(<span class="string">&quot;localhost&quot;</span>, <span class="number">10005</span>));</span><br></pre></td></tr></table></figure>
+
+
+
+<p>c. <strong>TNonblockingTransport</strong></p>
+<p>请参考<code>5. 构建异步客户端</code>章节代码.</p>
+<h3 id="2-4-服务端类型"><a href="#2-4-服务端类型" class="headerlink" title="2.4 服务端类型"></a>2.4 服务端类型</h3><table>
+<thead>
+<tr>
+<th>类型名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TSimpleServer</td>
+<td>单线程服务器端使用标准的阻塞式 I&#x2F;O</td>
+</tr>
+<tr>
+<td>TThreadPoolServer</td>
+<td>多线程服务器端使用标准的阻塞式 I&#x2F;O</td>
+</tr>
+<tr>
+<td>TNonblockingServer</td>
+<td>多线程服务器端使用非阻塞式 I&#x2F;O</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="3-HelloWorld"><a href="#3-HelloWorld" class="headerlink" title="3. HelloWorld"></a>3. HelloWorld</h2><p>把生成的<code>Hello.java</code>文件复制到项目里面.</p>
+<h3 id="3-1-pom-xml依赖"><a href="#3-1-pom-xml依赖" class="headerlink" title="3.1 pom.xml依赖"></a>3.1 pom.xml依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.thrift<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>libthrift<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.11.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-log4j12<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.7.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="3-2-服务实现类"><a href="#3-2-服务实现类" class="headerlink" title="3.2 服务实现类"></a>3.2 服务实现类</h3><p>创建 HelloServiceImpl.java 文件并实现 Hello.java 文件中的 Hello.Iface 接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> service.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.TException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">Hello</span>.Iface &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">helloString</span><span class="params">(String para)</span> <span class="keyword">throws</span> TException &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">this</span>.getClass() + <span class="string">&quot; say: &quot;</span> + para;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-服务端"><a href="#3-3-服务端" class="headerlink" title="3.3 服务端"></a>3.3 服务端</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> service.server;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.TProcessor;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TBinaryProtocol;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TBinaryProtocol.Factory;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.server.TServer;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.server.TThreadPoolServer;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.server.TThreadPoolServer.Args;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TServerSocket;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TTransportException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> service.demo.Hello;</span><br><span class="line"><span class="keyword">import</span> service.demo.HelloServiceImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloServiceServer</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@SuppressWarnings(&#123;&quot;unchecked&quot;, &quot;rawtypes&quot;&#125;)</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">// 设置服务端口为 7911</span></span><br><span class="line">			<span class="type">TServerSocket</span> <span class="variable">serverTransport</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TServerSocket</span>(<span class="number">7911</span>);</span><br><span class="line">			<span class="comment">// 设置协议工厂为 TBinaryProtocol.Factory</span></span><br><span class="line">			<span class="type">Factory</span> <span class="variable">proFactory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TBinaryProtocol</span>.Factory();</span><br><span class="line">			<span class="comment">// 关联处理器与 Hello 服务的实现</span></span><br><span class="line">			<span class="type">TProcessor</span> <span class="variable">processor</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hello</span>.Processor(<span class="keyword">new</span> <span class="title class_">HelloServiceImpl</span>());</span><br><span class="line"></span><br><span class="line">			<span class="type">Args</span> <span class="variable">argsValue</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Args</span>(serverTransport);</span><br><span class="line">			argsValue.inputProtocolFactory(proFactory);</span><br><span class="line">			argsValue.processor(processor);</span><br><span class="line"></span><br><span class="line">			<span class="type">TServer</span> <span class="variable">server</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TThreadPoolServer</span>(argsValue);</span><br><span class="line">			System.out.println(<span class="string">&quot;Start server on port 7911...&quot;</span>);</span><br><span class="line">			server.serve();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (TTransportException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="3-4-客户端"><a href="#3-4-客户端" class="headerlink" title="3.4 客户端"></a>3.4 客户端</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> service.client;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.TException;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TBinaryProtocol;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TProtocol;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TSocket;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TTransport;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TTransportException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> service.demo.Hello;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloServiceClient</span> &#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">// 设置调用的服务地址为本地,端口为 7911</span></span><br><span class="line">			<span class="type">TTransport</span> <span class="variable">transport</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TSocket</span>(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">7911</span>);</span><br><span class="line">			transport.open();</span><br><span class="line">			<span class="comment">// 设置传输协议为 TBinaryProtocol</span></span><br><span class="line">			<span class="type">TProtocol</span> <span class="variable">protocol</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TBinaryProtocol</span>(transport);</span><br><span class="line">			Hello.<span class="type">Client</span> <span class="variable">client</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hello</span>.Client(protocol);</span><br><span class="line">			<span class="comment">// 调用服务的 helloVoid 方法</span></span><br><span class="line">			<span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> client.helloString(<span class="string">&quot;窝草&quot;</span>);</span><br><span class="line"></span><br><span class="line">			System.out.println(result);</span><br><span class="line"></span><br><span class="line">			transport.close();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (TTransportException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (TException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-5-测试"><a href="#3-5-测试" class="headerlink" title="3.5 测试"></a>3.5 测试</h3><p>流程:<strong>先开启服务端,再开启客户端</strong></p>
+<p>测试结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">service</span>.demo.HelloServiceImpl say: 窝草</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="4-Thrift复杂类型"><a href="#4-Thrift复杂类型" class="headerlink" title="4. Thrift复杂类型"></a>4. Thrift复杂类型</h2><p>在现实的生产环境里面,一个接口接受复杂数据(实体类),并能返回复杂数据(实体类).</p>
+<p>那么上面的Helloworld就不适用了,那么我们来看看要怎么定义复杂类型和使用.</p>
+<h3 id="4-1-定义实体类"><a href="#4-1-定义实体类" class="headerlink" title="4.1 定义实体类"></a>4.1 定义实体类</h3><p>实体类文件: <code> Person.thrift</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">namespace java com.pkgs.entity</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Person</span>&#123;</span></span><br><span class="line">        <span class="number">1</span>: required i32 id; <span class="comment">// a</span></span><br><span class="line">        <span class="number">2</span>: required <span class="built_in">string</span> name; <span class="comment">//b</span></span><br><span class="line">        <span class="number">3</span>: optional <span class="built_in">list</span>&lt;Subject&gt; subjectList; <span class="comment">//c</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Subject</span>&#123;</span> <span class="comment">// e</span></span><br><span class="line">        <span class="number">1</span>: required <span class="built_in">string</span> name;</span><br><span class="line">        <span class="number">2</span>: required <span class="type">double</span> score;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>a. 每个域有一个唯一的正整数标识符</li>
+<li>b. 每个域可标识为required或optional</li>
+<li>c. 结构体可以包含其它结构体</li>
+<li>d. 域可有默认值,与required或optional无关</li>
+<li>e. Thrift文件可以定义多个结构体</li>
+</ul>
+<h3 id="4-2-定义接口"><a href="#4-2-定义接口" class="headerlink" title="4.2 定义接口"></a>4.2 定义接口</h3><p>接口类文件: <code>PersonService.thrift</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">namespace java com.pkgs.service</span><br><span class="line"></span><br><span class="line">include <span class="string">&quot;Person.thrift&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> Person.Person Person</span><br><span class="line"></span><br><span class="line">service PersonService&#123;</span><br><span class="line">	Person <span class="title function_">update</span><span class="params">(<span class="number">1</span>:Person info,<span class="number">2</span>:<span class="built_in">string</span> name)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行生成命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@dev-116 thrift-java]# thrift -r -gen java PersonService.thrift</span><br><span class="line">[root@dev-116 thrift-java]# <span class="built_in">ls</span>  gen-java/com/pkgs/entity/</span><br><span class="line">Person.java  Subject.java</span><br><span class="line">[root@dev-116 thrift-java]# <span class="built_in">ls</span>  gen-java/com/pkgs/service/</span><br><span class="line">PersonService.java</span><br></pre></td></tr></table></figure>
+
+<p>把上面这些生成类复制到eclipse项目下面.</p>
+<h3 id="4-3-Java实现"><a href="#4-3-Java实现" class="headerlink" title="4.3 Java实现"></a>4.3 Java实现</h3><p>接口实现类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.pkgs.service.impl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.TException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.pkgs.entity.Person;</span><br><span class="line"><span class="keyword">import</span> com.pkgs.entity.Subject;</span><br><span class="line"><span class="keyword">import</span> com.pkgs.service.PersonService;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PersonServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">PersonService</span>.Iface &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> Person <span class="title function_">update</span><span class="params">(Person info, String name)</span> <span class="keyword">throws</span> TException &#123;</span><br><span class="line">		System.out.println(<span class="string">&quot;Update person name to: &quot;</span> + name);</span><br><span class="line"></span><br><span class="line">		List&lt;Subject&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(<span class="number">3</span>);</span><br><span class="line">		list.add(<span class="keyword">new</span> <span class="title class_">Subject</span>(<span class="string">&quot;chinese&quot;</span>, <span class="number">100</span>));</span><br><span class="line">		list.add(<span class="keyword">new</span> <span class="title class_">Subject</span>(<span class="string">&quot;math&quot;</span>, <span class="number">100</span>));</span><br><span class="line">		list.add(<span class="keyword">new</span> <span class="title class_">Subject</span>(<span class="string">&quot;english&quot;</span>, <span class="number">100</span>));</span><br><span class="line"></span><br><span class="line">		info.setName(name);</span><br><span class="line">		info.setSubjectList(list);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> info;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>服务类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.pkgs.server;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.TProcessor;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TBinaryProtocol;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TBinaryProtocol.Factory;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.server.TServer;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.server.TThreadPoolServer;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.server.TThreadPoolServer.Args;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TServerSocket;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TTransportException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.pkgs.service.PersonService;</span><br><span class="line"><span class="keyword">import</span> com.pkgs.service.impl.PersonServiceImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PersonServiceServer</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@SuppressWarnings(&#123;&quot;unchecked&quot;, &quot;rawtypes&quot;&#125;)</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">// 设置服务端口为 7911</span></span><br><span class="line">			<span class="type">TServerSocket</span> <span class="variable">serverTransport</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TServerSocket</span>(<span class="number">7911</span>);</span><br><span class="line">			<span class="comment">// 设置协议工厂为 TBinaryProtocol.Factory</span></span><br><span class="line">			<span class="type">Factory</span> <span class="variable">proFactory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TBinaryProtocol</span>.Factory();</span><br><span class="line">			<span class="comment">// 关联处理器与 Hello 服务的实现</span></span><br><span class="line">			<span class="type">TProcessor</span> <span class="variable">processor</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PersonService</span>.Processor(<span class="keyword">new</span> <span class="title class_">PersonServiceImpl</span>());</span><br><span class="line"></span><br><span class="line">			<span class="type">Args</span> <span class="variable">argsValue</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Args</span>(serverTransport);</span><br><span class="line">			argsValue.inputProtocolFactory(proFactory);</span><br><span class="line">			argsValue.processor(processor);</span><br><span class="line"></span><br><span class="line">			<span class="type">TServer</span> <span class="variable">server</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TThreadPoolServer</span>(argsValue);</span><br><span class="line">			System.out.println(<span class="string">&quot;Start server on port 7911...&quot;</span>);</span><br><span class="line">			server.serve();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (TTransportException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>客户端</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.pkgs.client;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.TException;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TBinaryProtocol;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TProtocol;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TSocket;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TTransport;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TTransportException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSON;</span><br><span class="line"><span class="keyword">import</span> com.pkgs.entity.Person;</span><br><span class="line"><span class="keyword">import</span> com.pkgs.service.PersonService;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PersonServiceClient</span> &#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">// 设置调用的服务地址为本地,端口为 7911</span></span><br><span class="line">			<span class="type">TTransport</span> <span class="variable">transport</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TSocket</span>(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">7911</span>);</span><br><span class="line">			transport.open();</span><br><span class="line">			<span class="comment">// 设置传输协议为 TBinaryProtocol</span></span><br><span class="line">			<span class="type">TProtocol</span> <span class="variable">protocol</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TBinaryProtocol</span>(transport);</span><br><span class="line">			PersonService.<span class="type">Client</span> <span class="variable">client</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PersonService</span>.Client(protocol);</span><br><span class="line">			<span class="type">Person</span> <span class="variable">person</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Person</span>();</span><br><span class="line">			person.setName(<span class="string">&quot;1&quot;</span>);</span><br><span class="line">			person.setId(<span class="number">123</span>);</span><br><span class="line">			<span class="type">Person</span> <span class="variable">after</span> <span class="operator">=</span> client.update(person, <span class="string">&quot;haiyan&quot;</span>);</span><br><span class="line">			System.out.println(JSON.toJSONString(after));</span><br><span class="line">			transport.close();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (TTransportException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (TException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-构建异步客户端"><a href="#5-构建异步客户端" class="headerlink" title="5. 构建异步客户端"></a>5. 构建异步客户端</h2><h3 id="5-1-Callback-Method"><a href="#5-1-Callback-Method" class="headerlink" title="5.1 Callback Method"></a>5.1 Callback Method</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.async.AsyncMethodCallback;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MethodCallback</span>&lt;T&gt; <span class="keyword">implements</span> <span class="title class_">AsyncMethodCallback</span>&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="type">T</span> <span class="variable">response</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 获取返回结果</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> Object</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> T <span class="title function_">getResult</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">this</span>.response;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 处理服务返回的结果值</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onComplete</span><span class="params">(T response)</span> &#123;</span><br><span class="line">		<span class="comment">//System.out.println(&quot;complete: &quot; + response);</span></span><br><span class="line">		<span class="built_in">this</span>.response = response;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 处理调用服务过程中出现的异常</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onError</span><span class="params">(Exception exception)</span> &#123;</span><br><span class="line">		exception.printStackTrace();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-非阻塞服务器端"><a href="#5-2-非阻塞服务器端" class="headerlink" title="5.2 非阻塞服务器端"></a>5.2 非阻塞服务器端</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.sync.server;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TBinaryProtocol;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TProtocolFactory;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.server.TNonblockingServer;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.server.TNonblockingServer.Args;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.server.TServer;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TNonblockingServerSocket;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TNonblockingServerTransport;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TTransportException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> service.demo.Hello;</span><br><span class="line"><span class="keyword">import</span> service.demo.HelloServiceImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloServiceAsyncServer</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 启动 Thrift 异步服务器</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		TNonblockingServerTransport serverTransport;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">// 使用TNonblockingServerSocket</span></span><br><span class="line">			serverTransport = <span class="keyword">new</span> <span class="title class_">TNonblockingServerSocket</span>(<span class="number">10005</span>);</span><br><span class="line">			Hello.Processor&lt;Hello.Iface&gt; processor = <span class="keyword">new</span> <span class="title class_">Hello</span>.Processor&lt;Hello.Iface&gt;(<span class="keyword">new</span> <span class="title class_">HelloServiceImpl</span>());</span><br><span class="line">			<span class="type">TProtocolFactory</span> <span class="variable">proFactory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TBinaryProtocol</span>.Factory();</span><br><span class="line"></span><br><span class="line">			<span class="type">Args</span> <span class="variable">argsValue</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Args</span>(serverTransport);</span><br><span class="line">			argsValue.processor(processor);</span><br><span class="line">			argsValue.protocolFactory(proFactory);</span><br><span class="line"></span><br><span class="line">			<span class="type">TServer</span> <span class="variable">server</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TNonblockingServer</span>(argsValue);</span><br><span class="line"></span><br><span class="line">			System.out.println(<span class="string">&quot;Start server on port 10005 ...&quot;</span>);</span><br><span class="line">			server.serve();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (TTransportException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="5-3-非阻塞客户端"><a href="#5-3-非阻塞客户端" class="headerlink" title="5.3 非阻塞客户端"></a>5.3 非阻塞客户端</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.sync.client;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.async.TAsyncClientManager;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TBinaryProtocol;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TProtocolFactory;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TNonblockingSocket;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TNonblockingTransport;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.sync.callback.MethodCallback;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> service.demo.Hello;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloServiceAsyncClient</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 调用 Hello 服务</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="type">TAsyncClientManager</span> <span class="variable">clientManager</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TAsyncClientManager</span>();</span><br><span class="line">			<span class="type">TNonblockingTransport</span> <span class="variable">transport</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TNonblockingSocket</span>(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">10005</span>, <span class="number">5000</span>);</span><br><span class="line">			<span class="type">TProtocolFactory</span> <span class="variable">protocol</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TBinaryProtocol</span>.Factory();</span><br><span class="line">			Hello.<span class="type">AsyncClient</span> <span class="variable">asyncClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hello</span>.AsyncClient(protocol, clientManager, transport);</span><br><span class="line">			System.out.println(<span class="string">&quot;Client calls .....&quot;</span>);</span><br><span class="line">			MethodCallback&lt;String&gt; callBack = <span class="keyword">new</span> <span class="title class_">MethodCallback</span>&lt;String&gt;();</span><br><span class="line">			asyncClient.helloString(<span class="string">&quot;Hello World&quot;</span>, callBack);</span><br><span class="line">			<span class="type">String</span> <span class="variable">res</span> <span class="operator">=</span> callBack.getResult();</span><br><span class="line">			<span class="keyword">while</span> (res == <span class="literal">null</span>) &#123;</span><br><span class="line">				res = callBack.getResult();</span><br><span class="line">				<span class="comment">// 不知为何要在这里加sleep才不会死循环</span></span><br><span class="line">				Thread.sleep(<span class="number">10</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			System.out.println(res);</span><br><span class="line">			transport.close();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-4-测试结果"><a href="#5-4-测试结果" class="headerlink" title="5.4 测试结果"></a>5.4 测试结果</h3><p>先开启服务端,然后开启客户端.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Client calls .....</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">service</span>.demo.HelloServiceImpl say: Hello World</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="6-常见问题"><a href="#6-常见问题" class="headerlink" title="6. 常见问题"></a>6. 常见问题</h2><h3 id="6-1-Null问题"><a href="#6-1-Null问题" class="headerlink" title="6.1 Null问题"></a>6.1 Null问题</h3><p>在 Thrift 中,直接调用一个返回 null 值的方法会抛出 TApplicationException 异常.</p>
+<p>修改一些HelloServiceImpl让方法返回null</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.thrift.TException;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">Hello</span>.Iface &#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">helloString</span><span class="params">(String para)</span> <span class="keyword">throws</span> TException &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重新开启服务端和客户端,抛出异常</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">org.apache.thrift.TApplicationException: helloString failed: unknown result</span><br><span class="line">	at service.demo.Hello$Client.recv_helloString(Hello.java:<span class="number">65</span>)</span><br><span class="line">	at service.demo.Hello$Client.helloString(Hello.java:<span class="number">50</span>)</span><br><span class="line">	at service.client.HelloServiceClient.main(HelloServiceClient.java:<span class="number">22</span>)</span><br></pre></td></tr></table></figure>
+
+<p>代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> service.client;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.TApplicationException;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.TException;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TBinaryProtocol;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.protocol.TProtocol;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TSocket;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TTransport;</span><br><span class="line"><span class="keyword">import</span> org.apache.thrift.transport.TTransportException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> service.demo.Hello;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloServiceClient</span> &#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">// 设置调用的服务地址为本地,端口为 7911</span></span><br><span class="line">			<span class="type">TTransport</span> <span class="variable">transport</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TSocket</span>(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">7911</span>);</span><br><span class="line">			transport.open();</span><br><span class="line">			<span class="comment">// 设置传输协议为 TBinaryProtocol</span></span><br><span class="line">			<span class="type">TProtocol</span> <span class="variable">protocol</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TBinaryProtocol</span>(transport);</span><br><span class="line">			Hello.<span class="type">Client</span> <span class="variable">client</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hello</span>.Client(protocol);</span><br><span class="line">			<span class="comment">// 调用服务的 helloVoid 方法</span></span><br><span class="line">			<span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> client.helloString(<span class="string">&quot;窝草&quot;</span>);</span><br><span class="line"></span><br><span class="line">			System.out.println(result);</span><br><span class="line"></span><br><span class="line">			transport.close();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (TTransportException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (TException e) &#123;</span><br><span class="line">			<span class="keyword">if</span> (e <span class="keyword">instanceof</span> TApplicationException</span><br><span class="line">					&amp;&amp; ((TApplicationException) e).getType() == TApplicationException.MISSING_RESULT) &#123;</span><br><span class="line">				System.err.println(<span class="string">&quot;The result of helloString function is NULL&quot;</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重新测试</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">The result of helloString function is NULL</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="6-2-异步客户端死循环"><a href="#6-2-异步客户端死循环" class="headerlink" title="6.2 异步客户端死循环"></a>6.2 异步客户端死循环</h3><p>代码请参考<code>5. 构建异步客户端</code>代码的<code>HelloServiceAsyncClient</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (res == <span class="literal">null</span>) &#123;</span><br><span class="line">	res = callBack.getResult();</span><br><span class="line">	<span class="comment">// 不知为何要在这里加sleep才不会死循环</span></span><br><span class="line">	Thread.sleep(<span class="number">10</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果没加上<code>Thread.sleep(10)</code>就进入死循环了,这叫我情何以堪.</p>
+<hr>
+<h2 id="7-参考文档"><a href="#7-参考文档" class="headerlink" title="7. 参考文档"></a>7. 参考文档</h2><p>a. <a target="_blank" rel="noopener" href="http://thrift.apache.org/download">Apache thrift官网</a></p>
+<p>b. <a target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/">IBM博客</a></p>
+<p>c. <a target="_blank" rel="noopener" href="http://www.cnblogs.com/tianhuilove/archive/2011/09/05/2167669.html">Thrift定义结构文档</a></p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2025/07/08/javaee-rpc-thrift/" title="Rpc 之 Thrift" target="_blank" rel="external">http://example.com/2025/07/08/javaee-rpc-thrift/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/cs12110" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/12764287.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/cs12110" target="_blank"><span class="text-dark">cs12110</span><small class="ml-1x"></small></a></h3>
+        <div>就一打字的</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2025/07/08/javaee-rpc-dubbo/" title="Rpc 之 dubbo"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2025/07/08/javaee-spider-httpclient/" title="爬虫"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" ><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" ><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" ><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" ><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" ><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>
