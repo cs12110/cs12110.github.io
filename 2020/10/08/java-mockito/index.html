@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="MockitoJava 的测试里面,除了 Junit 的测试,Mockito,你值得拥有.  1. 简单介绍在 Junit 的测试里面,比如要测试service1#get(String id),那么你要全都实现. 如果service1#get(String id)依赖调用的东西还没写好,那该怎么办? 现在就该使用 mockito 了.  2. pom.xml主要依赖junit和mockito,使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mockito">
+<meta property="og:url" content="http://example.com/2020/10/08/java-mockito/index.html">
+<meta property="og:site_name" content="mini-docs">
+<meta property="og:description" content="MockitoJava 的测试里面,除了 Junit 的测试,Mockito,你值得拥有.  1. 简单介绍在 Junit 的测试里面,比如要测试service1#get(String id),那么你要全都实现. 如果service1#get(String id)依赖调用的东西还没写好,那该怎么办? 现在就该使用 mockito 了.  2. pom.xml主要依赖junit和mockito,使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-08T14:19:00.030Z">
+<meta property="article:author" content="cs12110@163.com">
+<meta property="article:tag" content="Java基础">
+<meta property="article:tag" content="Mockito">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/08/java-mockito/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Mockito | mini-docs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">mini-docs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">66</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">105</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/cs12110" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/08/java-mockito/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/12764287.png">
+      <meta itemprop="name" content="cs12110@163.com">
+      <meta itemprop="description" content="就一臭打字的">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mini-docs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Mockito
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-08 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-08T00:00:00+08:00">2020-10-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-08 22:19:00" itemprop="dateModified" datetime="2025-07-08T22:19:00+08:00">2025-07-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Mockito"><a href="#Mockito" class="headerlink" title="Mockito"></a>Mockito</h1><p>Java 的测试里面,除了 Junit 的测试,Mockito,你值得拥有.</p>
+<hr>
+<h2 id="1-简单介绍"><a href="#1-简单介绍" class="headerlink" title="1. 简单介绍"></a>1. 简单介绍</h2><p>在 Junit 的测试里面,比如要测试<code>service1#get(String id)</code>,那么你要全都实现.</p>
+<p>如果<code>service1#get(String id)</code>依赖调用的东西还没写好,那该怎么办? 现在就该使用 mockito 了.</p>
+<hr>
+<h2 id="2-pom-xml"><a href="#2-pom-xml" class="headerlink" title="2. pom.xml"></a>2. pom.xml</h2><p>主要依赖<code>junit</code>和<code>mockito</code>,使用版本如下所示.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- junit --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.10<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Mockito --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mockito<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mockito-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.10.19<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-HelloWorld"><a href="#3-HelloWorld" class="headerlink" title="3. HelloWorld"></a>3. HelloWorld</h2><p>定义实体类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.pkgs.entity;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 定义实体类</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 at 2018年12月8日下午8:50:01</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> String id;</span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">Person</span><span class="params">()</span> &#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">Person</span><span class="params">(String id, String name)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.id = id;</span><br><span class="line">		<span class="built_in">this</span>.name = name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//省略setter/getter</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义 Mapper</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.pkgs.mapper;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.pkgs.entity.Person;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Mapper接口</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 at 2018年12月8日下午8:46:39</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">PersonMapper</span> &#123;</span><br><span class="line">	Person <span class="title function_">get</span><span class="params">(String id)</span>;</span><br><span class="line">	<span class="type">boolean</span> <span class="title function_">update</span><span class="params">(Person person)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义 Service</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.pkgs.service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.pkgs.entity.Person;</span><br><span class="line"><span class="keyword">import</span> com.pkgs.mapper.PersonMapper;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Person业务实现类</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 at 2018年12月8日下午8:51:51</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PersonService</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * mapper尚没有任何实现类</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">private</span> PersonMapper mapper;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">PersonService</span><span class="params">(PersonMapper personDao)</span> &#123;</span><br><span class="line">		<span class="built_in">super</span>();</span><br><span class="line">		<span class="built_in">this</span>.mapper = personDao;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">update</span><span class="params">(String id, String name)</span> &#123;</span><br><span class="line">		<span class="type">Person</span> <span class="variable">person</span> <span class="operator">=</span> mapper.get(id);</span><br><span class="line">		<span class="keyword">if</span> (<span class="literal">null</span> == person) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="type">Person</span> <span class="variable">info</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Person</span>();</span><br><span class="line">		info.setId(id);</span><br><span class="line">		info.setName(name);</span><br><span class="line">		<span class="keyword">return</span> mapper.update(info);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义测试类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.junit.Assert.assertTrue;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.mockito.Mockito;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.pkgs.entity.Person;</span><br><span class="line"><span class="keyword">import</span> com.pkgs.mapper.PersonMapper;</span><br><span class="line"><span class="keyword">import</span> com.pkgs.service.PersonService;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 测试</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 at 2018年12月8日下午8:46:15</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PersonServiceTest</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> PersonMapper mapper;</span><br><span class="line">	<span class="keyword">private</span> PersonService personService;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Before</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setUp</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 构建mock,是不是像实现一个mapper接口?</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		mapper = Mockito.mock(PersonMapper.class);</span><br><span class="line">		Mockito.<span class="keyword">when</span>(mapper.get(<span class="string">&quot;1&quot;</span>)).thenReturn(<span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;1&quot;</span>, <span class="string">&quot;Person&quot;</span>));</span><br><span class="line">		Mockito.<span class="keyword">when</span>(mapper.update(Mockito.isA(Person.class))).thenReturn(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">		personService = <span class="keyword">new</span> <span class="title class_">PersonService</span>(mapper);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testUpdate</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="type">boolean</span> <span class="variable">result</span> <span class="operator">=</span> personService.update(<span class="string">&quot;1&quot;</span>, <span class="string">&quot;Apache&quot;</span>);</span><br><span class="line">    	<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 当为true,才往下执行,否则抛出异常</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		assertTrue(<span class="string">&quot;must be true&quot;</span>, result);</span><br><span class="line"></span><br><span class="line">		Mockito.verify(mapper, Mockito.times(<span class="number">1</span>)).get(Mockito.eq(<span class="string">&quot;1&quot;</span>));</span><br><span class="line">		Mockito.verify(mapper, Mockito.times(<span class="number">1</span>)).update(Mockito.isA(Person.class));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testUpdateNotFound</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="type">boolean</span> <span class="variable">result</span> <span class="operator">=</span> personService.update(<span class="string">&quot;1&quot;</span>, <span class="string">&quot;Apache&quot;</span>);</span><br><span class="line">		assertTrue(<span class="string">&quot;must be true&quot;</span>, result);</span><br><span class="line"></span><br><span class="line">		Mockito.verify(mapper, Mockito.times(<span class="number">1</span>)).get(Mockito.eq(<span class="string">&quot;1&quot;</span>));</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 因为前面update了一次,这里的条件为never,所以会出现异常.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">		Mockito.verify(mapper, Mockito.never()).update(Mockito.isA(Person.class));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-使用注解"><a href="#4-使用注解" class="headerlink" title="4. 使用注解"></a>4. 使用注解</h2><p>使用注解可可以让代码更简洁,那么我们看看 mockito 怎么使用注解的.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.mockito.Mockito;</span><br><span class="line"><span class="keyword">import</span> org.mockito.MockitoAnnotations;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 测试注解</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 at 2018年12月8日下午11:04:57</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MockAnnoTest</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@org</span>.mockito.Mock</span><br><span class="line">	<span class="keyword">private</span> List&lt;String&gt; mock;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Before</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="comment">// 必须使用如下来初始化</span></span><br><span class="line">		MockitoAnnotations.initMocks(<span class="built_in">this</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">		Mockito.<span class="keyword">when</span>(mock.get(<span class="number">1</span>)).thenReturn(<span class="string">&quot;mock value&quot;</span>);</span><br><span class="line"></span><br><span class="line">		System.out.println(mock.get(<span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">		Mockito.verify(mock).get(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="5-校验行为"><a href="#5-校验行为" class="headerlink" title="5. 校验行为"></a>5. 校验行为</h2><p>作用: <strong>校验发生的行为是不是符合条件,如果符合则测试通过,不符合则抛出异常.</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.awt.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.mockito.Mockito;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 校验行为</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 at 2018年12月8日下午9:06:27</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">VerifyBehavierTest</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="type">List</span> <span class="variable">mockList</span> <span class="operator">=</span> Mockito.mock(List.class);</span><br><span class="line">		mockList.add(<span class="string">&quot;1&quot;</span>);</span><br><span class="line">		mockList.add(<span class="string">&quot;1&quot;</span>);</span><br><span class="line">		mockList.add(<span class="string">&quot;2&quot;</span>);</span><br><span class="line">		mockList.add(<span class="string">&quot;3&quot;</span>);</span><br><span class="line"></span><br><span class="line">		mockList.remove(<span class="string">&quot;3&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 判断是不是add了两次1,如果调用了两次则测试通过</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * 使用Mockito.times(timeNum)可以精确校验调用过的次数.</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		Mockito.verify(mockList, Mockito.times(<span class="number">2</span>)).add(<span class="string">&quot;1&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 判断是不是add了两次2,因为上面只add了一次,所以会抛出异常</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		Mockito.verify(mockList, Mockito.times(<span class="number">2</span>)).add(<span class="string">&quot;2&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 判断是不是最少remove了一次3</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		Mockito.verify(mockList, Mockito.atLeastOnce()).remove(<span class="string">&quot;3&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="6-设置桩"><a href="#6-设置桩" class="headerlink" title="6. 设置桩"></a>6. 设置桩</h2><p>设置桩: <strong>规定某些操作,触发怎样的操作,或者返回怎样子的参数.</strong></p>
+<p>温馨提示:</p>
+<ul>
+<li><p>对于有返回值的方法,会默认返回 null,空集合,默认值.比如为 int&#x2F;Integer 返回 0</p>
+</li>
+<li><p>stubbing 可以被覆盖,但是覆盖已有的 stubbing 有可能不是很好</p>
+</li>
+<li><p>stubbing 不管调用多少次,方法都会永远返回 stubbing 的值</p>
+</li>
+<li><p>当对同一个方法进行多次 stubbing,最后一次 stubbing 最重要</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * service</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 at 2018年12月8日下午9:22:23</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyStubbingService</span> &#123;</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 查询</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> id id</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> String 默认为null</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">search</span><span class="params">(String id)</span> &#123;</span><br><span class="line">	    <span class="keyword">return</span> <span class="string">&quot;return: &quot;</span> + id;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.mockito.Mockito;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 设置桩</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 at 2018年12月8日下午9:16:13</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StubbingTest</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="type">MyStubbingService</span> <span class="variable">stubbing</span> <span class="operator">=</span> Mockito.mock(MyStubbingService.class);</span><br><span class="line"></span><br><span class="line">		Mockito.<span class="keyword">when</span>(stubbing.search(<span class="string">&quot;1&quot;</span>)).thenReturn(<span class="string">&quot;search by 1&quot;</span>);</span><br><span class="line">		Mockito.<span class="keyword">when</span>(stubbing.search(<span class="literal">null</span>)).thenThrow(<span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;the id must be somehint&quot;</span>));</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 返回: search by 1</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		System.out.println(stubbing.search(<span class="string">&quot;1&quot;</span>));</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 返回: null,因为上面没规定返回什么</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		System.out.println(stubbing.search(<span class="string">&quot;2&quot;</span>));</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 判断前面是否调用过stubbing.search(&quot;1&quot;)</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		Mockito.verify(stubbing).search(<span class="string">&quot;1&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 抛出IllegalArgumentException</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		stubbing.search(<span class="literal">null</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="7-参数校验"><a href="#7-参数校验" class="headerlink" title="7. 参数校验"></a>7. 参数校验</h2><p>作用: <strong>校验参数是否符合规范&#x2F;规则</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.mockito.Mockito;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 校验参数</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 at 2018年12月8日下午9:52:51</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">VerifyArgTest</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testArg</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">		List&lt;String&gt; list = (List&lt;String&gt;) Mockito.mock(List.class);</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * Get by int</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		Mockito.<span class="keyword">when</span>(list.get(Mockito.anyInt())).thenReturn(<span class="string">&quot;get by int&quot;</span>);</span><br><span class="line"></span><br><span class="line">		System.out.println(list.get(<span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 运行过list.get(1),测试通过</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		Mockito.verify(list).get(Mockito.anyInt());</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 主要要使用参数匹配器,而不是直接写3306了</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		Mockito.verify(list).get(Mockito.eq(<span class="number">3306</span>));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="8-处理-void-方法"><a href="#8-处理-void-方法" class="headerlink" title="8. 处理 void 方法"></a>8. 处理 void 方法</h2><p>作用: <strong>处理 void 方法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.mockito.Mockito;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 测试调用void返回参数方法</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 at 2018年12月8日下午9:58:34</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">VerifyVoidest</span> &#123;</span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testOrder</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">		List&lt;?&gt; mock = Mockito.mock(List.class);</span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * mock.clear()的返回参数为null</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		Mockito.doThrow(<span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;invoke void method&quot;</span>)).<span class="keyword">when</span>(mock).clear();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="9-校验顺序"><a href="#9-校验顺序" class="headerlink" title="9. 校验顺序"></a>9. 校验顺序</h2><p>作用: <strong>校验方法的调用顺序</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.mockito.InOrder;</span><br><span class="line"><span class="keyword">import</span> org.mockito.Mockito;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 测试调用顺序</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 at 2018年12月8日下午9:58:34</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">VerifyOrderest</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testOrder</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">		List&lt;Object&gt; orderMock = (List&lt;Object&gt;) Mockito.mock(List.class);</span><br><span class="line"></span><br><span class="line">		orderMock.add(<span class="string">&quot;add first&quot;</span>);</span><br><span class="line">		orderMock.add(<span class="string">&quot;add second&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="type">InOrder</span> <span class="variable">onMyMark</span> <span class="operator">=</span> Mockito.inOrder(orderMock);</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 校验调用顺序,如果执行不按照上面规定的顺序则抛出异常</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		onMyMark.verify(orderMock).add(<span class="string">&quot;add first&quot;</span>);</span><br><span class="line">		onMyMark.verify(orderMock).add(<span class="string">&quot;add second&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 测试多个mock</span></span><br><span class="line">		List&lt;Object&gt; mock1 = (List&lt;Object&gt;) Mockito.mock(List.class);</span><br><span class="line">		List&lt;Object&gt; mock2 = (List&lt;Object&gt;) Mockito.mock(List.class);</span><br><span class="line"></span><br><span class="line">		mock1.add(<span class="number">1</span>);</span><br><span class="line">		mock2.add(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 校验mock1必须比mock2先执行,且mock1.add的为1,mock2.add的为2</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		<span class="type">InOrder</span> <span class="variable">multipleOrder</span> <span class="operator">=</span> Mockito.inOrder(mock1, mock2);</span><br><span class="line">		multipleOrder.verify(mock1).add(<span class="number">1</span>);</span><br><span class="line">		multipleOrder.verify(mock2).add(<span class="number">2</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="10-根据调用顺序设置-stubbing"><a href="#10-根据调用顺序设置-stubbing" class="headerlink" title="10. 根据调用顺序设置 stubbing"></a>10. 根据调用顺序设置 stubbing</h2><p>作用: <strong>根据不同的调用顺序,设置返回值,注意超过之后返回最后一个 stubbing 值.</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.mockito.Mockito;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 校验调用不同顺序,返回不同的结果</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 at 2018年12月8日下午10:25:32</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">VerifySpecialStubbing</span> &#123;</span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line"></span><br><span class="line">		<span class="type">MyIf</span> <span class="variable">myIf</span> <span class="operator">=</span> Mockito.mock(MyIf.class);</span><br><span class="line">		Mockito.<span class="keyword">when</span>(myIf.forMock(<span class="string">&quot;1&quot;</span>)).thenReturn(<span class="string">&quot;invoke 1&quot;</span>).thenReturn(<span class="string">&quot;invoke 2&quot;</span>);</span><br><span class="line"></span><br><span class="line">		System.out.println(myIf.forMock(<span class="string">&quot;1&quot;</span>));</span><br><span class="line">		System.out.println(myIf.forMock(<span class="string">&quot;1&quot;</span>));</span><br><span class="line">		System.out.println(myIf.forMock(<span class="string">&quot;1&quot;</span>));</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">MyIf</span> &#123;</span><br><span class="line">	String <span class="title function_">forMock</span><span class="params">(String str)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="11-参数捕获"><a href="#11-参数捕获" class="headerlink" title="11. 参数捕获"></a>11. 参数捕获</h2><p>作用: <strong>捕获参数和参数值来做校验</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Assert;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.mockito.ArgumentCaptor;</span><br><span class="line"><span class="keyword">import</span> org.mockito.Mockito;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 校验参数</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 at 2018年12月8日下午10:49:26</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">VerifyCaptureArgTest</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">		List&lt;String&gt; mock = Mockito.mock(List.class);</span><br><span class="line"></span><br><span class="line">		ArgumentCaptor&lt;String&gt; argCaptor = ArgumentCaptor.forClass(String.class);</span><br><span class="line"></span><br><span class="line">		mock.add(<span class="string">&quot;3306&quot;</span>);</span><br><span class="line"></span><br><span class="line">		Mockito.verify(mock).add(argCaptor.capture());</span><br><span class="line"></span><br><span class="line">		System.out.println(argCaptor.getValue());</span><br><span class="line"></span><br><span class="line">		Assert.assertEquals(<span class="string">&quot;3306&quot;</span>, argCaptor.getValue());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="12-SpringBoot-与-Mockito"><a href="#12-SpringBoot-与-Mockito" class="headerlink" title="12. SpringBoot 与 Mockito"></a>12. SpringBoot 与 Mockito</h2><p>请确保<code>springboot</code>,<code>springboot-test</code>,<code>junit</code>,<code>mockito</code>依赖.</p>
+<p>请注意: <strong>测试 service 上面并没有声明任何的 Spring 注解</strong></p>
+<h3 id="12-1-Mapper-接口"><a href="#12-1-Mapper-接口" class="headerlink" title="12.1 Mapper 接口"></a>12.1 Mapper 接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">MockitoMapper</span> &#123;</span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">say</span><span class="params">(String something)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="12-2-Service-接口"><a href="#12-2-Service-接口" class="headerlink" title="12.2 Service 接口"></a>12.2 Service 接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MockitoService</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="keyword">private</span> MockitoMapper mockitoMapper;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">say</span><span class="params">(String s)</span> &#123;</span><br><span class="line">		System.out.println(<span class="built_in">this</span> + <span class="string">&quot;:&quot;</span> + mockitoMapper.say(s));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="12-3-测试类"><a href="#12-3-测试类" class="headerlink" title="12.3 测试类"></a>12.3 测试类</h3><p>抽象父类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test.spring;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</span><br><span class="line"><span class="keyword">import</span> org.mockito.MockitoAnnotations;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.ILoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.test.context.SpringBootTest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.junit4.SpringRunner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ch.qos.logback.classic.Level;</span><br><span class="line"><span class="keyword">import</span> ch.qos.logback.classic.Logger;</span><br><span class="line"><span class="keyword">import</span> com.pkgs.WebApp;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Spring test基类</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;pre&gt;</span></span><br><span class="line"><span class="comment"> * `<span class="doctag">@SpringBootTest</span>(classes = WebApp.class)` 为`<span class="doctag">@SpringBootApplication</span>`的主方法类</span></span><br><span class="line"><span class="comment"> * &lt;/pre&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 2018年12月13日</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RunWith(SpringRunner.class)</span></span><br><span class="line"><span class="meta">@SpringBootTest(classes = WebApp.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">AbstractSpringTest</span> &#123;</span><br><span class="line">	<span class="keyword">static</span> &#123;</span><br><span class="line">		<span class="type">ILoggerFactory</span> <span class="variable">factory</span> <span class="operator">=</span> LoggerFactory.getILoggerFactory();</span><br><span class="line">		<span class="comment">// logback的logger,而不是slf4j的logger</span></span><br><span class="line">		<span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> (Logger) factory.getLogger(<span class="string">&quot;org.springframework&quot;</span>);</span><br><span class="line">		logger.setLevel(Level.ERROR);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Before</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">before</span><span class="params">()</span> &#123;</span><br><span class="line">		MockitoAnnotations.initMocks(<span class="built_in">this</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test.mockito;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.mockito.InjectMocks;</span><br><span class="line"><span class="keyword">import</span> org.mockito.Mock;</span><br><span class="line"><span class="keyword">import</span> org.mockito.Mockito;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.test.spring.AbstractSpringTest;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.pkgs.service.mockito.MockitoMapper;</span><br><span class="line"><span class="keyword">import</span> com.pkgs.service.mockito.MockitoService;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 注意<span class="doctag">@Mock</span>和<span class="doctag">@InjectMocks</span>注解</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 2018年12月18日上午10:23:59</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MockitoTest</span> <span class="keyword">extends</span> <span class="title class_">AbstractSpringTest</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Mock</span></span><br><span class="line">	<span class="keyword">private</span> MockitoMapper mockitoMapper;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@InjectMocks</span></span><br><span class="line">	<span class="keyword">private</span> MockitoService mockitoService;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">		Mockito.doReturn(<span class="string">&quot;world&quot;</span>).<span class="keyword">when</span>(mockitoMapper).say(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line"></span><br><span class="line">		mockitoService.say(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cn.rojao.service.mockito.MockitoService@2762e9a7:world</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="13-参考资料"><a href="#13-参考资料" class="headerlink" title="13. 参考资料"></a>13. 参考资料</h2><p>a. <a target="_blank" rel="noopener" href="https://static.javadoc.io/org.mockito/mockito-core/2.23.4/org/mockito/Mockito.html">Mockito 官方教程</a></p>
+<p>b. <a target="_blank" rel="noopener" href="https://blog.csdn.net/shensky711/article/details/52771493">Mockito 使用指南</a></p>
+<p>c. <a target="_blank" rel="noopener" href="https://www.jb51.net/article/134904.htm">SpringBoot 与 Mockito 使用教程</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag"># Java基础</a>
+              <a href="/tags/Mockito/" rel="tag"># Mockito</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/08/java-proxy/" rel="prev" title="CGLib 与 Proxy">
+      <i class="fa fa-chevron-left"></i> CGLib 与 Proxy
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/08/java-lambda/" rel="next" title="Java 之 lambda 表达式">
+      Java 之 lambda 表达式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mockito"><span class="nav-number">1.</span> <span class="nav-text">Mockito</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">1. 简单介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-pom-xml"><span class="nav-number">1.2.</span> <span class="nav-text">2. pom.xml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-HelloWorld"><span class="nav-number">1.3.</span> <span class="nav-text">3. HelloWorld</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E4%BD%BF%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="nav-number">1.4.</span> <span class="nav-text">4. 使用注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%A0%A1%E9%AA%8C%E8%A1%8C%E4%B8%BA"><span class="nav-number">1.5.</span> <span class="nav-text">5. 校验行为</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E8%AE%BE%E7%BD%AE%E6%A1%A9"><span class="nav-number">1.6.</span> <span class="nav-text">6. 设置桩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C"><span class="nav-number">1.7.</span> <span class="nav-text">7. 参数校验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E5%A4%84%E7%90%86-void-%E6%96%B9%E6%B3%95"><span class="nav-number">1.8.</span> <span class="nav-text">8. 处理 void 方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E6%A0%A1%E9%AA%8C%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.9.</span> <span class="nav-text">9. 校验顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%E6%A0%B9%E6%8D%AE%E8%B0%83%E7%94%A8%E9%A1%BA%E5%BA%8F%E8%AE%BE%E7%BD%AE-stubbing"><span class="nav-number">1.10.</span> <span class="nav-text">10. 根据调用顺序设置 stubbing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-%E5%8F%82%E6%95%B0%E6%8D%95%E8%8E%B7"><span class="nav-number">1.11.</span> <span class="nav-text">11. 参数捕获</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-SpringBoot-%E4%B8%8E-Mockito"><span class="nav-number">1.12.</span> <span class="nav-text">12. SpringBoot 与 Mockito</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#12-1-Mapper-%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.12.1.</span> <span class="nav-text">12.1 Mapper 接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-2-Service-%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.12.2.</span> <span class="nav-text">12.2 Service 接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-3-%E6%B5%8B%E8%AF%95%E7%B1%BB"><span class="nav-number">1.12.3.</span> <span class="nav-text">12.3 测试类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.13.</span> <span class="nav-text">13. 参考资料</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cs12110@163.com"
+      src="/images/12764287.png">
+  <p class="site-author-name" itemprop="name">cs12110@163.com</p>
+  <div class="site-description" itemprop="description">就一臭打字的</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">105</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">66</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cs12110" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cs12110" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cs12110@163.com</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+
+</body>
+</html>

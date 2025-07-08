@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="JVM&amp;GC之前为了面试死记硬背的东西,现在尝试着去理解,去利用这些东西.  1. jvm 参数该章节讲述 jvm 相关配置参数和基本应用. 1.1 项目配置参数123456# mr3306 @ mr3306 in ~&#x2F;Box&#x2F;projects&#x2F;secret&#x2F;codes&#x2F;secret-admin on git:feature-1006432 x [23:17:40]$  mvn clean">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM&amp;GC">
+<meta property="og:url" content="http://example.com/2022/02/21/java-gc/index.html">
+<meta property="og:site_name" content="mini-docs">
+<meta property="og:description" content="JVM&amp;GC之前为了面试死记硬背的东西,现在尝试着去理解,去利用这些东西.  1. jvm 参数该章节讲述 jvm 相关配置参数和基本应用. 1.1 项目配置参数123456# mr3306 @ mr3306 in ~&#x2F;Box&#x2F;projects&#x2F;secret&#x2F;codes&#x2F;secret-admin on git:feature-1006432 x [23:17:40]$  mvn clean">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/javase-images/gc-collector.png">
+<meta property="article:published_time" content="2022-02-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-08T14:17:08.909Z">
+<meta property="article:author" content="cs12110@163.com">
+<meta property="article:tag" content="Java基础">
+<meta property="article:tag" content="JVM">
+<meta property="article:tag" content="GC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/javase-images/gc-collector.png">
+
+<link rel="canonical" href="http://example.com/2022/02/21/java-gc/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JVM&GC | mini-docs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">mini-docs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">66</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">105</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/cs12110" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/21/java-gc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/12764287.png">
+      <meta itemprop="name" content="cs12110@163.com">
+      <meta itemprop="description" content="就一臭打字的">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mini-docs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JVM&GC
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-21 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-21T00:00:00+08:00">2022-02-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-08 22:17:08" itemprop="dateModified" datetime="2025-07-08T22:17:08+08:00">2025-07-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="JVM-GC"><a href="#JVM-GC" class="headerlink" title="JVM&amp;GC"></a>JVM&amp;GC</h1><p>之前为了面试死记硬背的东西,现在尝试着去理解,去利用这些东西.</p>
+<hr>
+<h2 id="1-jvm-参数"><a href="#1-jvm-参数" class="headerlink" title="1. jvm 参数"></a>1. jvm 参数</h2><p>该章节讲述 jvm 相关配置参数和基本应用.</p>
+<h3 id="1-1-项目配置参数"><a href="#1-1-项目配置参数" class="headerlink" title="1.1 项目配置参数"></a>1.1 项目配置参数</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># mr3306 @ mr3306 in ~/Box/projects/secret/codes/secret-admin on git:feature-1006432 x [23:17:40]</span></span><br><span class="line">$  mvn clean package -s /Users/mr3306/Box/soft/maven/conf/secret-settings.xml</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># mr3306 @ mr3306 in ~/Box/projects/secret/codes/secret-admin/secret-admin-controller/target on git:feature-1006432 x [13:47:01] C:137</span></span><br><span class="line">$ java -jar -Xmx1024m -Xms512m -XX:+PrintGCDetails -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/Users/mr3306/Box/soft/eclipse-mat/oom secret-admin-controller.jar</span><br></pre></td></tr></table></figure>
+
+<p>Q: 怎么判断配置是否生效?</p>
+<p>A: 在 jvisualvm 里面的<code>jvm arguments</code>里面可以看到配置的参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-Xmx1024m</span><br><span class="line">-Xms512m</span><br><span class="line">-XX:+PrintGCDetails</span><br><span class="line">-XX:+HeapDumpOnOutOfMemoryError</span><br><span class="line">-XX:HeapDumpPath=/Users/mr3306/Box/soft/eclipse-mat/oo</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-配置参数"><a href="#1-2-配置参数" class="headerlink" title="1.2 配置参数"></a>1.2 配置参数</h3><p>参数配置前缀含义:</p>
+<table>
+<thead>
+<tr>
+<th>前缀</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-</td>
+<td>标准 VM 选项,VM 规范的选项</td>
+<td></td>
+</tr>
+<tr>
+<td>-X</td>
+<td>非标准 VM 选项,不保证所有 VM 支持</td>
+<td>例如: -Xmx</td>
+</tr>
+<tr>
+<td>-XX</td>
+<td>高级选项,高级特性,属于不稳定选项.</td>
+<td>例如: -XX:+HeapDumpOnOutOfMemoryError</td>
+</tr>
+</tbody></table>
+<h4 id="1-2-1-常用配置参数"><a href="#1-2-1-常用配置参数" class="headerlink" title="1.2.1 常用配置参数"></a>1.2.1 常用配置参数</h4><p>常用配置参数 <a target="_blank" rel="noopener" href="http://www.51gjie.com/java/551.html">参数 link</a>:</p>
+<table>
+<thead>
+<tr>
+<th><strong>参数名称</strong></th>
+<th><strong>含义</strong></th>
+<th><strong>默认值</strong></th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-Xms</td>
+<td>初始堆大小</td>
+<td>物理内存的 1&#x2F;64(&lt;1GB)</td>
+<td>默认(MinHeapFreeRatio 参数可以调整)空余堆内存小于 40%时,JVM 就会增大堆直到-Xmx 的最大限制.</td>
+</tr>
+<tr>
+<td>-Xmx</td>
+<td>最大堆大小</td>
+<td>物理内存的 1&#x2F;4(&lt;1GB)</td>
+<td>默认(MaxHeapFreeRatio 参数可以调整)空余堆内存大于 70%时,JVM 会减少堆直到 -Xms 的最小限制</td>
+</tr>
+<tr>
+<td>-Xmn</td>
+<td>年轻代大小(1.4or lator)</td>
+<td></td>
+<td><strong>注意</strong>：此处的大小是(eden+ 2 survivor space).与 jmap -heap 中显示的 New gen 是不同的. 整个堆大小&#x3D;年轻代大小 + 年老代大小 + 持久代大小. 增大年轻代后,将会减小年老代大小.此值对系统性能影响较大,Sun 官方推荐配置为整个堆的 3&#x2F;8</td>
+</tr>
+<tr>
+<td>-XX:NewSize</td>
+<td>设置年轻代大小(for 1.3&#x2F;1.4)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>-XX:MaxNewSize</td>
+<td>年轻代最大值(for 1.3&#x2F;1.4)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>-XX:PermSize</td>
+<td>设置持久代(perm gen)初始值</td>
+<td>物理内存的 1&#x2F;64</td>
+<td></td>
+</tr>
+<tr>
+<td>-XX:MaxPermSize</td>
+<td>设置持久代最大值</td>
+<td>物理内存的 1&#x2F;4</td>
+<td></td>
+</tr>
+<tr>
+<td>-Xss</td>
+<td>每个线程的堆栈大小</td>
+<td></td>
+<td>JDK5.0 以后每个线程堆栈大小为 1M,以前每个线程堆栈大小为 256K.更具应用的线程所需内存大小进行 调整.在相同物理内存下,减小这个值能生成更多的线程.但是操作系统对一个进程内的线程数还是有限制的,不能无限生成,经验值在 3000~5000 左右 一般小的应用, 如果栈不是很深, 应该是 128k 够用的 大的应用建议使用 256k.这个选项对性能影响比较大,需要严格的测试.</td>
+</tr>
+<tr>
+<td>-XX:NewRatio</td>
+<td>年轻代(包括 Eden 和两个 Survivor 区)与年老代的比值(除去持久代)</td>
+<td></td>
+<td>-XX:NewRatio&#x3D;4 表示年轻代与年老代所占比值为 1:4,年轻代占整个堆栈的 1&#x2F;5 Xms&#x3D;Xmx 并且设置了 Xmn 的情况下,该参数不需要进行设置.</td>
+</tr>
+<tr>
+<td>-XX:SurvivorRatio</td>
+<td>Eden 区与 Survivor 区的大小比值</td>
+<td></td>
+<td>设置为 8,则两个 Survivor 区与一个 Eden 区的比值为 2:8,一个 Survivor 区占整个年轻代的 1&#x2F;10</td>
+</tr>
+<tr>
+<td>-XX:MaxTenuringThreshold</td>
+<td>垃圾最大年龄</td>
+<td></td>
+<td>如果设置为 0 的话,则年轻代对象不经过 Survivor 区,直接进入年老代. 对于年老代比较多的应用,可以提高效率.如果将此值设置为一个较大值,则年轻代对象会在 Survivor 区进行多次复制,这样可以增加对象再年轻代的存活 时间,增加在年轻代即被回收的概率 该参数只有在串行 GC 时才有效.</td>
+</tr>
+<tr>
+<td>-XX:+HeapDumpOnOutOfMemoryError</td>
+<td>设置 OutOfMemoryError 时打印堆的信息和 dump</td>
+<td></td>
+<td>在 oom 的时候将当前堆信息 dump,推荐设置与 -XX:HeapDumpPath&#x3D;&#x2F;your-path&#x2F;dump 搭配使用</td>
+</tr>
+<tr>
+<td>-XX:HeapDumpPath&#x3D;&#x2F;your-path&#x2F;dump</td>
+<td>设置 dump heap 文件的位置</td>
+<td></td>
+<td>在 oom 的时候将当前堆信息 dump,推荐设置</td>
+</tr>
+</tbody></table>
+<h4 id="1-2-2-辅助参数"><a href="#1-2-2-辅助参数" class="headerlink" title="1.2.2 辅助参数"></a>1.2.2 辅助参数</h4><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-XX:+PrintGC</td>
+<td>打印 gc</td>
+<td>输出形式:[GC 118250K-&gt;113543K(130112K), 0.0094143 secs] [Full GC 121376K-&gt;10414K(130112K), 0.0650971 secs]</td>
+</tr>
+<tr>
+<td>-XX:+PrintGCDetails</td>
+<td>打印 GC 详情</td>
+<td>输出形式:[GC [DefNew: 8614K-&gt;781K(9088K), 0.0123035 secs] 118250K-&gt;113543K(130112K), 0.0124633 secs] [GC [DefNew: 8614K-&gt;8614K(9088K), 0.0000665 secs][tenured: 112761k-&gt;10414k(121024k), 0.0433488 secs] 121376K-&gt;10414K(130112K), 0.0436268 secs]</td>
+</tr>
+<tr>
+<td>-XX:+PrintGCTimeStamps</td>
+<td>打印 gc 时间戳</td>
+<td></td>
+</tr>
+<tr>
+<td>-Xloggc:filename</td>
+<td>把相关日志信息记录到文件以便分析. 与上面几个配合使用</td>
+<td></td>
+</tr>
+</tbody></table>
+<h4 id="1-2-3-垃圾收集器参数"><a href="#1-2-3-垃圾收集器参数" class="headerlink" title="1.2.3 垃圾收集器参数"></a>1.2.3 垃圾收集器参数</h4><p><strong>串行收集器</strong></p>
+<table>
+<thead>
+<tr>
+<th>设置参数</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-XX:+UseSerialGC</td>
+<td>设置串行收集器</td>
+</tr>
+</tbody></table>
+<p><strong>并行收集器(吞吐量优先)</strong></p>
+<table>
+<thead>
+<tr>
+<th>设置参数</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-XX:+UseParallelGC</td>
+<td>设置为并行收集器.此配置仅对年轻代有效.即年轻代使用并行收集,而年老代仍使用串行收集.</td>
+</tr>
+<tr>
+<td>-XX:ParallelGCThreads</td>
+<td>配置并行收集器的线程数,即：同时有多少个线程一起进行垃圾回收.此值建议配置与 CPU 数目相等(-XX:ParallelGCThreads&#x3D;20 )</td>
+</tr>
+<tr>
+<td>-XX:+UseParallelOldGC</td>
+<td>配置年老代垃圾收集方式为并行收集.JDK6.0 开始支持对年老代并行收集.</td>
+</tr>
+<tr>
+<td>-XX:MaxGCPauseMillis</td>
+<td>设置每次年轻代垃圾回收的最长时间(单位毫秒).如果无法满足此时间,JVM 会自动调整年轻代大小,以满足此时间.(-XX:MaxGCPauseMillis&#x3D;100)</td>
+</tr>
+<tr>
+<td>-XX:+UseAdaptiveSizePolicy</td>
+<td>设置此选项后,并行收集器会自动调整年轻代 Eden 区大小和 Survivor 区大小的比例,以达成目标系统规定的最低响应时间或者收集频率等指标.此参数建议在使用并行收集器时,一直打开.</td>
+</tr>
+</tbody></table>
+<p><strong>并发收集器(响应时间优先)</strong></p>
+<table>
+<thead>
+<tr>
+<th>设置参数</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-XX:+UseConcMarkSweepGC</td>
+<td>即 CMS 收集,设置年老代为并发收集.CMS 收集是 JDK1.4 后期版本开始引入的新 GC 算法.它的主要适合场景是对响应时间的重要性需求大于对吞吐量的需求,能够承受垃圾回收线程和应用线程共享 CPU 资源,并且应用中存在比较多的长生命周期对象.CMS 收集的目标是尽量减少应用的暂停时间,减少 Full GC 发生的几率,利用和应用程序线程并发的垃圾回收线程来标记清除年老代内存.</td>
+</tr>
+<tr>
+<td>-XX:+UseParNewGC</td>
+<td>设置年轻代为并发收集.可与 CMS 收集同时使用.JDK5.0 以上,JVM 会根据系统配置自行设置,所以无需再设置此参数.</td>
+</tr>
+<tr>
+<td>-XX:CMSFullGCsBeforeCompaction</td>
+<td>由于并发收集器不对内存空间进行压缩和整理,所以运行一段时间并行收集以后会产生内存碎片,内存使用效率降低.此参数设置运行 0 次 Full GC 后对内存空间进行压缩和整理,即每次 Full GC 后立刻开始压缩和整理内存.(-XX:CMSFullGCsBeforeCompaction&#x3D;0)</td>
+</tr>
+<tr>
+<td>-XX:+UseCMSCompactAtFullCollection</td>
+<td>打开内存空间的压缩和整理,在 Full GC 后执行.可能会影响性能,但可以消除内存碎片.</td>
+</tr>
+<tr>
+<td>-XX:+CMSIncrementalMode</td>
+<td>设置为增量收集模式.一般适用于单 CPU 情况.</td>
+</tr>
+<tr>
+<td>-XX:CMSInitiatingOccupancyFraction</td>
+<td>表示年老代内存空间使用到 70%时就开始执行 CMS 收集,以确保年老代有足够的空间接纳来自年轻代的对象,避免 Full GC 的发生.(-XX:CMSInitiatingOccupancyFraction&#x3D;70)</td>
+</tr>
+</tbody></table>
+<h3 id="1-3-启动设置参数范例"><a href="#1-3-启动设置参数范例" class="headerlink" title="1.3 启动设置参数范例"></a>1.3 启动设置参数范例</h3><p>启动命令范例:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar -Xargs -XX:args yourJar.jar</span><br></pre></td></tr></table></figure>
+
+<p>启动范例:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># mr3306 @ mr3306 in ~/Box/projects/secret/codes/secret-admin/secret-admin-controller/target on git:feature-1006432 x [13:47:01] C:137</span></span><br><span class="line">$ java -jar -Xmx1024m -Xms512m -XX:+PrintGCDetails -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/Users/mr3306/Box/soft/eclipse-mat/oom secret-admin-controller.jar</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-gc-优化"><a href="#2-gc-优化" class="headerlink" title="2. gc 优化"></a>2. gc 优化</h2><p>该章节讲述项目 gc 的情况.</p>
+<h3 id="2-1-项目-gc-日志"><a href="#2-1-项目-gc-日志" class="headerlink" title="2.1 项目 gc 日志"></a>2.1 项目 gc 日志</h3><p>GC 日志格式如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">GC (Allocation Failure) [PSYoungGen: 524800K①-&gt;12561K②(611840K③)] 524800K④-&gt;12649K⑤(2010112K⑥), <span class="number">0.0345720</span> secs⑦] [Times: user=<span class="number">0.05</span>⑧ sys=<span class="number">0.01</span>⑨, real=<span class="number">0.03</span> secs⑩</span><br><span class="line"></span><br><span class="line">① YoungGC 前新生代的内存占用量</span><br><span class="line">② YoungGC 后新生代的内存占用量</span><br><span class="line">③ 新生代总内存大小</span><br><span class="line">④ YoungGC 前 JVM 堆内存占用量</span><br><span class="line">⑤ YoungGC 后 JVM 堆内存使用量</span><br><span class="line">⑥ JVM 堆内存总大小</span><br><span class="line">⑦ YoungGC 耗时</span><br><span class="line">⑧ YoungGC 用户耗时</span><br><span class="line">⑨ YoungGC 系统耗时</span><br><span class="line">⑩ YoungGC 实际耗时</span><br></pre></td></tr></table></figure>
+
+<p><code>Allocation Failure</code>:表明本次引起 GC 的原因是因为在年轻代中没有足够的空间能够存储新的数据了.</p>
+<p><code>ParNew</code>: -XX:+UseParNewGC(新生代使用并行收集器,老年代使用串行回收收集器)或者-XX:+UseConcMarkSweepGC(新生代使用并行收集器,老年代使用 CMS).</p>
+<p><code>PSYoungGen</code>: 使用-XX:+UseParallelOldGC(新生代,老年代都使用并行回收收集器)或者-XX:+UseParallelGC(新生代使用并行回收收集器,老年代使用串行收集器)</p>
+<p>现实的一条 GC 日志:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[GC (Allocation Failure) [PSYoungGen: 171744K-&gt;1312K(172544K)] 378226K-&gt;207862K(789504K), <span class="number">0.0082469</span> secs] [Times: user=<span class="number">0.03</span> sys=<span class="number">0.00</span>, real=<span class="number">0.01</span> secs]</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-gc-监测"><a href="#2-2-gc-监测" class="headerlink" title="2.2 gc 监测"></a>2.2 gc 监测</h3><p>在服务器上可以使用<code>jstat</code>来查看 gc 情况</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@secret-admin-test-deployment-f64dfb5cb-fs28g data]# jstat -gc 1  60s</span><br><span class="line"> S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT</span><br><span class="line">2048.0 2048.0  0.0   1472.1 170496.0 77056.2   616960.0   209981.9  189784.0 174229.4 23168.0 20738.9    549    8.013   5      1.746    9.759</span><br><span class="line">2048.0 2048.0 1088.1  0.0   170496.0 12832.5   616960.0   210013.9  189784.0 174229.9 23168.0 20738.9    550    8.028   5      1.746    9.775</span><br><span class="line">2048.0 2048.0 1088.1  0.0   170496.0 118613.7  616960.0   210013.9  189784.0 174229.9 23168.0 20738.9    550    8.028   5      1.746    9.775</span><br><span class="line">2048.0 2048.0  0.0   1104.1 170496.0 54626.7   616960.0   210053.9  189784.0 174229.9 23168.0 20738.9    551    8.039   5      1.746    9.785</span><br><span class="line">2048.0 2048.0  0.0   1104.1 170496.0 159744.6  616960.0   210053.9  189784.0 174229.9 23168.0 20738.9    551    8.039   5      1.746    9.785</span><br><span class="line">2048.0 2048.0 1136.1  0.0   170496.0 97537.2   616960.0   210101.9  189784.0 174229.9 23168.0 20738.9    552    8.056   5      1.746    9.803</span><br><span class="line">2048.0 2048.0  0.0   1264.1 170496.0 34454.9   616960.0   210141.9  189784.0 174229.9 23168.0 20738.9    553    8.064   5      1.746    9.811</span><br></pre></td></tr></table></figure>
+
+<p>Q: 那么在什么情况下,需要根据 <strong>gc</strong> 进行项目的内存调整呢?</p>
+<p>A: 如果 GC 执行时间满足下列所有条件,就没有必要进行 GC 优化<a target="_blank" rel="noopener" href="https://www.cnblogs.com/ityouknow/p/7653129.html">link</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Minor GC执行非常迅速(50ms以内)</span><br><span class="line">Minor GC没有频繁执行(大约10s执行一次)</span><br><span class="line">Full GC执行非常迅速(1s以内)</span><br><span class="line">Full GC没有频繁执行(大约10min执行一次)</span><br></pre></td></tr></table></figure>
+
+<p>在上面的给出例子里面:</p>
+<ul>
+<li>young gc 的耗时: 一次 young gc 的耗时为 0.015s(&lt;50ms)</li>
+<li>full gc 的耗时: 一次 full gc 的耗时为 0.3492s(&lt;1s)</li>
+</ul>
+<p>这个项目的运行的内存情况还是可以接受的,不需要进行 gc 优化.</p>
+<h3 id="2-2-查询项目的-heap"><a href="#2-2-查询项目的-heap" class="headerlink" title="2.2 查询项目的 heap"></a>2.2 查询项目的 heap</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 命令格式: jmap -heap pid</span></span><br><span class="line">[root@secret-admin-test-deployment-f64dfb5cb-fs28g data]# jmap -heap 1</span><br><span class="line">Attaching to process ID 1, please <span class="built_in">wait</span>...</span><br><span class="line">Debugger attached successfully.</span><br><span class="line">Server compiler detected.</span><br><span class="line">JVM version is 25.144-b01</span><br><span class="line"></span><br><span class="line">using thread-local object allocation.</span><br><span class="line">Parallel GC with 8 thread(s)</span><br><span class="line"></span><br><span class="line">Heap Configuration:</span><br><span class="line">   MinHeapFreeRatio         = 0</span><br><span class="line">   MaxHeapFreeRatio         = 100</span><br><span class="line">   MaxHeapSize              = 2147483648 (2048.0MB)</span><br><span class="line">   NewSize                  = 178782208 (170.5MB)</span><br><span class="line">   MaxNewSize               = 715653120 (682.5MB)</span><br><span class="line">   OldSize                  = 358088704 (341.5MB)</span><br><span class="line">   NewRatio                 = 2</span><br><span class="line">   SurvivorRatio            = 8</span><br><span class="line">   MetaspaceSize            = 21807104 (20.796875MB)</span><br><span class="line">   CompressedClassSpaceSize = 1073741824 (1024.0MB)</span><br><span class="line">   MaxMetaspaceSize         = 17592186044415 MB</span><br><span class="line">   G1HeapRegionSize         = 0 (0.0MB)</span><br><span class="line"></span><br><span class="line">Heap Usage:</span><br><span class="line">PS Young Generation</span><br><span class="line">Eden Space:</span><br><span class="line">   capacity = 174587904 (166.5MB)</span><br><span class="line">   used     = 155953504 (148.72885131835938MB)</span><br><span class="line">   free     = 18634400 (17.771148681640625MB)</span><br><span class="line">   89.32663742844407% used</span><br><span class="line">From Space:</span><br><span class="line">   capacity = 2097152 (2.0MB)</span><br><span class="line">   used     = 1228912 (1.1719818115234375MB)</span><br><span class="line">   free     = 868240 (0.8280181884765625MB)</span><br><span class="line">   58.599090576171875% used</span><br><span class="line">To Space:</span><br><span class="line">   capacity = 2097152 (2.0MB)</span><br><span class="line">   used     = 0 (0.0MB)</span><br><span class="line">   free     = 2097152 (2.0MB)</span><br><span class="line">   0.0% used</span><br><span class="line">PS Old Generation</span><br><span class="line">   capacity = 631767040 (602.5MB)</span><br><span class="line">   used     = 214841208 (204.88854217529297MB)</span><br><span class="line">   free     = 416925832 (397.61145782470703MB)</span><br><span class="line">   34.0063970415424% used</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-查看-thread"><a href="#2-3-查看-thread" class="headerlink" title="2.3 查看 thread"></a>2.3 查看 thread</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 命令格式: jstack -l pid</span></span><br><span class="line">[root@health-evaluate-service-test-deployment-d7bcd9448-jp4cr data]# jstack -l 1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查找qtp线程</span></span><br><span class="line">[root@health-evaluate-service-test-deployment-d7bcd9448-jp4cr data]# jstack -l 1 |grep qtp</span><br><span class="line"><span class="string">&quot;qtp113676940-189&quot;</span> <span class="comment">#189 prio=5 os_prio=0 tid=0x00007feba5390800 nid=0xc2 waiting on condition [0x00007feb55df3000]</span></span><br><span class="line"><span class="string">&quot;qtp113676940-186&quot;</span> <span class="comment">#186 prio=5 os_prio=0 tid=0x00007feb2c00c800 nid=0xbe runnable [0x00007feb55ff5000]</span></span><br><span class="line"><span class="string">&quot;qtp113676940-177&quot;</span> <span class="comment">#177 prio=5 os_prio=0 tid=0x00007feb20477000 nid=0xb6 waiting on condition [0x00007feaf6eaf000]</span></span><br><span class="line"><span class="string">&quot;qtp113676940-60&quot;</span> <span class="comment">#60 prio=5 os_prio=0 tid=0x00007fec2df1f000 nid=0x47 runnable [0x00007feb55bf1000]</span></span><br><span class="line"><span class="string">&quot;qtp113676940-59&quot;</span> <span class="comment">#59 prio=5 os_prio=0 tid=0x00007fec2df1c800 nid=0x46 runnable [0x00007feb55cf2000]</span></span><br><span class="line"><span class="string">&quot;qtp113676940-57-acceptor-0@29f48544-ServerConnector@4b07cad0&#123;HTTP/1.1, (http/1.1)&#125;&#123;0.0.0.0:2750&#125;&quot;</span> <span class="comment">#57 prio=3 os_prio=0 tid=0x00007fec2df19000 nid=0x44 runnable [0x00007feb55ef4000]</span></span><br><span class="line"><span class="string">&quot;qtp113676940-54&quot;</span> <span class="comment">#54 prio=5 os_prio=0 tid=0x00007fec2df13800 nid=0x41 waiting on condition [0x00007feb561f7000]</span></span><br><span class="line"><span class="string">&quot;qtp113676940-53&quot;</span> <span class="comment">#53 prio=5 os_prio=0 tid=0x00007fec2df11800 nid=0x40 runnable [0x00007feb562f8000]</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-回收算法"><a href="#3-回收算法" class="headerlink" title="3. 回收算法"></a>3. 回收算法</h2><p>该章节讲述回收相关的算法.</p>
+<h3 id="3-1-回收判断"><a href="#3-1-回收判断" class="headerlink" title="3.1 回收判断"></a>3.1 回收判断</h3><p>判断对象是否存活<a target="_blank" rel="noopener" href="https://www.cnblogs.com/ityouknow/p/5614961.html">link</a>:</p>
+<p><strong>引用计数</strong>: 每个对象有一个引用计数属性,新增一个引用时计数+1,释放时计数减 -1,计数为 0 时可以回收.<u>此方法简单,无法解决对象相互循环引用的问题.</u></p>
+<p><strong>可达性分析(Reachability Analysis)</strong>: 从 GC Roots 向下搜索,搜索所走过的路径称为引用链,当一个对象到 GC Roots 没有任何引用链相连时,此对象为不可达对象.</p>
+<p>在 Java 语言中,GC Roots 包括:</p>
+<ul>
+<li>虚拟机栈中引用的对象</li>
+<li>方法区中类静态属性实体引用的对象</li>
+<li>方法区中常量引用的对象</li>
+<li>本地方法栈中 JNI 引用的对象</li>
+</ul>
+<h3 id="3-2-回收算法"><a href="#3-2-回收算法" class="headerlink" title="3.2 回收算法"></a>3.2 回收算法</h3><p>Q: 怎么知道系统里面用的 gc 算法是啥?</p>
+<p>A: 可以说使用<code>jinfo -flags pid</code>命令来查看.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">root @ team3 <span class="keyword">in</span> ~ [14:39:48]</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">jinfo -flags 534</span></span><br><span class="line">Attaching to process ID 534, please wait...</span><br><span class="line">Debugger attached successfully.</span><br><span class="line">Server compiler detected.</span><br><span class="line">JVM version is 25.144-b01</span><br><span class="line">Non-default VM flags: -XX:CICompilerCount=2 -XX:InitialHeapSize=62914560 -XX:MaxHeapSize=994050048 -XX:MaxNewSize=331350016 -XX:MinHeapDeltaBytes=524288 -XX:NewSize=20971520 -XX:OldSize=41943040 -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseParallelGC</span><br><span class="line">Command line:  -Djava.util.logging.config.file=/opt/soft/tomcat9/apache-tomcat-9.0.27/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djdk.tls.ephemeralDHKeySize=2048 -Djava.protocol.handler.pkgs=org.apache.catalina.webresources -Dorg.apache.catalina.security.SecurityListener.UMASK=0027 -Dignore.endorsed.dirs= -Dcatalina.base=/opt/soft/tomcat9/apache-tomcat-9.0.27 -Dcatalina.home=/opt/soft/tomcat9/apache-tomcat-9.0.27 -Djava.io.tmpdir=/opt/soft/tomcat9/apache-tomcat-9.0.27/temp</span><br></pre></td></tr></table></figure>
+
+<p>从上面的命令可以看出,使用的 gc 回收器是:<code>-XX:+UseParallelGC</code>.</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>回收器</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-XX:-UseSerialGC</td>
+<td>Serial + Serial Old</td>
+<td>Serial: 复制算法,Serial Old:标记整理算法</td>
+</tr>
+<tr>
+<td>-XX:-UseParNewGC</td>
+<td>ParNew + Serial Old</td>
+<td>parnew: 复制算法</td>
+</tr>
+<tr>
+<td>-XX:-UseParallelGC</td>
+<td>Parallel Scavenge + Serial Old</td>
+<td>Serial Old:标记整理算法</td>
+</tr>
+<tr>
+<td>-XX:-UseParallelOldGC</td>
+<td>Parallel Scavenge + Parallel Old</td>
+<td>Parallel Scavenge:复制算法,Parallel Old: 标志整理</td>
+</tr>
+<tr>
+<td>-XX:-UseConcMarkSweepGC</td>
+<td>CMS + ParNew</td>
+<td>CMS: 标记清理</td>
+</tr>
+<tr>
+<td>-Xx:-UseG1GC</td>
+<td>G1</td>
+<td>G1: 标记整理</td>
+</tr>
+</tbody></table>
+<p>Q: 那么上面这种<code>Serial</code>,<code>Parallel</code>,<code>CMS</code>什么,有啥区别,分别用的是什么样的算法来回收呀?</p>
+<p>A: 先了解一下一些概念. <a target="_blank" rel="noopener" href="https://tech.meituan.com/2020/11/12/java-9-cms-gc.html">美团博客 link</a></p>
+<ul>
+<li><p>Mark-Sweep（标记-清除）： 回收过程主要分为两个阶段，第一阶段为追踪（Tracing）阶段，即从 GC Root 开始遍历对象图，并标记（Mark）所遇到的每个对象，第二阶段为清除（Sweep）阶段，即回收器检查堆中每一个对象，并将所有未被标记的对象进行回收，整个过程不会发生对象移动。整个算法在不同的实现中会使用三色抽象（Tricolour Abstraction）、位图标记（BitMap）等技术来提高算法的效率，存活对象较多时较高效。</p>
+</li>
+<li><p>Mark-Compact （标记-整理）： 这个算法的主要目的就是解决在非移动式回收器中都会存在的碎片化问题，也分为两个阶段，第一阶段与 Mark-Sweep 类似，第二阶段则会对存活对象按照整理顺序（Compaction Order）进行整理。主要实现有双指针（Two-Finger）回收算法、滑动回收（Lisp2）算法和引线整理（Threaded Compaction）算法等。</p>
+</li>
+<li><p>Copying（复制）： 将空间分为两个大小相同的 From 和 To 两个半区，同一时间只会使用其中一个，每次进行回收时将一个半区的存活对象通过复制的方式转移到另一个半区。有递归（Robert R. Fenichel 和 Jerome C. Yochelson 提出）和迭代（Cheney 提出）算法，以及解决了前两者递归栈、缓存行等问题的近似优先搜索算法。复制算法可以通过碰撞指针的方式进行快速地分配内存，但是也存在着空间利用率不高的缺点，另外就是存活对象比较大时复制的成本比较高。</p>
+</li>
+</ul>
+<p>Q: 那么新生代和老年代分别能用什么算法?</p>
+<p>A: 请参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/zhou920786312/article/details/84276583">各种 gc 回收器详情 link</a></p>
+<p><img src="/images/javase-images/gc-collector.png"></p>
+<hr>
+<h2 id="4-dump"><a href="#4-dump" class="headerlink" title="4. dump"></a>4. dump</h2><p>该章节主要是 dump 和 mat 的使用,<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zh94/p/14051852.html">mat 使用教程 link</a></p>
+<h3 id="4-1-dump"><a href="#4-1-dump" class="headerlink" title="4.1 dump"></a>4.1 dump</h3><p>命令格式: <code>jmap -dump:file=$&#123;dumpFileName&#125;.hprof,format=b $&#123;pid&#125;</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 命令格式: jmap -dump:file=$&#123;dumpFileName&#125;.hprof,format=b  $&#123;pid&#125;</span></span><br><span class="line">[root@health-evaluate-service-prod-deployment-89df4bbdb-89rsl data]# jmap -dump:file=health-eva-prd.hprof,format=b 1</span><br><span class="line">Dumping heap to /data/health-eva-prd.hprof ...</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="5-参考文档"><a href="#5-参考文档" class="headerlink" title="5. 参考文档"></a>5. 参考文档</h2><p>a. <a target="_blank" rel="noopener" href="http://www.51gjie.com/java/551.html">jvm 相关参数配置 link</a></p>
+<p>b. <a target="_blank" rel="noopener" href="https://blog.51cto.com/kankan/2488473">java 运行时指定内存大小 link</a></p>
+<p>c. <a target="_blank" rel="noopener" href="https://www.cnblogs.com/wx170119/p/10144512.html">Java 堆内存设置 link</a></p>
+<p>d. <a target="_blank" rel="noopener" href="https://www.cnblogs.com/maybo/p/7784687.html">主流 web 容器性能对比 link</a></p>
+<p>e. <a target="_blank" rel="noopener" href="https://www.cnblogs.com/ityouknow/p/5614961.html">垃圾回收算法 link</a></p>
+<p>f. <a target="_blank" rel="noopener" href="https://www.cnblogs.com/ityouknow/p/7653129.html">gc 优化 link</a></p>
+<p>g. <a target="_blank" rel="noopener" href="https://www.cnblogs.com/zh94/p/14051852.html">MAT 分析 dump 文件 link</a></p>
+<p>h. <a target="_blank" rel="noopener" href="https://tech.meituan.com/2020/11/12/java-9-cms-gc.html">美团技术博客 link</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag"># Java基础</a>
+              <a href="/tags/JVM/" rel="tag"># JVM</a>
+              <a href="/tags/GC/" rel="tag"># GC</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/11/08/java-thread/" rel="prev" title="Java 之线程">
+      <i class="fa fa-chevron-left"></i> Java 之线程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/03/01/java-encode/" rel="next" title="Java 加密">
+      Java 加密 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM-GC"><span class="nav-number">1.</span> <span class="nav-text">JVM&amp;GC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-jvm-%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">1. jvm 参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 项目配置参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 配置参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-1-%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">1.2.1 常用配置参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-2-%E8%BE%85%E5%8A%A9%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">1.2.2 辅助参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-3-%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">1.2.3 垃圾收集器参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E5%90%AF%E5%8A%A8%E8%AE%BE%E7%BD%AE%E5%8F%82%E6%95%B0%E8%8C%83%E4%BE%8B"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 启动设置参数范例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-gc-%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.</span> <span class="nav-text">2. gc 优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E9%A1%B9%E7%9B%AE-gc-%E6%97%A5%E5%BF%97"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 项目 gc 日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-gc-%E7%9B%91%E6%B5%8B"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 gc 监测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E6%9F%A5%E8%AF%A2%E9%A1%B9%E7%9B%AE%E7%9A%84-heap"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.2 查询项目的 heap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E6%9F%A5%E7%9C%8B-thread"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.3 查看 thread</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">3. 回收算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%9B%9E%E6%94%B6%E5%88%A4%E6%96%AD"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 回收判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 回收算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-dump"><span class="nav-number">1.4.</span> <span class="nav-text">4. dump</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-dump"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 dump</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">1.5.</span> <span class="nav-text">5. 参考文档</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cs12110@163.com"
+      src="/images/12764287.png">
+  <p class="site-author-name" itemprop="name">cs12110@163.com</p>
+  <div class="site-description" itemprop="description">就一臭打字的</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">105</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">66</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cs12110" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cs12110" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cs12110@163.com</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+
+</body>
+</html>
