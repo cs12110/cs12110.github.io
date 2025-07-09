@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="RpcQ: Rpc,如果要自己实现一个简单的rpc该怎么做呢? A: 码在手,跟我走.  1. 代码1.1 项目说明   模块名称 模块说明    basic-rpc-api 公共接口和类模块   basic-rpc-service 服务提供模块   basic-rpc-client 服务调用模块   1.2 pom.xml1234567891011121314151617181920212223">
+  <meta name="description" content="RpcQ: Rpc,如果要自己实现一个简单的rpc该怎么做呢? A: 码在手,跟我走.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java Rpc">
 <meta property="og:url" content="http://example.com/2020/10/08/java-rpc/index.html">
 <meta property="og:site_name" content="mini-docs">
-<meta property="og:description" content="RpcQ: Rpc,如果要自己实现一个简单的rpc该怎么做呢? A: 码在手,跟我走.  1. 代码1.1 项目说明   模块名称 模块说明    basic-rpc-api 公共接口和类模块   basic-rpc-service 服务提供模块   basic-rpc-client 服务调用模块   1.2 pom.xml1234567891011121314151617181920212223">
+<meta property="og:description" content="RpcQ: Rpc,如果要自己实现一个简单的rpc该怎么做呢? A: 码在手,跟我走.">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-10-07T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-07-09T01:22:19.037Z">
+<meta property="article:modified_time" content="2025-07-09T10:07:24.788Z">
 <meta property="article:author" content="cs12110@163.com">
 <meta property="article:tag" content="Java基础">
 <meta name="twitter:card" content="summary">
@@ -224,7 +224,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-09 09:22:19" itemprop="dateModified" datetime="2025-07-09T09:22:19+08:00">2025-07-09</time>
+                <time title="修改时间：2025-07-09 18:07:24" itemprop="dateModified" datetime="2025-07-09T18:07:24+08:00">2025-07-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -253,6 +253,9 @@
       
         <h1 id="Rpc"><a href="#Rpc" class="headerlink" title="Rpc"></a>Rpc</h1><p>Q: Rpc,如果要自己实现一个简单的rpc该怎么做呢?</p>
 <p>A: 码在手,跟我走.</p>
+<span id="more"></span>
+
+
 <hr>
 <h2 id="1-代码"><a href="#1-代码" class="headerlink" title="1. 代码"></a>1. 代码</h2><h3 id="1-1-项目说明"><a href="#1-1-项目说明" class="headerlink" title="1.1 项目说明"></a>1.1 项目说明</h3><table>
 <thead>
@@ -315,8 +318,9 @@
     
 
       <footer class="post-footer">
+          
           <div class="post-tags">
-              <a href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag"># Java基础</a>
+              <a href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag"><i class="fa fa-tag"></i> Java基础</a>
           </div>
 
         
@@ -329,8 +333,8 @@
       <i class="fa fa-chevron-left"></i> ThreadLocal 笔记
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/10/08/java-proxy/" rel="next" title="CGLib 与 Proxy">
-      CGLib 与 Proxy <i class="fa fa-chevron-right"></i>
+    <a href="/2020/10/08/java-mockito/" rel="next" title="Mockito">
+      Mockito <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -390,7 +394,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Rpc"><span class="nav-number">1.</span> <span class="nav-text">Rpc</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BB%A3%E7%A0%81"><span class="nav-number">1.1.</span> <span class="nav-text">1. 代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E9%A1%B9%E7%9B%AE%E8%AF%B4%E6%98%8E"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 项目说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-pom-xml"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 pom.xml</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-basic-rpc-api"><span class="nav-number">1.2.</span> <span class="nav-text">2. basic-rpc-api</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-api%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 api接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%AE%9E%E4%BD%93%E7%B1%BB"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 实体类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-basic-rpc-service"><span class="nav-number">1.3.</span> <span class="nav-text">3. basic-rpc-service</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-pom-xml"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 pom.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-impl"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 impl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E5%90%AF%E5%8A%A8%E7%B1%BB"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 启动类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-basic-rpc-client"><span class="nav-number">1.4.</span> <span class="nav-text">4. basic-rpc-client</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-pom-xml"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 pom.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-handler"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E5%90%AF%E5%8A%A8%E7%B1%BB"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 启动类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%B5%8B%E8%AF%95"><span class="nav-number">1.5.</span> <span class="nav-text">5. 测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.6.</span> <span class="nav-text">6. 参考资料</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Rpc"><span class="nav-text">Rpc</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BB%A3%E7%A0%81"><span class="nav-text">1. 代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E9%A1%B9%E7%9B%AE%E8%AF%B4%E6%98%8E"><span class="nav-text">1.1 项目说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-pom-xml"><span class="nav-text">1.2 pom.xml</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-basic-rpc-api"><span class="nav-text">2. basic-rpc-api</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-api%E6%8E%A5%E5%8F%A3"><span class="nav-text">2.1 api接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%AE%9E%E4%BD%93%E7%B1%BB"><span class="nav-text">2.2 实体类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-basic-rpc-service"><span class="nav-text">3. basic-rpc-service</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-pom-xml"><span class="nav-text">3.1 pom.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-impl"><span class="nav-text">3.2 impl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E5%90%AF%E5%8A%A8%E7%B1%BB"><span class="nav-text">3.3 启动类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-basic-rpc-client"><span class="nav-text">4. basic-rpc-client</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-pom-xml"><span class="nav-text">4.1 pom.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-handler"><span class="nav-text">4.2 handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E5%90%AF%E5%8A%A8%E7%B1%BB"><span class="nav-text">4.3 启动类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%B5%8B%E8%AF%95"><span class="nav-text">5. 测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-text">6. 参考资料</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

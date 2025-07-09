@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="线程池在开发里面,偶尔要用到线程,但并不提倡使用new Thread().start()这种方式来创建. 在 Jvm 里面创建过多的线程会对资源是一种很大的消耗,所以推荐使用线程池. 使用常识:线程池在没有特殊的情况下并不手动关闭线程池.不是在每一次调用线程池的时候打开,使用完就关闭,除非自己手动关闭 :{.  1. 测试线程下列例子全部使用该线程来测试 123456789101112131415">
+  <meta name="description" content="线程池在开发里面,偶尔要用到线程,但并不提倡使用new Thread().start()这种方式来创建. 在 Jvm 里面创建过多的线程会对资源是一种很大的消耗,所以推荐使用线程池. 使用常识:线程池在没有特殊的情况下并不手动关闭线程池.不是在每一次调用线程池的时候打开,使用完就关闭,除非自己手动关闭 :{.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java 线程池">
 <meta property="og:url" content="http://example.com/2022/11/19/java-threadpool/index.html">
 <meta property="og:site_name" content="mini-docs">
-<meta property="og:description" content="线程池在开发里面,偶尔要用到线程,但并不提倡使用new Thread().start()这种方式来创建. 在 Jvm 里面创建过多的线程会对资源是一种很大的消耗,所以推荐使用线程池. 使用常识:线程池在没有特殊的情况下并不手动关闭线程池.不是在每一次调用线程池的时候打开,使用完就关闭,除非自己手动关闭 :{.  1. 测试线程下列例子全部使用该线程来测试 123456789101112131415">
+<meta property="og:description" content="线程池在开发里面,偶尔要用到线程,但并不提倡使用new Thread().start()这种方式来创建. 在 Jvm 里面创建过多的线程会对资源是一种很大的消耗,所以推荐使用线程池. 使用常识:线程池在没有特殊的情况下并不手动关闭线程池.不是在每一次调用线程池的时候打开,使用完就关闭,除非自己手动关闭 :{.">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-11-18T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-07-09T01:23:04.773Z">
+<meta property="article:modified_time" content="2025-07-09T10:07:06.837Z">
 <meta property="article:author" content="cs12110@163.com">
 <meta property="article:tag" content="Java基础">
 <meta name="twitter:card" content="summary">
@@ -224,7 +224,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-09 09:23:04" itemprop="dateModified" datetime="2025-07-09T09:23:04+08:00">2025-07-09</time>
+                <time title="修改时间：2025-07-09 18:07:06" itemprop="dateModified" datetime="2025-07-09T18:07:06+08:00">2025-07-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -254,6 +254,9 @@
         <h1 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h1><p>在开发里面,偶尔要用到线程,但并不提倡使用<code>new Thread().start()</code>这种方式来创建.</p>
 <p>在 Jvm 里面创建过多的线程会对资源是一种很大的消耗,所以推荐使用线程池.</p>
 <p>使用常识:<span style="color:pink"><strong>线程池在没有特殊的情况下并不手动关闭线程池.不是在每一次调用线程池的时候打开,使用完就关闭,除非自己手动关闭 :{.</strong></span></p>
+<span id="more"></span>
+
+
 <hr>
 <h2 id="1-测试线程"><a href="#1-测试线程" class="headerlink" title="1. 测试线程"></a>1. 测试线程</h2><p>下列例子全部使用该线程来测试</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyRun</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> String threadName;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">MyRun</span><span class="params">(String threadName)</span> &#123;</span><br><span class="line">		<span class="built_in">super</span>();</span><br><span class="line">		<span class="built_in">this</span>.threadName = threadName;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">		System.out.println(getTime() + <span class="string">&quot; - &quot;</span> + threadName + <span class="string">&quot; is running&quot;</span>);</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> String <span class="title function_">getTime</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="type">SimpleDateFormat</span> <span class="variable">sdf</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SimpleDateFormat</span>(<span class="string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> sdf.format(<span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -375,8 +378,9 @@
     
 
       <footer class="post-footer">
+          
           <div class="post-tags">
-              <a href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag"># Java基础</a>
+              <a href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag"><i class="fa fa-tag"></i> Java基础</a>
           </div>
 
         
@@ -450,7 +454,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="nav-number">1.</span> <span class="nav-text">线程池</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%B5%8B%E8%AF%95%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">1. 测试线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-ThreadPoolExecutor"><span class="nav-number">1.2.</span> <span class="nav-text">2. ThreadPoolExecutor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-SingleThreadPool"><span class="nav-number">1.3.</span> <span class="nav-text">3. SingleThreadPool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-CachedThreadPool"><span class="nav-number">1.4.</span> <span class="nav-text">4. CachedThreadPool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-FixedThreadPool"><span class="nav-number">1.5.</span> <span class="nav-text">5. FixedThreadPool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E8%87%AA%E5%AE%9A%E4%B9%89-ThreadFactory"><span class="nav-number">1.6.</span> <span class="nav-text">6. 自定义 ThreadFactory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">1.7.</span> <span class="nav-text">7. 线程池实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-cheater"><span class="nav-number">1.8.</span> <span class="nav-text">8. cheater</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86"><span class="nav-number">1.9.</span> <span class="nav-text">9. 扩展知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%E6%80%BB%E7%BB%93"><span class="nav-number">1.10.</span> <span class="nav-text">10. 总结</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="nav-text">线程池</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%B5%8B%E8%AF%95%E7%BA%BF%E7%A8%8B"><span class="nav-text">1. 测试线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-ThreadPoolExecutor"><span class="nav-text">2. ThreadPoolExecutor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-SingleThreadPool"><span class="nav-text">3. SingleThreadPool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-CachedThreadPool"><span class="nav-text">4. CachedThreadPool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-FixedThreadPool"><span class="nav-text">5. FixedThreadPool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E8%87%AA%E5%AE%9A%E4%B9%89-ThreadFactory"><span class="nav-text">6. 自定义 ThreadFactory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-text">7. 线程池实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-cheater"><span class="nav-text">8. cheater</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86"><span class="nav-text">9. 扩展知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%E6%80%BB%E7%BB%93"><span class="nav-text">10. 总结</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

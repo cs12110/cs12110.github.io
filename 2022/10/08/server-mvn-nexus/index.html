@@ -22,12 +22,12 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="NexusMaven 搭建私服Nexus. Q: 为什么要使用这个玩意呀? A: 第一个,如下图所示  Q: 哦,原来是 A: 我还没说完呢!!!还可以在私服上放内部的工具包,那样子其他人在 pom 里面引用就可以了,而不是一个 jar 到处导来导去. 1. 安装 Nexus默认用户:admin,默认密码:admin123. 安装 nexus12345678910# 解压路径[root@team-">
+  <meta name="description" content="NexusMaven 搭建私服Nexus. Q: 为什么要使用这个玩意呀? A: 第一个,如下图所示  Q: 哦,原来是 A: 我还没说完呢!!!还可以在私服上放内部的工具包,那样子其他人在 pom 里面引用就可以了,而不是一个 jar 到处导来导去.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Maven Nexus">
 <meta property="og:url" content="http://example.com/2022/10/08/server-mvn-nexus/index.html">
 <meta property="og:site_name" content="mini-docs">
-<meta property="og:description" content="NexusMaven 搭建私服Nexus. Q: 为什么要使用这个玩意呀? A: 第一个,如下图所示  Q: 哦,原来是 A: 我还没说完呢!!!还可以在私服上放内部的工具包,那样子其他人在 pom 里面引用就可以了,而不是一个 jar 到处导来导去. 1. 安装 Nexus默认用户:admin,默认密码:admin123. 安装 nexus12345678910# 解压路径[root@team-">
+<meta property="og:description" content="NexusMaven 搭建私服Nexus. Q: 为什么要使用这个玩意呀? A: 第一个,如下图所示  Q: 哦,原来是 A: 我还没说完呢!!!还可以在私服上放内部的工具包,那样子其他人在 pom 里面引用就可以了,而不是一个 jar 到处导来导去.">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/images/server-images/mvn-nexus-how-it-work.png">
 <meta property="og:image" content="http://example.com/images/server-images/mvn-nexus-home.jpg">
@@ -38,7 +38,7 @@
 <meta property="og:image" content="http://example.com/images/server-images/mvn-nexus-jar.png">
 <meta property="og:image" content="http://example.com/images/server-images/mvn-nexus-jar-info.png">
 <meta property="article:published_time" content="2022-10-08T12:46:25.000Z">
-<meta property="article:modified_time" content="2025-07-09T01:49:01.655Z">
+<meta property="article:modified_time" content="2025-07-09T10:01:40.613Z">
 <meta property="article:author" content="cs12110@163.com">
 <meta property="article:tag" content="server">
 <meta name="twitter:card" content="summary">
@@ -233,7 +233,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-09 09:49:01" itemprop="dateModified" datetime="2025-07-09T09:49:01+08:00">2025-07-09</time>
+                <time title="修改时间：2025-07-09 18:01:40" itemprop="dateModified" datetime="2025-07-09T18:01:40+08:00">2025-07-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -266,6 +266,8 @@
 <p><img src="/images/server-images/mvn-nexus-how-it-work.png"></p>
 <p>Q: 哦,原来是</p>
 <p>A: 我还没说完呢!!!还可以在私服上放内部的工具包,那样子其他人在 pom 里面引用就可以了,而不是一个 jar 到处导来导去.</p>
+<span id="more"></span>
+
 <h2 id="1-安装-Nexus"><a href="#1-安装-Nexus" class="headerlink" title="1. 安装 Nexus"></a>1. 安装 Nexus</h2><p>默认用户:<code>admin</code>,默认密码:<code>admin123</code>.</p>
 <h4 id="安装-nexus"><a href="#安装-nexus" class="headerlink" title="安装 nexus"></a>安装 nexus</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 解压路径</span></span><br><span class="line">[root@team-2 mvn-nexus]# <span class="built_in">pwd</span></span><br><span class="line">/opt/soft/mvn-nexus</span><br><span class="line">[root@team-2 mvn-nexus]# <span class="built_in">ls</span></span><br><span class="line">nexus-2.14  sonatype-work</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改默认端口号,可以在conf/nexus.properties,设置端口号为:9400</span></span><br><span class="line">[root@team-2 mvn-nexus]# <span class="built_in">cd</span> nexus-2.14/</span><br><span class="line">[root@team-2 nexus-2.14]# <span class="built_in">ls</span></span><br><span class="line">bin  conf  lib  LICENSE.txt  logs  nexus  NOTICE.txt  tmp</span><br></pre></td></tr></table></figure>
 
@@ -321,8 +323,9 @@
     
 
       <footer class="post-footer">
+          
           <div class="post-tags">
-              <a href="/tags/server/" rel="tag"># server</a>
+              <a href="/tags/server/" rel="tag"><i class="fa fa-tag"></i> server</a>
           </div>
 
         
@@ -335,8 +338,8 @@
       <i class="fa fa-chevron-left"></i> Maven 使用手册
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/10/08/server-lanproxy-guide/" rel="next" title="lanproxy 使用教程">
-      lanproxy 使用教程 <i class="fa fa-chevron-right"></i>
+    <a href="/2022/10/08/server-git-guide/" rel="next" title="git 使用教程">
+      git 使用教程 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -396,7 +399,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Nexus"><span class="nav-number">1.</span> <span class="nav-text">Nexus</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85-Nexus"><span class="nav-number">1.1.</span> <span class="nav-text">1. 安装 Nexus</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-nexus"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">安装 nexus</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-nexus"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">启动 nexus</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8%E7%A7%81%E6%9C%8D"><span class="nav-number">1.2.</span> <span class="nav-text">2. 使用私服</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-nexus-%E8%AE%BE%E7%BD%AE-repo"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">2.1 nexus 设置 repo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E4%B8%8A%E4%BC%A0-jar"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">2.2 上传 jar</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-meven-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.0.3.</span> <span class="nav-text">2.3 meven 配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E9%A1%B9%E7%9B%AE%E5%BC%95%E7%94%A8"><span class="nav-number">1.2.0.4.</span> <span class="nav-text">2.4 项目引用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-%E6%B5%8B%E8%AF%95%E4%BD%BF%E7%94%A8"><span class="nav-number">1.2.0.5.</span> <span class="nav-text">2.5 测试使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.3.</span> <span class="nav-text">3. 参考资料</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Nexus"><span class="nav-text">Nexus</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85-Nexus"><span class="nav-text">1. 安装 Nexus</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-nexus"><span class="nav-text">安装 nexus</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-nexus"><span class="nav-text">启动 nexus</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8%E7%A7%81%E6%9C%8D"><span class="nav-text">2. 使用私服</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-nexus-%E8%AE%BE%E7%BD%AE-repo"><span class="nav-text">2.1 nexus 设置 repo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E4%B8%8A%E4%BC%A0-jar"><span class="nav-text">2.2 上传 jar</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-meven-%E9%85%8D%E7%BD%AE"><span class="nav-text">2.3 meven 配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E9%A1%B9%E7%9B%AE%E5%BC%95%E7%94%A8"><span class="nav-text">2.4 项目引用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-%E6%B5%8B%E8%AF%95%E4%BD%BF%E7%94%A8"><span class="nav-text">2.5 测试使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-text">3. 参考资料</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

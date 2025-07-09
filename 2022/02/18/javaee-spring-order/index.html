@@ -22,16 +22,16 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Spring Orderorder, order, order.  1. 场景Q: what the fuck are you doing here? A: 嘿嘿嘿.看看下面的场景有啥问题? @Tx 代表事务, @Lock 代表分布式锁 12345678@Tx@Lockpublic void execute(String userId, BigDeciaml amount)&#123;    Us">
+  <meta name="description" content="Spring Orderorder, order, order.  1. 场景Q: what the fuck are you doing here? A: 嘿嘿嘿.看看下面的场景有啥问题? @Tx 代表事务, @Lock 代表分布式锁">
 <meta property="og:type" content="article">
 <meta property="og:title" content="spring Order">
 <meta property="og:url" content="http://example.com/2022/02/18/javaee-spring-order/index.html">
 <meta property="og:site_name" content="mini-docs">
-<meta property="og:description" content="Spring Orderorder, order, order.  1. 场景Q: what the fuck are you doing here? A: 嘿嘿嘿.看看下面的场景有啥问题? @Tx 代表事务, @Lock 代表分布式锁 12345678@Tx@Lockpublic void execute(String userId, BigDeciaml amount)&#123;    Us">
+<meta property="og:description" content="Spring Orderorder, order, order.  1. 场景Q: what the fuck are you doing here? A: 嘿嘿嘿.看看下面的场景有啥问题? @Tx 代表事务, @Lock 代表分布式锁">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/images/javaee-images/spring-order-issue.png">
 <meta property="article:published_time" content="2022-02-18T12:46:25.000Z">
-<meta property="article:modified_time" content="2025-07-09T02:11:43.072Z">
+<meta property="article:modified_time" content="2025-07-09T10:05:20.357Z">
 <meta property="article:author" content="cs12110@163.com">
 <meta property="article:tag" content="JavaEE">
 <meta property="article:tag" content="Spring">
@@ -227,7 +227,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-09 10:11:43" itemprop="dateModified" datetime="2025-07-09T10:11:43+08:00">2025-07-09</time>
+                <time title="修改时间：2025-07-09 18:05:20" itemprop="dateModified" datetime="2025-07-09T18:05:20+08:00">2025-07-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -258,6 +258,9 @@
 <hr>
 <h3 id="1-场景"><a href="#1-场景" class="headerlink" title="1. 场景"></a>1. 场景</h3><p>Q: what the fuck are you doing here?</p>
 <p>A: 嘿嘿嘿.看看下面的场景有啥问题? <code>@Tx</code> 代表事务, <code>@Lock</code> 代表分布式锁</p>
+<span id="more"></span>
+
+
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Tx</span></span><br><span class="line"><span class="meta">@Lock</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(String userId, BigDeciaml amount)</span>&#123;</span><br><span class="line">    <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> userMapper.getFromDatabase(userId);</span><br><span class="line">    user.setAmount(user.getAmount+amount);</span><br><span class="line"></span><br><span class="line">    userMapper.updateById(user);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>这里关于<code>@Tx</code>和<code>@Lock</code> 的执行顺序有点讲究.举个栗子:</p>
@@ -288,9 +291,10 @@
     
 
       <footer class="post-footer">
+          
           <div class="post-tags">
-              <a href="/tags/JavaEE/" rel="tag"># JavaEE</a>
-              <a href="/tags/Spring/" rel="tag"># Spring</a>
+              <a href="/tags/JavaEE/" rel="tag"><i class="fa fa-tag"></i> JavaEE</a>
+              <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
           </div>
 
         
@@ -364,7 +368,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring-Order"><span class="nav-number">1.</span> <span class="nav-text">Spring Order</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%9C%BA%E6%99%AF"><span class="nav-number">1.0.1.</span> <span class="nav-text">1. 场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">1.0.2.</span> <span class="nav-text">2. 源码分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.0.3.</span> <span class="nav-text">3. 参考资料</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring-Order"><span class="nav-text">Spring Order</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%9C%BA%E6%99%AF"><span class="nav-text">1. 场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-text">2. 源码分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-text">3. 参考资料</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
