@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Git我还是很喜欢 Git 呀!  1. 安装 Git没有 yum 搞不定的事,如果有那就 rpm. 123[root@bi141 ~]# yum install -y git[root@bi141 ~]# git --versiongit version 1.8.3.1   2. 基础命令设置全局用户和邮箱在 git 里面,邮箱和用户是很重要的. 查看 git 里面配置参数 1234567891">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git 使用教程">
+<meta property="og:url" content="http://example.com/2022/10/08/server-git-guide/index.html">
+<meta property="og:site_name" content="mini-docs">
+<meta property="og:description" content="Git我还是很喜欢 Git 呀!  1. 安装 Git没有 yum 搞不定的事,如果有那就 rpm. 123[root@bi141 ~]# yum install -y git[root@bi141 ~]# git --versiongit version 1.8.3.1   2. 基础命令设置全局用户和邮箱在 git 里面,邮箱和用户是很重要的. 查看 git 里面配置参数 1234567891">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-08T12:46:25.000Z">
+<meta property="article:modified_time" content="2025-07-09T01:45:51.539Z">
+<meta property="article:author" content="cs12110@163.com">
+<meta property="article:tag" content="server">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/10/08/server-git-guide/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>git 使用教程 | mini-docs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">mini-docs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">18</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">86</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">105</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/cs12110" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/10/08/server-git-guide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/12764287.png">
+      <meta itemprop="name" content="cs12110@163.com">
+      <meta itemprop="description" content="就一臭打字的">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mini-docs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          git 使用教程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-08 20:46:25" itemprop="dateCreated datePublished" datetime="2022-10-08T20:46:25+08:00">2022-10-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-09 09:45:51" itemprop="dateModified" datetime="2025-07-09T09:45:51+08:00">2025-07-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/git/" itemprop="url" rel="index"><span itemprop="name">git</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><p>我还是很喜欢 Git 呀!</p>
+<hr>
+<h2 id="1-安装-Git"><a href="#1-安装-Git" class="headerlink" title="1. 安装 Git"></a>1. 安装 Git</h2><p>没有 yum 搞不定的事,如果有那就 rpm.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@bi141 ~]# yum install -y git</span><br><span class="line">[root@bi141 ~]# git --version</span><br><span class="line">git version 1.8.3.1</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-基础命令"><a href="#2-基础命令" class="headerlink" title="2. 基础命令"></a>2. 基础命令</h2><h3 id="设置全局用户和邮箱"><a href="#设置全局用户和邮箱" class="headerlink" title="设置全局用户和邮箱"></a>设置全局用户和邮箱</h3><p>在 git 里面,邮箱和用户是很重要的.</p>
+<p>查看 git 里面配置参数</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">$ git config --list</span><br><span class="line">http.sslcainfo=D:/Pro/Git/mingw64/ssl/certs/ca-bundle.crt</span><br><span class="line">http.sslbackend=openssl</span><br><span class="line">diff.astextplain.textconv=astextplain</span><br><span class="line">filter.lfs.clean=git-lfs clean -- %f</span><br><span class="line">filter.lfs.smudge=git-lfs smudge -- %f</span><br><span class="line">filter.lfs.process=git-lfs filter-process</span><br><span class="line">filter.lfs.required=<span class="literal">true</span></span><br><span class="line">user.email=cs12110@163.com</span><br><span class="line">user.name=cs12110</span><br><span class="line">core.repositoryformatversion=0</span><br><span class="line">core.filemode=<span class="literal">false</span></span><br><span class="line">core.bare=<span class="literal">false</span></span><br><span class="line">core.logallrefupdates=<span class="literal">true</span></span><br><span class="line">core.symlinks=<span class="literal">false</span></span><br><span class="line">core.ignorecase=<span class="literal">true</span></span><br><span class="line">remote.origin.url=https://github.com/cs12110/mini-docs.git</span><br><span class="line">remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*</span><br><span class="line">branch.master.remote=origin</span><br><span class="line">branch.master.merge=refs/heads/master</span><br></pre></td></tr></table></figure>
+
+<p>配置用户邮箱和姓名</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global user.name cs12110</span><br><span class="line"></span><br><span class="line">$ git config --global user.email cs12110@163.com</span><br></pre></td></tr></table></figure>
+
+<h3 id="设置某个-git-仓库的用户和邮箱"><a href="#设置某个-git-仓库的用户和邮箱" class="headerlink" title="设置某个 git 仓库的用户和邮箱"></a>设置某个 git 仓库的用户和邮箱</h3><p>Q: But,如果你有多个 git 仓库需要设置不同的邮箱和用户名呢?</p>
+<p>A: 就你事多,就你事多,就你事多….</p>
+<p>进入到仓库所在位置,使用 local 设置,命令如下:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git config --<span class="built_in">local</span> user.name mr3306</span><br><span class="line"></span><br><span class="line">$ git config --<span class="built_in">local</span> user.email mr3306@163.com</span><br></pre></td></tr></table></figure>
+
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>构建空的本地仓库</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 构建本地仓库</span></span><br><span class="line">[root@bi141 git]# git init</span><br><span class="line">Initialized empty Git repository <span class="keyword">in</span> /git/.git/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 新建readme.md</span></span><br><span class="line">[root@bi141 git]# <span class="built_in">touch</span> readme.md</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将文件添加到本地缓存并提交到本地仓库</span></span><br><span class="line">[root@bi141 git]# git add .</span><br><span class="line">[root@bi141 git]# git commit -m <span class="string">&#x27;init&#x27;</span></span><br><span class="line">[master (root-commit) e6def31] init</span><br><span class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</span><br><span class="line"> create mode 100644 readme.md</span><br></pre></td></tr></table></figure>
+
+<h3 id="克隆"><a href="#克隆" class="headerlink" title="克隆"></a>克隆</h3><p>从 github 拷贝远程仓库到本地</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@bi141 git]# git <span class="built_in">clone</span> https://github.com/cs12110/4test.git</span><br><span class="line">Cloning into <span class="string">&#x27;4test&#x27;</span>...</span><br><span class="line">remote: Enumerating objects: 5, <span class="keyword">done</span>.</span><br><span class="line">remote: Counting objects: 100% (5/5), <span class="keyword">done</span>.</span><br><span class="line">remote: Compressing objects: 100% (3/3), <span class="keyword">done</span>.</span><br><span class="line">remote: Total 5 (delta 0), reused 5 (delta 0), pack-reused 0</span><br><span class="line">Unpacking objects: 100% (5/5), <span class="keyword">done</span>.</span><br><span class="line">[root@bi141 git]# <span class="built_in">ls</span></span><br><span class="line">4test</span><br></pre></td></tr></table></figure>
+
+<p>上面命令是克隆主分支的代码,如果最新代码在其他分支怎么玩?</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 显示所有的分支</span></span><br><span class="line">[root@bi141 git]# git branch -r</span><br><span class="line"></span><br><span class="line"><span class="comment"># clone你想要的分支</span></span><br><span class="line">[root@bi141 git]# git <span class="built_in">clone</span> -b branchName gitUrl</span><br></pre></td></tr></table></figure>
+
+<h3 id="push-pull"><a href="#push-pull" class="headerlink" title="push&amp;pull"></a>push&amp;pull</h3><p>pull: 更新远程代码带本地</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@bi141 4test]# git pull origin master</span><br><span class="line">From https://github.com/cs12110/4test</span><br><span class="line"> * branch            master     -&gt; FETCH_HEAD</span><br><span class="line">Already up-to-date.</span><br></pre></td></tr></table></figure>
+
+<p>Q: 如果想要获取所有分支的最新代码呢?</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@bi141 4test]# git pull --all</span><br></pre></td></tr></table></figure>
+
+<p>push: 推送本地代码到远程服务器</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@bi141 4test]# git push origin master</span><br><span class="line">Username <span class="keyword">for</span> <span class="string">&#x27;https://github.com&#x27;</span>: cs12110</span><br><span class="line">Password <span class="keyword">for</span> <span class="string">&#x27;https://cs12110@github.com&#x27;</span>:</span><br><span class="line">Everything up-to-date</span><br></pre></td></tr></table></figure>
+
+<h3 id="分支与合并"><a href="#分支与合并" class="headerlink" title="分支与合并"></a>分支与合并</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 直接使用checkout -b 分支名称 创建分支</span></span><br><span class="line">[root@bi141 git]# git checkout -b dev</span><br><span class="line">Switched to a new branch <span class="string">&#x27;dev&#x27;</span></span><br><span class="line">[root@bi141 git]# git branch</span><br><span class="line">* dev</span><br><span class="line">  master</span><br></pre></td></tr></table></figure>
+
+<p>分支进行修改和提交</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@bi141 git]# <span class="built_in">touch</span> dev-1.txt</span><br><span class="line">[root@bi141 git]# <span class="built_in">touch</span> dev-2.txt</span><br><span class="line">[root@bi141 git]# git add .</span><br><span class="line">[root@bi141 git]# git commit -m <span class="string">&#x27;add 1-2 txt&#x27;</span></span><br><span class="line"></span><br><span class="line">[root@bi141 git]# <span class="built_in">touch</span> dev-3.txt</span><br><span class="line">[root@bi141 git]# <span class="built_in">touch</span> dev-4.txt</span><br><span class="line">[root@bi141 git]# git add .</span><br><span class="line">[root@bi141 git]# git commit -m <span class="string">&#x27;add 3-4 txt&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>合并到主分支</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@bi141 git]# git checkout master</span><br><span class="line">Switched to branch <span class="string">&#x27;master&#x27;</span></span><br><span class="line">[root@bi141 git]# git merge --squash dev</span><br><span class="line">[root@bi141 git]# git add .</span><br><span class="line">[root@bi141 git]# git commit -m <span class="string">&#x27;merge dev&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="删除分支"><a href="#删除分支" class="headerlink" title="删除分支"></a>删除分支</h3><p>注意:<strong>删除分支前,记得合并分支的代码到主分支.</strong></p>
+<p><strong>删除本地分支</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@bi141 git]# git branch</span><br><span class="line">  dev</span><br><span class="line">* master</span><br><span class="line">[root@bi141 git]# git branch -D dev</span><br><span class="line">Deleted branch dev (was 683c8ac).</span><br><span class="line">[root@bi141 git]# git branch</span><br><span class="line">* master</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除远程分支</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@bi141 git]git push origin --delete dev</span><br></pre></td></tr></table></figure>
+
+<h3 id="版本回退"><a href="#版本回退" class="headerlink" title="版本回退"></a>版本回退</h3><h4 id="checkout"><a href="#checkout" class="headerlink" title="checkout"></a>checkout</h4><p>这个一般用于</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 当前版本历史和相关文件</span></span><br><span class="line">[root@bi141 git]# git <span class="built_in">log</span> --oneline</span><br><span class="line">c091ae5 3.txt</span><br><span class="line">e9f3128 2.txt</span><br><span class="line">1079ee7 1.txt</span><br><span class="line">e6def31 init</span><br><span class="line">[root@bi141 git]# <span class="built_in">ls</span></span><br><span class="line">1.txt  2.txt  3.txt  readme.md</span><br><span class="line"></span><br><span class="line"><span class="comment"># 版本回退</span></span><br><span class="line">[root@bi141 git]# git checkout 1079ee7</span><br><span class="line">[root@bi141 git]# git <span class="built_in">log</span> --oneline</span><br><span class="line">1079ee7 1.txt</span><br><span class="line">e6def31 init</span><br><span class="line">[root@bi141 git]# <span class="built_in">ls</span></span><br><span class="line">1.txt  readme.md</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看所有commit log</span></span><br><span class="line">[root@bi141 git]# git reflog --oneline</span><br><span class="line">1079ee7 HEAD@&#123;0&#125;: checkout: moving from master to 1079ee7</span><br><span class="line">c091ae5 HEAD@&#123;1&#125;: commit: 3.txt</span><br><span class="line">e9f3128 HEAD@&#123;2&#125;: commit: 2.txt</span><br><span class="line">1079ee7 HEAD@&#123;3&#125;: commit: 1.txt</span><br><span class="line">e6def31 HEAD@&#123;4&#125;: commit (initial): init</span><br></pre></td></tr></table></figure>
+
+<h3 id="reset"><a href="#reset" class="headerlink" title="reset"></a>reset</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">PC@DESKTOP-DV8C0GM MINGW64 ~/Desktop/git (master)</span><br><span class="line">$ git <span class="built_in">log</span></span><br><span class="line">commit 5d342570b33c94c2cdeeb53448e9d44f49aeab1f</span><br><span class="line">Author: cs12110 &lt;cs12110@163.com&gt;</span><br><span class="line">Date:   Wed Apr 17 09:15:16 2019 +0800</span><br><span class="line"></span><br><span class="line">    merge dev</span><br><span class="line"></span><br><span class="line">commit a0065f180454424e94e30e0eecbd74e9fd48cfc3</span><br><span class="line">Author: cs12110 &lt;cs12110@163.com&gt;</span><br><span class="line">Date:   Wed Apr 17 09:13:57 2019 +0800</span><br><span class="line"></span><br><span class="line">    add 2.txt</span><br><span class="line"></span><br><span class="line">commit 3ebe6cce761b5d6ea7c6e1ec85636ccc079b6cbc</span><br><span class="line">Author: cs12110 &lt;cs12110@163.com&gt;</span><br><span class="line">Date:   Wed Apr 17 09:13:37 2019 +0800</span><br><span class="line"></span><br><span class="line">    add 1.txt</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">PC@DESKTOP-DV8C0GM MINGW64 ~/Desktop/git (master)</span><br><span class="line">$ git reset --hard a0065f180454424e94e30e0eecbd74e9fd48cfc3</span><br><span class="line">HEAD is now at a0065f1 add 2.txt</span><br><span class="line"></span><br><span class="line">PC@DESKTOP-DV8C0GM MINGW64 ~/Desktop/git (master)</span><br><span class="line">$ git <span class="built_in">log</span></span><br><span class="line">commit a0065f180454424e94e30e0eecbd74e9fd48cfc3</span><br><span class="line">Author: cs12110 &lt;cs12110@163.com&gt;</span><br><span class="line">Date:   Wed Apr 17 09:13:57 2019 +0800</span><br><span class="line"></span><br><span class="line">    add 2.txt</span><br><span class="line"></span><br><span class="line">commit 3ebe6cce761b5d6ea7c6e1ec85636ccc079b6cbc</span><br><span class="line">Author: cs12110 &lt;cs12110@163.com&gt;</span><br><span class="line">Date:   Wed Apr 17 09:13:37 2019 +0800</span><br><span class="line"></span><br><span class="line">    add 1.txt</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PC@DESKTOP-DV8C0GM MINGW64 ~/Desktop/git (master)</span><br><span class="line">$ git reflog</span><br><span class="line">a0065f1 HEAD@&#123;0&#125;: reset: moving to a0065f180454424e94e30e0eecbd74e9fd48cfc3</span><br><span class="line">5d34257 HEAD@&#123;1&#125;: commit: merge dev</span><br><span class="line">a0065f1 HEAD@&#123;2&#125;: checkout: moving from dev to master</span><br><span class="line">f19f652 HEAD@&#123;3&#125;: commit: add 3.txt by dev</span><br><span class="line">a0065f1 HEAD@&#123;4&#125;: checkout: moving from master to dev</span><br><span class="line">a0065f1 HEAD@&#123;5&#125;: commit: add 2.txt</span><br><span class="line">3ebe6cc HEAD@&#123;6&#125;: commit (initial): add 1.txt</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改上一次提交信息"><a href="#修改上一次提交信息" class="headerlink" title="修改上一次提交信息"></a>修改上一次提交信息</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@bi141 git]# git <span class="built_in">log</span> -n 1</span><br><span class="line">commit 3e6a8176c3e415b7953b016db6c273b09e848a74</span><br><span class="line">Author: Gogs &lt;gogs@fake.local&gt;</span><br><span class="line">Date:   Wed Feb 27 14:17:49 2019 +0800</span><br><span class="line"></span><br><span class="line">    ok</span><br><span class="line">[root@bi141 git]# git commit --amend</span><br><span class="line">[master 57b4bea] merge dev,<span class="keyword">for</span> dev-5.txt</span><br><span class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</span><br><span class="line"> create mode 100644 dev-5.txt</span><br><span class="line">[root@bi141 git]# git <span class="built_in">log</span> -n 1</span><br><span class="line">commit 57b4bea2f5b7883f2ec8695a993f618d7315f642</span><br><span class="line">Author: Gogs &lt;gogs@fake.local&gt;</span><br><span class="line">Date:   Wed Feb 27 14:17:49 2019 +0800</span><br><span class="line"></span><br><span class="line">    merge dev,<span class="keyword">for</span> dev-5.txt</span><br></pre></td></tr></table></figure>
+
+<h3 id="合并-commit"><a href="#合并-commit" class="headerlink" title="合并 commit"></a>合并 commit</h3><p>FBI Warning: <strong>这个非常危险,生产环境不建议使用.</strong></p>
+<p>适用场景: 当仓库存在太多无用的 commit 时,可以把多个 commit 合并成一个 commit.</p>
+<p>合并前,提交历史为:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@bi141 git]# git <span class="built_in">log</span></span><br><span class="line">commit 57b4bea2f5b7883f2ec8695a993f618d7315f642</span><br><span class="line">Author: Gogs &lt;gogs@fake.local&gt;</span><br><span class="line">Date:   Wed Feb 27 14:17:49 2019 +0800</span><br><span class="line"></span><br><span class="line">    merge dev,<span class="keyword">for</span> dev-5.txt</span><br><span class="line"></span><br><span class="line">commit 754b2cca1239df8053a5a66f4e975c449f6d5bd2</span><br><span class="line">Author: Gogs &lt;gogs@fake.local&gt;</span><br><span class="line">Date:   Wed Feb 27 14:14:40 2019 +0800</span><br><span class="line"></span><br><span class="line">    merge dev</span><br><span class="line"></span><br><span class="line">commit e822fc497c39404ecd8631e5565b079a848738f4</span><br><span class="line">Author: Gogs &lt;gogs@fake.local&gt;</span><br><span class="line">Date:   Wed Feb 27 14:06:57 2019 +0800</span><br><span class="line"></span><br><span class="line">    readme.md</span><br></pre></td></tr></table></figure>
+
+<p>合并后</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 注意合并必须要有一个为pick,且必须合并数量&lt;commitNum</span></span><br><span class="line">[root@bi141 git]# git rebase -i HEAD~2</span><br><span class="line">pick   754b2cc merge dev</span><br><span class="line">squash 57b4bea merge dev,<span class="keyword">for</span> dev-5.txt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@bi141 git]# git <span class="built_in">log</span></span><br><span class="line">commit 6a3d525c2ede7673fb6f77f46eebba92ccf112ca</span><br><span class="line">Author: Gogs &lt;gogs@fake.local&gt;</span><br><span class="line">Date:   Wed Feb 27 14:14:40 2019 +0800</span><br><span class="line"></span><br><span class="line">    merge dev</span><br><span class="line"></span><br><span class="line">    merge dev,<span class="keyword">for</span> dev-5.txt</span><br><span class="line"></span><br><span class="line">commit e822fc497c39404ecd8631e5565b079a848738f4</span><br><span class="line">Author: Gogs &lt;gogs@fake.local&gt;</span><br><span class="line">Date:   Wed Feb 27 14:06:57 2019 +0800</span><br><span class="line"></span><br><span class="line">    readme.md</span><br></pre></td></tr></table></figure>
+
+<h3 id="对比差异"><a href="#对比差异" class="headerlink" title="对比差异"></a>对比差异</h3><p>有些时候需要看看本地和远程 master 的分支上面有什么区别.</p>
+<p>那么可以使用下面这个命令</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mr3306:spring-rookie mr3306$ git fetch</span><br><span class="line">mr3306:spring-rookie mr3306$ git diff master origin/master</span><br></pre></td></tr></table></figure>
+
+<h3 id="force"><a href="#force" class="headerlink" title="force"></a>force</h3><p>在实际中,由于自己手残把一个不该提交的文件也提交到服务器了.</p>
+<p>比如现在有 4 个提交,分别是: 1.txt 的 commit,2.txt 的 commit,3.txt 的 commit,4.txt 的 commit.</p>
+<p>Q: 但是现在发现 3.txt 根本不应该存在该怎么办?</p>
+<p>A: 首先备份当前的修改 -&gt; git reset 2.txt 的 commit -&gt; git push origin master –force -&gt; git status 显示当前情况,删除 3.txt -&gt; 添加 4.txt 到,进行 commit -&gt; 重新推送到服务器</p>
+<hr>
+<h2 id="3-显示信息"><a href="#3-显示信息" class="headerlink" title="3. 显示信息"></a>3. 显示信息</h2><p>在某些时候需要了解文件的<code>提交历史</code>和<code>修改内容</code>.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里是显示所有文件</span></span><br><span class="line">$ git <span class="built_in">log</span> --pretty=oneline</span><br><span class="line">237209aab7f5d4ae27ddaff58c5d4840016c9259 (HEAD -&gt; master) remember me</span><br><span class="line">d3b2f0141829490d8652d3fbf27192be95c86048 update readme doc</span><br><span class="line">f92d1f2326839a9f18ab1536916cb66f866999c3 init</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示单个文件历史</span></span><br><span class="line">$ git <span class="built_in">log</span> -- readme.md</span><br><span class="line">commit d3b2f0141829490d8652d3fbf27192be95c86048</span><br><span class="line">Author: cs12110 &lt;cs12110@163.com&gt;</span><br><span class="line">Date:   Fri Apr 24 14:21:13 2020 +0800</span><br><span class="line"></span><br><span class="line">    update readme doc</span><br><span class="line"></span><br><span class="line">commit f92d1f2326839a9f18ab1536916cb66f866999c3</span><br><span class="line">Author: cs12110 &lt;cs12110@163.com&gt;</span><br><span class="line">Date:   Fri Apr 24 14:20:43 2020 +0800</span><br><span class="line"></span><br><span class="line">    init</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示某个文件,某次提交的修改内容</span></span><br><span class="line">$ git show d3b2f0141829490d8652d3fbf27192be95c86048:readme.md</span><br><span class="line"><span class="comment"># 1. readme</span></span><br><span class="line">this is second <span class="built_in">times</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="4-参考资料"><a href="#4-参考资料" class="headerlink" title="4. 参考资料"></a>4. 参考资料</h2><p>a. <a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">廖雪峰 Git 教程</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/server/" rel="tag"># server</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/10/08/server-gogs-guide/" rel="prev" title="Gogs 使用教程">
+      <i class="fa fa-chevron-left"></i> Gogs 使用教程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/10/08/server-docsify-guide/" rel="next" title="Docsify 使用指南">
+      Docsify 使用指南 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Git"><span class="nav-number">1.</span> <span class="nav-text">Git</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85-Git"><span class="nav-number">1.1.</span> <span class="nav-text">1. 安装 Git</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4"><span class="nav-number">1.2.</span> <span class="nav-text">2. 基础命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%85%A8%E5%B1%80%E7%94%A8%E6%88%B7%E5%92%8C%E9%82%AE%E7%AE%B1"><span class="nav-number">1.2.1.</span> <span class="nav-text">设置全局用户和邮箱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E6%9F%90%E4%B8%AA-git-%E4%BB%93%E5%BA%93%E7%9A%84%E7%94%A8%E6%88%B7%E5%92%8C%E9%82%AE%E7%AE%B1"><span class="nav-number">1.2.2.</span> <span class="nav-text">设置某个 git 仓库的用户和邮箱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.2.3.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%8B%E9%9A%86"><span class="nav-number">1.2.4.</span> <span class="nav-text">克隆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#push-pull"><span class="nav-number">1.2.5.</span> <span class="nav-text">push&amp;pull</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E4%B8%8E%E5%90%88%E5%B9%B6"><span class="nav-number">1.2.6.</span> <span class="nav-text">分支与合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%88%86%E6%94%AF"><span class="nav-number">1.2.7.</span> <span class="nav-text">删除分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E5%9B%9E%E9%80%80"><span class="nav-number">1.2.8.</span> <span class="nav-text">版本回退</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#checkout"><span class="nav-number">1.2.8.1.</span> <span class="nav-text">checkout</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reset"><span class="nav-number">1.2.9.</span> <span class="nav-text">reset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%8A%E4%B8%80%E6%AC%A1%E6%8F%90%E4%BA%A4%E4%BF%A1%E6%81%AF"><span class="nav-number">1.2.10.</span> <span class="nav-text">修改上一次提交信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%88%E5%B9%B6-commit"><span class="nav-number">1.2.11.</span> <span class="nav-text">合并 commit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E5%B7%AE%E5%BC%82"><span class="nav-number">1.2.12.</span> <span class="nav-text">对比差异</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#force"><span class="nav-number">1.2.13.</span> <span class="nav-text">force</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%98%BE%E7%A4%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">1.3.</span> <span class="nav-text">3. 显示信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.4.</span> <span class="nav-text">4. 参考资料</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cs12110@163.com"
+      src="/images/12764287.png">
+  <p class="site-author-name" itemprop="name">cs12110@163.com</p>
+  <div class="site-description" itemprop="description">就一臭打字的</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">105</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">86</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cs12110" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cs12110" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cs12110@163.com</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+
+</body>
+</html>

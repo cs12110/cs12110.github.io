@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="分布式 session为了解决温饱,我们了解一下分布式 session. :”} 当前使用的为: SpringBoot+Shiro+Redis,请知悉.  1. 概要说明1.1 使用场景在系统的部署里面,通常部署在多台服务器上面,使用 nginx 进行反向代理和负载均衡. nginx 默认的策略里面使用ip_hash,如果当前用户使用的server1服务器 down 掉了,被 nginx 代理到s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式 session">
+<meta property="og:url" content="http://example.com/2022/10/08/javaee-redis-session/index.html">
+<meta property="og:site_name" content="mini-docs">
+<meta property="og:description" content="分布式 session为了解决温饱,我们了解一下分布式 session. :”} 当前使用的为: SpringBoot+Shiro+Redis,请知悉.  1. 概要说明1.1 使用场景在系统的部署里面,通常部署在多台服务器上面,使用 nginx 进行反向代理和负载均衡. nginx 默认的策略里面使用ip_hash,如果当前用户使用的server1服务器 down 掉了,被 nginx 代理到s">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/javaee-images/share-session.png">
+<meta property="article:published_time" content="2022-10-08T12:46:25.000Z">
+<meta property="article:modified_time" content="2025-07-09T02:01:44.158Z">
+<meta property="article:author" content="cs12110@163.com">
+<meta property="article:tag" content="JavaEE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/javaee-images/share-session.png">
+
+<link rel="canonical" href="http://example.com/2022/10/08/javaee-redis-session/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>分布式 session | mini-docs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">mini-docs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">18</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">86</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">105</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/cs12110" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/10/08/javaee-redis-session/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/12764287.png">
+      <meta itemprop="name" content="cs12110@163.com">
+      <meta itemprop="description" content="就一臭打字的">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mini-docs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          分布式 session
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-08 20:46:25" itemprop="dateCreated datePublished" datetime="2022-10-08T20:46:25+08:00">2022-10-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-09 10:01:44" itemprop="dateModified" datetime="2025-07-09T10:01:44+08:00">2025-07-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JavaEE/" itemprop="url" rel="index"><span itemprop="name">JavaEE</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JavaEE/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="分布式-session"><a href="#分布式-session" class="headerlink" title="分布式 session"></a>分布式 session</h1><p>为了解决温饱,我们了解一下分布式 session. :”}</p>
+<p>当前使用的为: <code>SpringBoot+Shiro+Redis</code>,请知悉.</p>
+<hr>
+<h2 id="1-概要说明"><a href="#1-概要说明" class="headerlink" title="1. 概要说明"></a>1. 概要说明</h2><h3 id="1-1-使用场景"><a href="#1-1-使用场景" class="headerlink" title="1.1 使用场景"></a>1.1 使用场景</h3><p>在系统的部署里面,通常部署在多台服务器上面,使用 nginx 进行反向代理和负载均衡.</p>
+<p>nginx 默认的策略里面使用<code>ip_hash</code>,如果当前用户使用的<code>server1</code>服务器 down 掉了,被 nginx 代理到<code>server2</code>(server2 没有相关的 session)的时候,需要用户重新登录.</p>
+<p>那么分布式 session 就可以用上场了.</p>
+<h3 id="1-2-简单架构"><a href="#1-2-简单架构" class="headerlink" title="1.2 简单架构"></a>1.2 简单架构</h3><p><img src="/images/javaee-images/share-session.png" alt="i"></p>
+<hr>
+<h2 id="2-代码实现"><a href="#2-代码实现" class="headerlink" title="2. 代码实现"></a>2. 代码实现</h2><h3 id="2-1-pom-xml"><a href="#2-1-pom-xml" class="headerlink" title="2.1 pom.xml"></a>2.1 pom.xml</h3><p>当然还有<code>springboot</code>,<code>redis</code>,<code>shiro</code>之类的依赖.</p>
+<p>使用高版本的可以支持 redis 集群.</p>
+<p>FBI WARING:<code>Do not use version &lt; 3.1.0</code> <a target="_blank" rel="noopener" href="http://alexxiyang.github.io/shiro-redis/">详情 link</a></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- shiro+redis缓存插件 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.crazycake<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>shiro-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>3.1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-Shrio-配置"><a href="#2-2-Shrio-配置" class="headerlink" title="2.2 Shrio 配置"></a>2.2 Shrio 配置</h3><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">    <span class="string">......</span></span><br><span class="line">    <span class="attr">redis:</span></span><br><span class="line">        <span class="attr">password:</span></span><br><span class="line">        <span class="attr">clusters:</span> <span class="number">10.10</span><span class="number">.2</span><span class="number">.233</span><span class="string">:7000,10.10.2.233:7001,10.10.2.234:7000,10.10.2.234:7001,10.10.2.235:7000,10.10.2.236:7001</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.LinkedHashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.Filter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.shiro.codec.Base64;</span><br><span class="line"><span class="keyword">import</span> org.apache.shiro.mgt.SecurityManager;</span><br><span class="line"><span class="keyword">import</span> org.apache.shiro.session.mgt.SessionManager;</span><br><span class="line"><span class="keyword">import</span> org.apache.shiro.spring.LifecycleBeanPostProcessor;</span><br><span class="line"><span class="keyword">import</span> org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;</span><br><span class="line"><span class="keyword">import</span> org.apache.shiro.spring.web.ShiroFilterFactoryBean;</span><br><span class="line"><span class="keyword">import</span> org.apache.shiro.web.mgt.CookieRememberMeManager;</span><br><span class="line"><span class="keyword">import</span> org.apache.shiro.web.mgt.DefaultWebSecurityManager;</span><br><span class="line"><span class="keyword">import</span> org.apache.shiro.web.servlet.SimpleCookie;</span><br><span class="line"><span class="keyword">import</span> org.apache.shiro.web.session.mgt.DefaultWebSessionManager;</span><br><span class="line"><span class="keyword">import</span> org.crazycake.shiro.IRedisManager;</span><br><span class="line"><span class="keyword">import</span> org.crazycake.shiro.RedisCacheManager;</span><br><span class="line"><span class="keyword">import</span> org.crazycake.shiro.RedisClusterManager;</span><br><span class="line"><span class="keyword">import</span> org.crazycake.shiro.RedisSessionDAO;</span><br><span class="line"><span class="keyword">import</span> org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> cn.rojao.utils.shiro.UserRealm;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Shiro配置</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> 创建时间：2019年12月05日</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ShiroConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean(name = &quot;securityManager&quot;)</span></span><br><span class="line">	<span class="keyword">public</span> SecurityManager <span class="title function_">securityManager</span><span class="params">(UserRealm userRealm, SessionManager sessionManager)</span> &#123;</span><br><span class="line">		<span class="type">DefaultWebSecurityManager</span> <span class="variable">securityManager</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DefaultWebSecurityManager</span>();</span><br><span class="line">		securityManager.setRealm(userRealm);</span><br><span class="line">		securityManager.setSessionManager(sessionManager);</span><br><span class="line">		<span class="comment">// 注入记住我管理器</span></span><br><span class="line">		securityManager.setRememberMeManager(rememberMeManager());</span><br><span class="line">		<span class="keyword">return</span> securityManager;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean(&quot;shiroFilter&quot;)</span></span><br><span class="line">	<span class="keyword">public</span> ShiroFilterFactoryBean <span class="title function_">shirFilter</span><span class="params">(SecurityManager securityManager)</span> &#123;</span><br><span class="line">		<span class="type">ShiroFilterFactoryBean</span> <span class="variable">shiroFilter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ShiroFilterFactoryBean</span>();</span><br><span class="line">		shiroFilter.setSecurityManager(securityManager);</span><br><span class="line">		shiroFilter.setLoginUrl(<span class="string">&quot;/login.html&quot;</span>);</span><br><span class="line">		shiroFilter.setUnauthorizedUrl(<span class="string">&quot;/login.html&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 设置拦截器</span></span><br><span class="line">		Map&lt;String, String&gt; filterMap = <span class="keyword">new</span> <span class="title class_">LinkedHashMap</span>&lt;&gt;();</span><br><span class="line">		filterMap.put(<span class="string">&quot;/public/**&quot;</span>, <span class="string">&quot;anon&quot;</span>);</span><br><span class="line">		filterMap.put(<span class="string">&quot;/webjars/**&quot;</span>, <span class="string">&quot;anon&quot;</span>);</span><br><span class="line">	    filterMap.put(<span class="string">&quot;/sys/logout&quot;</span>, <span class="string">&quot;logout&quot;</span>);</span><br><span class="line">		filterMap.put(<span class="string">&quot;/**&quot;</span>, <span class="string">&quot;user&quot;</span>);</span><br><span class="line">		shiroFilter.setFilterChainDefinitionMap(filterMap);</span><br><span class="line"></span><br><span class="line">		Map&lt;String, Filter&gt; filtersMap = <span class="keyword">new</span> <span class="title class_">LinkedHashMap</span>&lt;String, Filter&gt;();</span><br><span class="line">		shiroFilter.setFilters(filtersMap);</span><br><span class="line">		<span class="keyword">return</span> shiroFilter;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 注意设置为static,不然<span class="doctag">@value</span>获取不了值</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Bean(name = &quot;lifecycleBeanPostProcessor&quot;)</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> LifecycleBeanPostProcessor <span class="title function_">lifecycleBeanPostProcessor</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">LifecycleBeanPostProcessor</span>();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> DefaultAdvisorAutoProxyCreator <span class="title function_">defaultAdvisorAutoProxyCreator</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="type">DefaultAdvisorAutoProxyCreator</span> <span class="variable">proxyCreator</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DefaultAdvisorAutoProxyCreator</span>();</span><br><span class="line">		proxyCreator.setProxyTargetClass(<span class="literal">true</span>);</span><br><span class="line">		<span class="keyword">return</span> proxyCreator;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> AuthorizationAttributeSourceAdvisor <span class="title function_">authorizationAttributeSourceAdvisor</span><span class="params">(SecurityManager securityManager)</span> &#123;</span><br><span class="line">		<span class="type">AuthorizationAttributeSourceAdvisor</span> <span class="variable">advisor</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AuthorizationAttributeSourceAdvisor</span>();</span><br><span class="line">		advisor.setSecurityManager(securityManager);</span><br><span class="line">		<span class="keyword">return</span> advisor;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * cookie对象; rememberMeCookie()方法是设置Cookie的生成模版，比如cookie的name，cookie的有效时间等等。</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> SimpleCookie <span class="title function_">rememberMeCookie</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="comment">// 这个参数是cookie的名称，对应前端的checkbox的name = rememberMe</span></span><br><span class="line">		<span class="type">SimpleCookie</span> <span class="variable">simpleCookie</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SimpleCookie</span>(<span class="string">&quot;rememberMe&quot;</span>);</span><br><span class="line">		simpleCookie.setMaxAge(<span class="number">7</span> * <span class="number">24</span> * <span class="number">60</span> * <span class="number">60</span>);</span><br><span class="line">		<span class="keyword">return</span> simpleCookie;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * cookie管理对象;</span></span><br><span class="line"><span class="comment">	 * rememberMeManager()方法是生成rememberMe管理器，而且要将这个rememberMe管理器设置到securityManager中</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> CookieRememberMeManager <span class="title function_">rememberMeManager</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="type">CookieRememberMeManager</span> <span class="variable">cookieRememberMeManager</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CookieRememberMeManager</span>();</span><br><span class="line">		cookieRememberMeManager.setCookie(rememberMeCookie());</span><br><span class="line">		<span class="comment">// rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度(128 256 512 位)</span></span><br><span class="line">		cookieRememberMeManager.setCipherKey(Base64.decode(<span class="string">&quot;2AvVhdsgUs0FSA3SDFAdag==&quot;</span>));</span><br><span class="line">		<span class="keyword">return</span> cookieRememberMeManager;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// -------------------- 分布式session ------------------</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Session Manager</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> DefaultWebSessionManager <span class="title function_">sessionManager</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="type">DefaultWebSessionManager</span> <span class="variable">sessionManager</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DefaultWebSessionManager</span>();</span><br><span class="line">		sessionManager.setSessionDAO(redisSessionDAO());</span><br><span class="line">		<span class="keyword">return</span> sessionManager;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * RedisSessionDAO</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> RedisSessionDAO <span class="title function_">redisSessionDAO</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="type">RedisSessionDAO</span> <span class="variable">redisSessionDAO</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RedisSessionDAO</span>();</span><br><span class="line">		redisSessionDAO.setRedisManager(redisManager());</span><br><span class="line">		<span class="keyword">return</span> redisSessionDAO;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * cacheManager 缓存 redis实现</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> RedisCacheManager <span class="title function_">cacheManager</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="type">RedisCacheManager</span> <span class="variable">redisCacheManager</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RedisCacheManager</span>();</span><br><span class="line">		redisCacheManager.setRedisManager(redisManager());</span><br><span class="line">		<span class="keyword">return</span> redisCacheManager;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;spring.redis.clusters&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">public</span> String cluster;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;spring.redis.password&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">public</span> String password;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 配置shiro redisManager</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;</span></span><br><span class="line"><span class="comment">	 * 这里没找到集群的配置方法 orz.</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> IRedisManager <span class="title function_">redisManager</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="type">RedisClusterManager</span> <span class="variable">clusterManager</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RedisClusterManager</span>();</span><br><span class="line">		clusterManager.setHost(cluster);</span><br><span class="line">		<span class="keyword">if</span> (<span class="literal">null</span> != password &amp;&amp; !<span class="string">&quot;&quot;</span>.equals(password.trim())) &#123;</span><br><span class="line">			clusterManager.setPassword(password);</span><br><span class="line">		&#125;</span><br><span class="line">		clusterManager.setTimeout(<span class="number">3000</span>);</span><br><span class="line">		<span class="keyword">return</span> clusterManager;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// -----------------------------------------------------------</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-nginx-配置"><a href="#2-3-nginx-配置" class="headerlink" title="2.3 nginx 配置"></a>2.3 nginx 配置</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 分别使用5555,5500端口开启项目</span></span><br><span class="line"><span class="section">upstream</span> upsserver &#123;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">10.10.1.244:5555</span>;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">10.10.1.244:5500</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span>       <span class="number">10086</span>;</span><br><span class="line">    <span class="attribute">server_name</span>  localhost;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">charset</span> utf-<span class="number">8</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 添加头部信息</span></span><br><span class="line">    <span class="section">location</span> /ups &#123;</span><br><span class="line">            <span class="attribute">proxy_pass</span> http://upsserver/;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-测试"><a href="#2-4-测试" class="headerlink" title="2.4 测试"></a>2.4 测试</h3><p>确定当前登录用户使用哪个系统,然后 down 掉那个系统,用户继续 web 操作不要求重新登录,则成功.</p>
+<hr>
+<h2 id="3-参考资料"><a href="#3-参考资料" class="headerlink" title="3. 参考资料"></a>3. 参考资料</h2><p>a. <a target="_blank" rel="noopener" href="http://alexxiyang.github.io/shiro-redis/">shiro-redis 官网</a></p>
+<p>b. <a target="_blank" rel="noopener" href="https://www.cnblogs.com/caichaoqi/p/8900677.html">springboot+shiro+redis 项目整合</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaEE/" rel="tag"># JavaEE</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/10/08/javaee-rpc-dubbo/" rel="prev" title="Rpc 之 dubbo">
+      <i class="fa fa-chevron-left"></i> Rpc 之 dubbo
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/10/08/javaee-redis-import/" rel="next" title="Redis 数据导入优化">
+      Redis 数据导入优化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F-session"><span class="nav-number">1.</span> <span class="nav-text">分布式 session</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%A6%82%E8%A6%81%E8%AF%B4%E6%98%8E"><span class="nav-number">1.1.</span> <span class="nav-text">1. 概要说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 使用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E7%AE%80%E5%8D%95%E6%9E%B6%E6%9E%84"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 简单架构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.</span> <span class="nav-text">2. 代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-pom-xml"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 pom.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Shrio-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 Shrio 配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-nginx-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 nginx 配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E6%B5%8B%E8%AF%95"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.3.</span> <span class="nav-text">3. 参考资料</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cs12110@163.com"
+      src="/images/12764287.png">
+  <p class="site-author-name" itemprop="name">cs12110@163.com</p>
+  <div class="site-description" itemprop="description">就一臭打字的</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">105</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">86</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cs12110" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cs12110" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cs12110@163.com</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+
+</body>
+</html>
