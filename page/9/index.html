@@ -321,6 +321,119 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/04/java-pattern/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/12764287.png">
+      <meta itemprop="name" content="cs12110@163.com">
+      <meta itemprop="description" content="就一臭打字的">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mini-docs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/06/04/java-pattern/" class="post-title-link" itemprop="url">Java 设计模式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-04 00:00:00" itemprop="dateCreated datePublished" datetime="2021-06-04T00:00:00+08:00">2021-06-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-09 09:21:37" itemprop="dateModified" datetime="2025-07-09T09:21:37+08:00">2025-07-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E5%9F%BA%E7%A1%80/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">Java设计模式</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Java-pattern"><a href="#Java-pattern" class="headerlink" title="Java pattern"></a>Java pattern</h1><p>理解设计模式,最难的是在合适的场景里面使用. orz</p>
+<p>菜鸟教程有一个很不错的教程: <a target="_blank" rel="noopener" href="http://www.runoob.com/design-pattern/design-pattern-tutorial.html">here we go</a></p>
+<hr>
+<h2 id="1-单例模式"><a href="#1-单例模式" class="headerlink" title="1. 单例模式"></a>1. 单例模式</h2><h3 id="1-1-饿汉模式"><a href="#1-1-饿汉模式" class="headerlink" title="1.1 饿汉模式"></a>1.1 饿汉模式</h3><p>这种也是比较常用的一种模式,缺点就是在 jvm 加载的时候这个类就被加载了,连拒绝的机会都不给你.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 单例模式</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 create at 2019-04-02 21:50</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">Singleton</span> <span class="variable">singleton</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> singleton;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-装逼模式"><a href="#1-2-装逼模式" class="headerlink" title="1.2 装逼模式"></a>1.2 装逼模式</h3><p>Q: 那么如果想要在使用到的时候才加载使用呢?</p>
+<p>A: 那就有各种奇葩炫技创建方式了.double check 都出来了,问你怕不怕.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 单例模式</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 create at 2019-04-02 21:50</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton singleton;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// double check</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == singleton) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Singleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="literal">null</span> == singleton) &#123;</span><br><span class="line">                    singleton = <span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> singleton;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-builder-模式"><a href="#2-builder-模式" class="headerlink" title="2. builder 模式"></a>2. builder 模式</h2><p>觉得这个模式还是挺实用的.</p>
+<p>使用场景: 比如在方法里面组建一个实体类,那个实体类可能有 10 多个参数,你从方法的参数传过去,这就…</p>
+<p>so, here we go.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Student</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置为private</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> builder builder</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Student</span><span class="params">(Builder builder)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.id = builder.id;</span><br><span class="line">        <span class="built_in">this</span>.name = builder.name;</span><br><span class="line">        <span class="built_in">this</span>.age = builder.age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> JSON.toJSONString(<span class="built_in">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * builder</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Builder</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> String id;</span><br><span class="line">        <span class="keyword">private</span> String name;</span><br><span class="line">        <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> Builder <span class="title function_">setId</span><span class="params">(String id)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.id = id;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> Builder <span class="title function_">setName</span><span class="params">(String name)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.name = name;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> Builder <span class="title function_">setAge</span><span class="params">(<span class="type">int</span> age)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.age = age;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> Student <span class="title function_">build</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Student</span>(<span class="built_in">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Student</span> <span class="variable">student</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Student</span>.Builder()</span><br><span class="line">                .setId(<span class="string">&quot;cs12110&quot;</span>)</span><br><span class="line">                .setName(<span class="string">&quot;mr3306&quot;</span>)</span><br><span class="line">                .setAge(<span class="number">33</span>)</span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        System.out.println(student.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-工厂模式"><a href="#3-工厂模式" class="headerlink" title="3. 工厂模式"></a>3. 工厂模式</h2><p>偶尔有用到这个模式,也不知道是不是用对,这真的很烦呀.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * logger 接口</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">Log</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * info</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> log 日志</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">info</span><span class="params">(String log)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">StdLog</span> <span class="keyword">implements</span> <span class="title class_">Log</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">info</span><span class="params">(String log)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;StdLog: &quot;</span> + log);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">FileLog</span> <span class="keyword">implements</span> <span class="title class_">Log</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">info</span><span class="params">(String log)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;FileLog: &quot;</span> + log);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LogFactory</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取日志实现类</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> log 日志对象class</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Log</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Log <span class="title function_">getLog</span><span class="params">(Class&lt;?&gt; log)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (log == StdLog.class) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">StdLog</span>();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (log == FileLog.class) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">FileLog</span>();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;We can&#x27;t find any implements of this class: &quot;</span> + log);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 create at 2019-04-03 21:38</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LogFactoryTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Log</span> <span class="variable">stdLog</span> <span class="operator">=</span> LogFactory.getLog(StdLog.class);</span><br><span class="line">        stdLog.info(<span class="string">&quot;How are you?&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">Log</span> <span class="variable">fileLog</span> <span class="operator">=</span> LogFactory.getLog(FileLog.class);</span><br><span class="line">        fileLog.info(<span class="string">&quot;I&#x27;m fine,thank you.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">StdLog: How are you?</span><br><span class="line">FileLog: I<span class="string">&#x27;m fine,thank you.</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-代理模式"><a href="#4-代理模式" class="headerlink" title="4. 代理模式"></a>4. 代理模式</h2><p>代理主要用于增强被代理对象.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">MyService</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * call someone</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> someone whoever you want</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">call</span><span class="params">(String someone)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 实际业务实现类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">MyService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">call</span><span class="params">(String someone)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;calling: &quot;</span> + someone);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 1984 就问你怕不怕</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">IamWatchingYou</span> <span class="keyword">implements</span> <span class="title class_">MyService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">MyService</span> <span class="variable">myService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyServiceImpl</span>();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">call</span><span class="params">(String someone)</span> &#123;</span><br><span class="line">        before(someone);</span><br><span class="line">        myService.call(someone);</span><br><span class="line">        after(someone);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">before</span><span class="params">(String someone)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;start call:&quot;</span> + someone);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">after</span><span class="params">(String someone)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;start call:&quot;</span> + someone);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 create at 2019-04-03 20:11</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ProxyTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">MyService</span> <span class="variable">myService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">IamWatchingYou</span>();</span><br><span class="line">        myService.call(<span class="string">&quot;1984&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">start call:<span class="number">1984</span></span><br><span class="line">calling: <span class="number">1984</span></span><br><span class="line">end call:<span class="number">1984</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/04/java-optimize/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -658,119 +771,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/04/java-pattern/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/12764287.png">
-      <meta itemprop="name" content="cs12110@163.com">
-      <meta itemprop="description" content="就一臭打字的">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="mini-docs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/06/04/java-pattern/" class="post-title-link" itemprop="url">Java 设计模式</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-06-04 00:00:00" itemprop="dateCreated datePublished" datetime="2021-06-04T00:00:00+08:00">2021-06-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-09 09:21:37" itemprop="dateModified" datetime="2025-07-09T09:21:37+08:00">2025-07-09</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java%E5%9F%BA%E7%A1%80/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">Java设计模式</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Java-pattern"><a href="#Java-pattern" class="headerlink" title="Java pattern"></a>Java pattern</h1><p>理解设计模式,最难的是在合适的场景里面使用. orz</p>
-<p>菜鸟教程有一个很不错的教程: <a target="_blank" rel="noopener" href="http://www.runoob.com/design-pattern/design-pattern-tutorial.html">here we go</a></p>
-<hr>
-<h2 id="1-单例模式"><a href="#1-单例模式" class="headerlink" title="1. 单例模式"></a>1. 单例模式</h2><h3 id="1-1-饿汉模式"><a href="#1-1-饿汉模式" class="headerlink" title="1.1 饿汉模式"></a>1.1 饿汉模式</h3><p>这种也是比较常用的一种模式,缺点就是在 jvm 加载的时候这个类就被加载了,连拒绝的机会都不给你.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 单例模式</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 create at 2019-04-02 21:50</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">Singleton</span> <span class="variable">singleton</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> singleton;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="1-2-装逼模式"><a href="#1-2-装逼模式" class="headerlink" title="1.2 装逼模式"></a>1.2 装逼模式</h3><p>Q: 那么如果想要在使用到的时候才加载使用呢?</p>
-<p>A: 那就有各种奇葩炫技创建方式了.double check 都出来了,问你怕不怕.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 单例模式</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 create at 2019-04-02 21:50</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton singleton;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// double check</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == singleton) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Singleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="literal">null</span> == singleton) &#123;</span><br><span class="line">                    singleton = <span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> singleton;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="2-builder-模式"><a href="#2-builder-模式" class="headerlink" title="2. builder 模式"></a>2. builder 模式</h2><p>觉得这个模式还是挺实用的.</p>
-<p>使用场景: 比如在方法里面组建一个实体类,那个实体类可能有 10 多个参数,你从方法的参数传过去,这就…</p>
-<p>so, here we go.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Student</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置为private</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> builder builder</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Student</span><span class="params">(Builder builder)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.id = builder.id;</span><br><span class="line">        <span class="built_in">this</span>.name = builder.name;</span><br><span class="line">        <span class="built_in">this</span>.age = builder.age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> JSON.toJSONString(<span class="built_in">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * builder</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Builder</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> String id;</span><br><span class="line">        <span class="keyword">private</span> String name;</span><br><span class="line">        <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> Builder <span class="title function_">setId</span><span class="params">(String id)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.id = id;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> Builder <span class="title function_">setName</span><span class="params">(String name)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.name = name;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> Builder <span class="title function_">setAge</span><span class="params">(<span class="type">int</span> age)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.age = age;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> Student <span class="title function_">build</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Student</span>(<span class="built_in">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>测试</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Student</span> <span class="variable">student</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Student</span>.Builder()</span><br><span class="line">                .setId(<span class="string">&quot;cs12110&quot;</span>)</span><br><span class="line">                .setName(<span class="string">&quot;mr3306&quot;</span>)</span><br><span class="line">                .setAge(<span class="number">33</span>)</span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        System.out.println(student.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="3-工厂模式"><a href="#3-工厂模式" class="headerlink" title="3. 工厂模式"></a>3. 工厂模式</h2><p>偶尔有用到这个模式,也不知道是不是用对,这真的很烦呀.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * logger 接口</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">Log</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * info</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> log 日志</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">info</span><span class="params">(String log)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">StdLog</span> <span class="keyword">implements</span> <span class="title class_">Log</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">info</span><span class="params">(String log)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;StdLog: &quot;</span> + log);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">FileLog</span> <span class="keyword">implements</span> <span class="title class_">Log</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">info</span><span class="params">(String log)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;FileLog: &quot;</span> + log);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LogFactory</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取日志实现类</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> log 日志对象class</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Log</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Log <span class="title function_">getLog</span><span class="params">(Class&lt;?&gt; log)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (log == StdLog.class) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">StdLog</span>();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (log == FileLog.class) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">FileLog</span>();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;We can&#x27;t find any implements of this class: &quot;</span> + log);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 create at 2019-04-03 21:38</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LogFactoryTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Log</span> <span class="variable">stdLog</span> <span class="operator">=</span> LogFactory.getLog(StdLog.class);</span><br><span class="line">        stdLog.info(<span class="string">&quot;How are you?&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">Log</span> <span class="variable">fileLog</span> <span class="operator">=</span> LogFactory.getLog(FileLog.class);</span><br><span class="line">        fileLog.info(<span class="string">&quot;I&#x27;m fine,thank you.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>测试结果</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">StdLog: How are you?</span><br><span class="line">FileLog: I<span class="string">&#x27;m fine,thank you.</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="4-代理模式"><a href="#4-代理模式" class="headerlink" title="4. 代理模式"></a>4. 代理模式</h2><p>代理主要用于增强被代理对象.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">MyService</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * call someone</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> someone whoever you want</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">call</span><span class="params">(String someone)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 实际业务实现类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">MyService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">call</span><span class="params">(String someone)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;calling: &quot;</span> + someone);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 1984 就问你怕不怕</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">IamWatchingYou</span> <span class="keyword">implements</span> <span class="title class_">MyService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">MyService</span> <span class="variable">myService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyServiceImpl</span>();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">call</span><span class="params">(String someone)</span> &#123;</span><br><span class="line">        before(someone);</span><br><span class="line">        myService.call(someone);</span><br><span class="line">        after(someone);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">before</span><span class="params">(String someone)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;start call:&quot;</span> + someone);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">after</span><span class="params">(String someone)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;start call:&quot;</span> + someone);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cs12110 create at 2019-04-03 20:11</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.0.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ProxyTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">MyService</span> <span class="variable">myService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">IamWatchingYou</span>();</span><br><span class="line">        myService.call(<span class="string">&quot;1984&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>测试结果</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">start call:<span class="number">1984</span></span><br><span class="line">calling: <span class="number">1984</span></span><br><span class="line">end call:<span class="number">1984</span></span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/21/server-docker-elasticsearch/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1062,6 +1062,150 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/23/killme-games/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/12764287.png">
+      <meta itemprop="name" content="cs12110@163.com">
+      <meta itemprop="description" content="就一臭打字的">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mini-docs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/03/23/killme-games/" class="post-title-link" itemprop="url">Game</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-23 00:00:00" itemprop="dateCreated datePublished" datetime="2021-03-23T00:00:00+08:00">2021-03-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-09 09:26:45" itemprop="dateModified" datetime="2025-07-09T09:26:45+08:00">2025-07-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/KillMe/" itemprop="url" rel="index"><span itemprop="name">KillMe</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/KillMe/%E7%94%9F%E6%B4%BB%E5%A4%A7%E4%BA%8E%E9%94%AE%E7%9B%98/" itemprop="url" rel="index"><span itemprop="name">生活大于键盘</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Game"><a href="#Game" class="headerlink" title="Game"></a>Game</h1><p>生活大于键盘. 笑哭脸.jpg</p>
+<p>Have fun,kid.</p>
+<hr>
+<h2 id="1-橄榄球"><a href="#1-橄榄球" class="headerlink" title="1. 橄榄球"></a>1. 橄榄球</h2><p>主要是美式橄榄球的规则,好像挺牛掰的样子. 笑哭脸.jpg</p>
+<h4 id="1-1-入门规则"><a href="#1-1-入门规则" class="headerlink" title="1.1 入门规则"></a>1.1 入门规则</h4><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av44610248">bilibili 美式橄榄球基础规则视频 link</a></p>
+<p>看完上面这个基础规则视频之后,还有一些不太明白的话,可以接着看下面这个文章.</p>
+<p><a target="_blank" rel="noopener" href="https://baijiahao.baidu.com/s?id=1632388995397732533">美式橄榄球基础规则 link</a></p>
+<h4 id="1-2-FAQ"><a href="#1-2-FAQ" class="headerlink" title="1.2 FAQ"></a>1.2 FAQ</h4><p>Q: <code>4down</code> 进攻里面,比如第一档从 40 码迈进 3 码到了 37 码,那么第二档发起进攻该从什么地方开始?</p>
+<p>A: 第二档进攻从第一档进攻推进到的 37 码开始发球,启动进攻.</p>
+<p>Q: 如果 4 档进攻都没达到 10 码,该怎么办?</p>
+<p>A: 进攻 4 次,向前推进的总距离要是不到 10 码,那么攻守双方必须就地转换.在三次进攻后,没能向前推进 10 码,可以选择<code>弃踢</code>.在三次进攻,距离对方端区不远时(<code>最好是30码以内</code>),可以考虑<code>射门</code>,射门成功可得 3 分.如果射门失败,不仅没得分,攻防关系转换后,对方要从球踢出的位置开始进攻,所以离对方端区比较近才会考虑射门.</p>
+<p>Q: 你给我翻译,翻译,什么叫<code>弃踢</code>,什么叫他妈的<code>弃踢</code>? 姜文脸.jpg</p>
+<p>A: 弃踢实际上是第 4 次进攻的另类形式,姑且将弃踢理解成<code>放弃第 4 次进攻,把球踢给对方</code>.弃踢时尽量把球踢到靠近对方端区的地方,对方接到球后再回攻,回攻手被我方拦截的位置,就是对方进攻的起点位置.</p>
+<p>Q: 那么传球有什么规则呀?为什么<code>四分卫只传出一次</code>,而不是像篮球一样传来传去?</p>
+<p>A: 每次进攻<code>只有 1 次向前传球</code>的机会;其次,球只能从启球线的后方(进攻方这边)扔出;再次,进攻方只有特定队员<code>(合法接球者:內锋没有权利接向前的传球,端锋可以)</code>才有资格接球.</p>
+<p>Q: 合法持球员是什么意思?</p>
+<p>A: 合法接球员简单来说就是进攻组线上只有左右最边上两个人是合法接球员,后场的都是合法接球员.</p>
+<p><img src="/images/killme-images/receiver.png" alt="img"></p>
+<hr>
+<h2 id="2-篮球"><a href="#2-篮球" class="headerlink" title="2. 篮球"></a>2. 篮球</h2><p>篮球规则太多了,泪目.</p>
+<h4 id="2-1-基础规则"><a href="#2-1-基础规则" class="headerlink" title="2.1 基础规则"></a>2.1 基础规则</h4><table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>5 秒规则</code></td>
+<td>持球后,球员必须在 5 秒钟之内掷界外球(5s 内要发出球)</td>
+</tr>
+<tr>
+<td><code>8 秒规则</code></td>
+<td>球队从后场控制球开始,必须在 8 秒钟内使球进入前场(对方的半场)</td>
+</tr>
+<tr>
+<td><code>24 秒规则</code></td>
+<td>进攻球队在场上控球时必须在 24 秒钟内投篮出(二次进攻为 14s,nba 现在)手.</td>
+</tr>
+<tr>
+<td><code>3 秒规则</code></td>
+<td>分为进攻 3 秒和防守 3 秒.<br><code>进攻 3 秒</code>:进攻方球员不得滞留于 3 秒区 3 秒以上. <br><code>防守 3 秒</code>:当某防守方球员对应的进攻方球员不在 3 秒区或者 3 秒区边缘、且彻底摆脱防守球员时,防守方球员不得滞留禁区 3 秒以上.</td>
+</tr>
+</tbody></table>
+<h4 id="2-2-FAQ"><a href="#2-2-FAQ" class="headerlink" title="2.2 FAQ"></a>2.2 FAQ</h4><p>Q: 一场比赛时长是怎样子的?</p>
+<p>A: 一场篮球比赛是由 4 节组成,每节 12 分钟,加时赛的比赛时间均为 5 分钟.上下半场之间休息 15 分钟,节与节之间休息 2 分钟.</p>
+<p>Q: 一共有多少次暂停?</p>
+<p>A: 暂停分<code>短暂停</code>,<code>常规暂停</code>和<code>官方暂停</code>.短暂停时间为 20 秒,常规暂停时间为 100 秒或者 60 秒,官方暂停时间为 100 秒.<code>比赛双方在上下半场各有一个短暂停</code>,不能累计使用(上半场的短暂停不能留到下半场),但下半场的短暂停可以在加时赛中继续使用.常规暂停也叫长暂停,有 100 秒和 60 秒两种.<code>比赛双方在常规时间 48 分钟内可以叫六次长暂停</code>,其中包括四次 100 秒暂停和两次 60 秒短暂停.100 秒暂停每节使用&lt;&#x3D;1 次.</p>
+<p>Q: 常见的犯规有哪些?</p>
+<p>A: 野球场上常见的犯规有:<code>没摸到的打手啦</code>,<code>马拉松一样的三步上篮</code>.</p>
+<p>Q: 什么时候开始罚球?</p>
+<p>A: 通常在攻方队员进攻时,防守队员侵犯对方队员时,而且犯规方球队累计犯规四次以上要罚球,而 4 次或 4 次以下发界外球.</p>
+<hr>
+<h2 id="3-足球"><a href="#3-足球" class="headerlink" title="3. 足球"></a>3. 足球</h2><h4 id="3-1-基础规则"><a href="#3-1-基础规则" class="headerlink" title="3.1 基础规则"></a>3.1 基础规则</h4><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av20500563">bilibili 足球入门规则视频 link</a></p>
+<h4 id="3-2-FAQ"><a href="#3-2-FAQ" class="headerlink" title="3.2 FAQ"></a>3.2 FAQ</h4><p>Q: 越位是什么?</p>
+<p>A: 进攻队员向前传球的一瞬间,<code>接球队员在对方半场,且在比对方倒数第 2 名防守队员更靠近对方球门线</code>(传球给队友的时候,保证有两个对方球员在 ta 前面就可以避免越位).</p>
+<p>Q: 每场可以更换多少队员?</p>
+<p>A: 一场比赛下来<code>只能换三个队员</code>,在比赛中,替补队员名单必须在比赛开始前交给裁判员.</p>
+<p>Q: 当其中一名队员被<code>红牌(或2张黄牌)罚下</code>,可以更换队员上场吗?</p>
+<p>A: 不能,如果被罚下,只能己方 10 个队员在场比赛,不像篮球比赛那样子可以更换新的队员上场.</p>
+<hr>
+<h2 id="4-网球"><a href="#4-网球" class="headerlink" title="4. 网球"></a>4. 网球</h2><p>那时候的莎拉波娃是真的好看. 笑哭脸.jpg</p>
+<h4 id="4-1-网球规则"><a href="#4-1-网球规则" class="headerlink" title="4.1 网球规则"></a>4.1 网球规则</h4><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av82456106">bilibili 网球规则视频 link</a></p>
+<h4 id="4-2-FAQ"><a href="#4-2-FAQ" class="headerlink" title="4.2 FAQ"></a>4.2 FAQ</h4><p>Q: 怎么计分的,网球里面?</p>
+<p>A: 一局内可能出现的分数为 0,15,30,40,结束.其实等同于 0,1,2,3 结束.一方赢得一分,记为 15:0,以此类推.40:40 成为平分(Deuce),此时一方得分称为占先.<code>一方需至少多赢两分才能赢下一局</code>,此时局数加一.</p>
+<p>Q: 局数和盘又是什么?</p>
+<p>A: 盘由局所构成,局数先到 6 的一方赢得此盘.局数相当于 nba 的节数,盘就是整场比赛.</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/23/killme-shiro/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1220,150 +1364,6 @@
 <hr>
 <h2 id="2-Shiro-源码解读"><a href="#2-Shiro-源码解读" class="headerlink" title="2. Shiro 源码解读"></a>2. Shiro 源码解读</h2><hr>
 <h2 id="3-参考文档"><a href="#3-参考文档" class="headerlink" title="3. 参考文档"></a>3. 参考文档</h2><p>a. <a target="_blank" rel="noopener" href="http://www.cnblogs.com/cocosili/p/7103025.html">前端 Shrio 权限标签</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/23/killme-games/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/12764287.png">
-      <meta itemprop="name" content="cs12110@163.com">
-      <meta itemprop="description" content="就一臭打字的">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="mini-docs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/03/23/killme-games/" class="post-title-link" itemprop="url">Game</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-03-23 00:00:00" itemprop="dateCreated datePublished" datetime="2021-03-23T00:00:00+08:00">2021-03-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-09 09:26:45" itemprop="dateModified" datetime="2025-07-09T09:26:45+08:00">2025-07-09</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/KillMe/" itemprop="url" rel="index"><span itemprop="name">KillMe</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/KillMe/%E7%94%9F%E6%B4%BB%E5%A4%A7%E4%BA%8E%E9%94%AE%E7%9B%98/" itemprop="url" rel="index"><span itemprop="name">生活大于键盘</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Game"><a href="#Game" class="headerlink" title="Game"></a>Game</h1><p>生活大于键盘. 笑哭脸.jpg</p>
-<p>Have fun,kid.</p>
-<hr>
-<h2 id="1-橄榄球"><a href="#1-橄榄球" class="headerlink" title="1. 橄榄球"></a>1. 橄榄球</h2><p>主要是美式橄榄球的规则,好像挺牛掰的样子. 笑哭脸.jpg</p>
-<h4 id="1-1-入门规则"><a href="#1-1-入门规则" class="headerlink" title="1.1 入门规则"></a>1.1 入门规则</h4><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av44610248">bilibili 美式橄榄球基础规则视频 link</a></p>
-<p>看完上面这个基础规则视频之后,还有一些不太明白的话,可以接着看下面这个文章.</p>
-<p><a target="_blank" rel="noopener" href="https://baijiahao.baidu.com/s?id=1632388995397732533">美式橄榄球基础规则 link</a></p>
-<h4 id="1-2-FAQ"><a href="#1-2-FAQ" class="headerlink" title="1.2 FAQ"></a>1.2 FAQ</h4><p>Q: <code>4down</code> 进攻里面,比如第一档从 40 码迈进 3 码到了 37 码,那么第二档发起进攻该从什么地方开始?</p>
-<p>A: 第二档进攻从第一档进攻推进到的 37 码开始发球,启动进攻.</p>
-<p>Q: 如果 4 档进攻都没达到 10 码,该怎么办?</p>
-<p>A: 进攻 4 次,向前推进的总距离要是不到 10 码,那么攻守双方必须就地转换.在三次进攻后,没能向前推进 10 码,可以选择<code>弃踢</code>.在三次进攻,距离对方端区不远时(<code>最好是30码以内</code>),可以考虑<code>射门</code>,射门成功可得 3 分.如果射门失败,不仅没得分,攻防关系转换后,对方要从球踢出的位置开始进攻,所以离对方端区比较近才会考虑射门.</p>
-<p>Q: 你给我翻译,翻译,什么叫<code>弃踢</code>,什么叫他妈的<code>弃踢</code>? 姜文脸.jpg</p>
-<p>A: 弃踢实际上是第 4 次进攻的另类形式,姑且将弃踢理解成<code>放弃第 4 次进攻,把球踢给对方</code>.弃踢时尽量把球踢到靠近对方端区的地方,对方接到球后再回攻,回攻手被我方拦截的位置,就是对方进攻的起点位置.</p>
-<p>Q: 那么传球有什么规则呀?为什么<code>四分卫只传出一次</code>,而不是像篮球一样传来传去?</p>
-<p>A: 每次进攻<code>只有 1 次向前传球</code>的机会;其次,球只能从启球线的后方(进攻方这边)扔出;再次,进攻方只有特定队员<code>(合法接球者:內锋没有权利接向前的传球,端锋可以)</code>才有资格接球.</p>
-<p>Q: 合法持球员是什么意思?</p>
-<p>A: 合法接球员简单来说就是进攻组线上只有左右最边上两个人是合法接球员,后场的都是合法接球员.</p>
-<p><img src="/images/killme-images/receiver.png" alt="img"></p>
-<hr>
-<h2 id="2-篮球"><a href="#2-篮球" class="headerlink" title="2. 篮球"></a>2. 篮球</h2><p>篮球规则太多了,泪目.</p>
-<h4 id="2-1-基础规则"><a href="#2-1-基础规则" class="headerlink" title="2.1 基础规则"></a>2.1 基础规则</h4><table>
-<thead>
-<tr>
-<th>规则</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>5 秒规则</code></td>
-<td>持球后,球员必须在 5 秒钟之内掷界外球(5s 内要发出球)</td>
-</tr>
-<tr>
-<td><code>8 秒规则</code></td>
-<td>球队从后场控制球开始,必须在 8 秒钟内使球进入前场(对方的半场)</td>
-</tr>
-<tr>
-<td><code>24 秒规则</code></td>
-<td>进攻球队在场上控球时必须在 24 秒钟内投篮出(二次进攻为 14s,nba 现在)手.</td>
-</tr>
-<tr>
-<td><code>3 秒规则</code></td>
-<td>分为进攻 3 秒和防守 3 秒.<br><code>进攻 3 秒</code>:进攻方球员不得滞留于 3 秒区 3 秒以上. <br><code>防守 3 秒</code>:当某防守方球员对应的进攻方球员不在 3 秒区或者 3 秒区边缘、且彻底摆脱防守球员时,防守方球员不得滞留禁区 3 秒以上.</td>
-</tr>
-</tbody></table>
-<h4 id="2-2-FAQ"><a href="#2-2-FAQ" class="headerlink" title="2.2 FAQ"></a>2.2 FAQ</h4><p>Q: 一场比赛时长是怎样子的?</p>
-<p>A: 一场篮球比赛是由 4 节组成,每节 12 分钟,加时赛的比赛时间均为 5 分钟.上下半场之间休息 15 分钟,节与节之间休息 2 分钟.</p>
-<p>Q: 一共有多少次暂停?</p>
-<p>A: 暂停分<code>短暂停</code>,<code>常规暂停</code>和<code>官方暂停</code>.短暂停时间为 20 秒,常规暂停时间为 100 秒或者 60 秒,官方暂停时间为 100 秒.<code>比赛双方在上下半场各有一个短暂停</code>,不能累计使用(上半场的短暂停不能留到下半场),但下半场的短暂停可以在加时赛中继续使用.常规暂停也叫长暂停,有 100 秒和 60 秒两种.<code>比赛双方在常规时间 48 分钟内可以叫六次长暂停</code>,其中包括四次 100 秒暂停和两次 60 秒短暂停.100 秒暂停每节使用&lt;&#x3D;1 次.</p>
-<p>Q: 常见的犯规有哪些?</p>
-<p>A: 野球场上常见的犯规有:<code>没摸到的打手啦</code>,<code>马拉松一样的三步上篮</code>.</p>
-<p>Q: 什么时候开始罚球?</p>
-<p>A: 通常在攻方队员进攻时,防守队员侵犯对方队员时,而且犯规方球队累计犯规四次以上要罚球,而 4 次或 4 次以下发界外球.</p>
-<hr>
-<h2 id="3-足球"><a href="#3-足球" class="headerlink" title="3. 足球"></a>3. 足球</h2><h4 id="3-1-基础规则"><a href="#3-1-基础规则" class="headerlink" title="3.1 基础规则"></a>3.1 基础规则</h4><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av20500563">bilibili 足球入门规则视频 link</a></p>
-<h4 id="3-2-FAQ"><a href="#3-2-FAQ" class="headerlink" title="3.2 FAQ"></a>3.2 FAQ</h4><p>Q: 越位是什么?</p>
-<p>A: 进攻队员向前传球的一瞬间,<code>接球队员在对方半场,且在比对方倒数第 2 名防守队员更靠近对方球门线</code>(传球给队友的时候,保证有两个对方球员在 ta 前面就可以避免越位).</p>
-<p>Q: 每场可以更换多少队员?</p>
-<p>A: 一场比赛下来<code>只能换三个队员</code>,在比赛中,替补队员名单必须在比赛开始前交给裁判员.</p>
-<p>Q: 当其中一名队员被<code>红牌(或2张黄牌)罚下</code>,可以更换队员上场吗?</p>
-<p>A: 不能,如果被罚下,只能己方 10 个队员在场比赛,不像篮球比赛那样子可以更换新的队员上场.</p>
-<hr>
-<h2 id="4-网球"><a href="#4-网球" class="headerlink" title="4. 网球"></a>4. 网球</h2><p>那时候的莎拉波娃是真的好看. 笑哭脸.jpg</p>
-<h4 id="4-1-网球规则"><a href="#4-1-网球规则" class="headerlink" title="4.1 网球规则"></a>4.1 网球规则</h4><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av82456106">bilibili 网球规则视频 link</a></p>
-<h4 id="4-2-FAQ"><a href="#4-2-FAQ" class="headerlink" title="4.2 FAQ"></a>4.2 FAQ</h4><p>Q: 怎么计分的,网球里面?</p>
-<p>A: 一局内可能出现的分数为 0,15,30,40,结束.其实等同于 0,1,2,3 结束.一方赢得一分,记为 15:0,以此类推.40:40 成为平分(Deuce),此时一方得分称为占先.<code>一方需至少多赢两分才能赢下一局</code>,此时局数加一.</p>
-<p>Q: 局数和盘又是什么?</p>
-<p>A: 盘由局所构成,局数先到 6 的一方赢得此盘.局数相当于 nba 的节数,盘就是整场比赛.</p>
 
       
     </div>

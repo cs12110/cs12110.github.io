@@ -973,88 +973,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/08/go-web/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/12764287.png">
-      <meta itemprop="name" content="cs12110@163.com">
-      <meta itemprop="description" content="就一臭打字的">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="mini-docs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/08/go-web/" class="post-title-link" itemprop="url">Go Web</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-10-08 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-08T00:00:00+08:00">2020-10-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-09 09:17:06" itemprop="dateModified" datetime="2025-07-09T09:17:06+08:00">2025-07-09</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Go/Go-web%E6%9C%8D%E5%8A%A1%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">Go web服务器</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="web"><a href="#web" class="headerlink" title="web"></a>web</h1><p>没 web,不成天下.</p>
-<hr>
-<h2 id="1-Hello-world"><a href="#1-Hello-world" class="headerlink" title="1. Hello world"></a>1. Hello world</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;io&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> MyBook <span class="keyword">struct</span> &#123;</span><br><span class="line">	Name    <span class="type">string</span> <span class="string">`json:&quot;name&quot;`</span></span><br><span class="line">	Author  <span class="type">string</span> <span class="string">`json:&quot;author&quot;`</span></span><br><span class="line">	Page    <span class="type">int</span>    <span class="string">`json:&quot;page&quot;`</span></span><br><span class="line">	Summary <span class="type">string</span> <span class="string">`json:&quot;summary&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ToJSON</span><span class="params">(universe <span class="keyword">interface</span>&#123;&#125;)</span></span> <span class="type">string</span> &#123;</span><br><span class="line">	values, _ := json.Marshal(universe)</span><br><span class="line">	<span class="keyword">return</span> <span class="type">string</span>(values)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// hello world, the web server</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">HelloServer</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 获取请求参数</span></span><br><span class="line">	req.ParseForm()</span><br><span class="line">	name := req.FormValue(<span class="string">&quot;name&quot;</span>)</span><br><span class="line">	password := req.FormValue(<span class="string">&quot;password&quot;</span>)</span><br><span class="line"></span><br><span class="line">	fmt.Println(name, password)</span><br><span class="line"></span><br><span class="line">	book := MyBook&#123;<span class="string">&quot;Harry Potter&quot;</span>, <span class="string">&quot;JK&quot;</span>, <span class="number">400</span>, <span class="string">&quot;About magic&quot;</span>&#125;</span><br><span class="line">	log.Println(ToJSON(book))</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 回传数据给客户端</span></span><br><span class="line">	io.WriteString(w, ToJSON(book))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	http.HandleFunc(<span class="string">&quot;/hello&quot;</span>, HelloServer)</span><br><span class="line">	err := http.ListenAndServe(<span class="string">&quot;:12345&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(<span class="string">&quot;ListenAndServe: &quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在浏览器访问: <code>http://127.0.0.1:12345/hello?name=haiyan&amp;password=haiyan</code>即可.</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/08/go-thread/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1132,6 +1050,88 @@
 
 <p>执行结果</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">b</span><br><span class="line">b</span><br><span class="line"><span class="number">1</span></span><br><span class="line">c</span><br><span class="line">c</span><br><span class="line">a</span><br><span class="line">a</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/08/go-web/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/12764287.png">
+      <meta itemprop="name" content="cs12110@163.com">
+      <meta itemprop="description" content="就一臭打字的">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mini-docs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/10/08/go-web/" class="post-title-link" itemprop="url">Go Web</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-08 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-08T00:00:00+08:00">2020-10-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-09 09:17:06" itemprop="dateModified" datetime="2025-07-09T09:17:06+08:00">2025-07-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Go/Go-web%E6%9C%8D%E5%8A%A1%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">Go web服务器</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="web"><a href="#web" class="headerlink" title="web"></a>web</h1><p>没 web,不成天下.</p>
+<hr>
+<h2 id="1-Hello-world"><a href="#1-Hello-world" class="headerlink" title="1. Hello world"></a>1. Hello world</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;io&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> MyBook <span class="keyword">struct</span> &#123;</span><br><span class="line">	Name    <span class="type">string</span> <span class="string">`json:&quot;name&quot;`</span></span><br><span class="line">	Author  <span class="type">string</span> <span class="string">`json:&quot;author&quot;`</span></span><br><span class="line">	Page    <span class="type">int</span>    <span class="string">`json:&quot;page&quot;`</span></span><br><span class="line">	Summary <span class="type">string</span> <span class="string">`json:&quot;summary&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ToJSON</span><span class="params">(universe <span class="keyword">interface</span>&#123;&#125;)</span></span> <span class="type">string</span> &#123;</span><br><span class="line">	values, _ := json.Marshal(universe)</span><br><span class="line">	<span class="keyword">return</span> <span class="type">string</span>(values)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// hello world, the web server</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">HelloServer</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 获取请求参数</span></span><br><span class="line">	req.ParseForm()</span><br><span class="line">	name := req.FormValue(<span class="string">&quot;name&quot;</span>)</span><br><span class="line">	password := req.FormValue(<span class="string">&quot;password&quot;</span>)</span><br><span class="line"></span><br><span class="line">	fmt.Println(name, password)</span><br><span class="line"></span><br><span class="line">	book := MyBook&#123;<span class="string">&quot;Harry Potter&quot;</span>, <span class="string">&quot;JK&quot;</span>, <span class="number">400</span>, <span class="string">&quot;About magic&quot;</span>&#125;</span><br><span class="line">	log.Println(ToJSON(book))</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 回传数据给客户端</span></span><br><span class="line">	io.WriteString(w, ToJSON(book))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	http.HandleFunc(<span class="string">&quot;/hello&quot;</span>, HelloServer)</span><br><span class="line">	err := http.ListenAndServe(<span class="string">&quot;:12345&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(<span class="string">&quot;ListenAndServe: &quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在浏览器访问: <code>http://127.0.0.1:12345/hello?name=haiyan&amp;password=haiyan</code>即可.</p>
 
       
     </div>

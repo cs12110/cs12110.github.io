@@ -460,132 +460,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/08/java-threadlocal/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/12764287.png">
-      <meta itemprop="name" content="cs12110@163.com">
-      <meta itemprop="description" content="就一臭打字的">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="mini-docs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/08/java-threadlocal/" class="post-title-link" itemprop="url">ThreadLocal 笔记</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-10-08 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-08T00:00:00+08:00">2020-10-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-09 09:22:50" itemprop="dateModified" datetime="2025-07-09T09:22:50+08:00">2025-07-09</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java%E5%9F%BA%E7%A1%80/ThreadLocal%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">ThreadLocal使用笔记</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="ThreadLocal-笔记"><a href="#ThreadLocal-笔记" class="headerlink" title="ThreadLocal 笔记"></a>ThreadLocal 笔记</h1><p>关于 ThreadLocal 的使用笔记.</p>
-<p>注意: <strong>使用 ThreadLocal 每次执行完毕后,要使用 remove()方法来清空对象,否则 ThreadLocal 存放大对象后可能会 OMM.</strong></p>
-<hr>
-<h2 id="1-基础知识"><a href="#1-基础知识" class="headerlink" title="1. 基础知识"></a>1. 基础知识</h2><h3 id="1-1-基础概念"><a href="#1-1-基础概念" class="headerlink" title="1.1 基础概念"></a>1.1 基础概念</h3><p>使用 ThreadLocal 维护变量时,ThreadLocal 为每个使用该变量的线程提供独立的变量副本,所以每一个线程都可以独立地改变自己的副本,而不会影响其它线程所对应的副本.从线程的角度看,目标变量就象是线程的本地变量,这也是类名中”Local”所要表达的意思.可以理解为如下三点:</p>
-<p>a. <strong>每个线程都有自己的局部变量</strong></p>
-<p>每个线程都有一个独立于其他线程的上下文来保存这个变量,一个线程的本地变量对其他线程是不可见的.</p>
-<p>b. <strong>独立于变量的初始化副本</strong></p>
-<p>ThreadLocal 可以给一个初始值,而每个线程都会获得这个初始化值的一个副本,这样才能保证不同的线程都有一份拷贝.</p>
-<p>c. <strong>状态与某一个线程相关联</strong></p>
-<p>ThreadLocal 不是用于解决共享变量的问题的,不是为了协调线程同步而存在,而是为了方便每个线程处理自己的私有状态而引入的一个机制,理解这点对正确使用 ThreadLocal 至关重要.</p>
-<h3 id="1-2-测试代码"><a href="#1-2-测试代码" class="headerlink" title="1.2 测试代码"></a>1.2 测试代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Bucket</span> &#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		ThreadLocal&lt;Long&gt; threadLocal = <span class="keyword">new</span> <span class="title class_">ThreadLocal</span>&lt;&gt;();</span><br><span class="line">		threadLocal.set(<span class="number">1L</span>);</span><br><span class="line">		System.out.println(<span class="string">&quot;ThreadLocal#get:&quot;</span> + threadLocal.get());</span><br><span class="line">		threadLocal.remove();</span><br><span class="line">		System.out.println(<span class="string">&quot;ThreadLocal#remove:&quot;</span> + threadLocal.get());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>测试结果</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ThreadLocal#get:<span class="number">1</span></span><br><span class="line">ThreadLocal#remove:<span class="literal">null</span></span><br></pre></td></tr></table></figure>
-
-<p>下面,我们一起来看看这个杀千刀的玩意.</p>
-<hr>
-<h2 id="2-ThreadLocal-set-方法"><a href="#2-ThreadLocal-set-方法" class="headerlink" title="2. ThreadLocal#set 方法"></a>2. <code>ThreadLocal#set</code> 方法</h2><p>流程: 得到当前线程 -&gt; 根据当前线程获取 ThreadLocalMap -&gt; 保存值到 ThreadLocalMap</p>
-<p>threadlocal 里面的内部实现 set 代码如下:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(T value)</span> &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">    <span class="type">ThreadLocalMap</span> <span class="variable">map</span> <span class="operator">=</span> getMap(t);</span><br><span class="line">    <span class="keyword">if</span> (map != <span class="literal">null</span>)</span><br><span class="line">        map.set(<span class="built_in">this</span>, value);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        createMap(t, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>ThreadLocal#createMap</code>方法代码如下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">createMap</span><span class="params">(Thread t, T firstValue)</span> &#123;</span><br><span class="line">    t.threadLocals = <span class="keyword">new</span> <span class="title class_">ThreadLocalMap</span>(<span class="built_in">this</span>, firstValue);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>ThreadLocal#getMap</code>方法代码如下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ThreadLocalMap <span class="title function_">getMap</span><span class="params">(Thread t)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> t.threadLocals;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>那么 t.threadLocals 又是什么玩意?</p>
-<p>就是 ThreadLocal 里面的 Map,整这么多幺蛾子,我竟然看不懂为什么,我太渣了.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ThreadLocal.<span class="type">ThreadLocalMap</span> <span class="variable">threadLocals</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
-
-<p><code>ThreadLocalMap</code>:你可以理解为一个简易的 HashMap</p>
-<hr>
-<h2 id="3-ThreadLocal-get-方法"><a href="#3-ThreadLocal-get-方法" class="headerlink" title="3. ThreadLocal#get 方法"></a>3. <code>ThreadLocal#get</code> 方法</h2><p>获取 ThreadLocal 里面的值.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> T <span class="title function_">get</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">    <span class="type">ThreadLocalMap</span> <span class="variable">map</span> <span class="operator">=</span> getMap(t);</span><br><span class="line">    <span class="keyword">if</span> (map != <span class="literal">null</span>) &#123;</span><br><span class="line">        ThreadLocalMap.<span class="type">Entry</span> <span class="variable">e</span> <span class="operator">=</span> map.getEntry(<span class="built_in">this</span>);</span><br><span class="line">        <span class="keyword">if</span> (e != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">            <span class="type">T</span> <span class="variable">result</span> <span class="operator">=</span> (T)e.value;</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> setInitialValue();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>ThreadLocal#setInitialValue</code>方法代码如下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> T <span class="title function_">setInitialValue</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">T</span> <span class="variable">value</span> <span class="operator">=</span> initialValue();</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">    <span class="type">ThreadLocalMap</span> <span class="variable">map</span> <span class="operator">=</span> getMap(t);</span><br><span class="line">    <span class="keyword">if</span> (map != <span class="literal">null</span>)</span><br><span class="line">        map.set(<span class="built_in">this</span>, value);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        createMap(t, value);</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>ThreadLocal#initialValue</code>方法代码如下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> T <span class="title function_">initialValue</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="4-ThreadLocal-remove-方法"><a href="#4-ThreadLocal-remove-方法" class="headerlink" title="4. ThreadLocal#remove 方法"></a>4. <code>ThreadLocal#remove</code> 方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">remove</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">ThreadLocalMap</span> <span class="variable">m</span> <span class="operator">=</span> getMap(Thread.currentThread());</span><br><span class="line">    <span class="keyword">if</span> (m != <span class="literal">null</span>)</span><br><span class="line">        m.remove(<span class="built_in">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>由上面的代码可以看出来,也是根据当前线程获取当前线程里面的 ThreadLocalMap,然后根据 key 移除 value.</p>
-<hr>
-<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h2><p>可能有点绕,我尝试总结一下.</p>
-<p>ThreadLocal 的操作都是: 获取当前线程(<code>Thread.currentThread()</code>) -&gt; 对当前线程里面的 ThreadLocals(实际为<code>ThreadLocal.threadLocals</code>)属性值进行操作 -&gt; <code>key</code> 为 <code>ThreadLocal</code> 的 <code>this</code> 对象,<code>value</code> 为用户 <code>set</code> 进来的值.</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/08/java-rpc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -700,6 +574,132 @@
 
 <hr>
 <h2 id="6-参考资料"><a href="#6-参考资料" class="headerlink" title="6. 参考资料"></a>6. 参考资料</h2><p>a. <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzAxMjEwMzQ5MA==&mid=2448886008&idx=1&sn=6136ce25d0ec5f276dd71d9a7b225bf3&chksm=8fb552d5b8c2dbc34539968c586131d2e1272ae3e1d0850eec48fc5a828ca2433b29c5a89148&scene=21#wechat_redirect">纯手写实现一个高可用的RPC</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/08/java-threadlocal/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/12764287.png">
+      <meta itemprop="name" content="cs12110@163.com">
+      <meta itemprop="description" content="就一臭打字的">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mini-docs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/10/08/java-threadlocal/" class="post-title-link" itemprop="url">ThreadLocal 笔记</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-08 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-08T00:00:00+08:00">2020-10-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-09 09:22:50" itemprop="dateModified" datetime="2025-07-09T09:22:50+08:00">2025-07-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E5%9F%BA%E7%A1%80/ThreadLocal%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">ThreadLocal使用笔记</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="ThreadLocal-笔记"><a href="#ThreadLocal-笔记" class="headerlink" title="ThreadLocal 笔记"></a>ThreadLocal 笔记</h1><p>关于 ThreadLocal 的使用笔记.</p>
+<p>注意: <strong>使用 ThreadLocal 每次执行完毕后,要使用 remove()方法来清空对象,否则 ThreadLocal 存放大对象后可能会 OMM.</strong></p>
+<hr>
+<h2 id="1-基础知识"><a href="#1-基础知识" class="headerlink" title="1. 基础知识"></a>1. 基础知识</h2><h3 id="1-1-基础概念"><a href="#1-1-基础概念" class="headerlink" title="1.1 基础概念"></a>1.1 基础概念</h3><p>使用 ThreadLocal 维护变量时,ThreadLocal 为每个使用该变量的线程提供独立的变量副本,所以每一个线程都可以独立地改变自己的副本,而不会影响其它线程所对应的副本.从线程的角度看,目标变量就象是线程的本地变量,这也是类名中”Local”所要表达的意思.可以理解为如下三点:</p>
+<p>a. <strong>每个线程都有自己的局部变量</strong></p>
+<p>每个线程都有一个独立于其他线程的上下文来保存这个变量,一个线程的本地变量对其他线程是不可见的.</p>
+<p>b. <strong>独立于变量的初始化副本</strong></p>
+<p>ThreadLocal 可以给一个初始值,而每个线程都会获得这个初始化值的一个副本,这样才能保证不同的线程都有一份拷贝.</p>
+<p>c. <strong>状态与某一个线程相关联</strong></p>
+<p>ThreadLocal 不是用于解决共享变量的问题的,不是为了协调线程同步而存在,而是为了方便每个线程处理自己的私有状态而引入的一个机制,理解这点对正确使用 ThreadLocal 至关重要.</p>
+<h3 id="1-2-测试代码"><a href="#1-2-测试代码" class="headerlink" title="1.2 测试代码"></a>1.2 测试代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Bucket</span> &#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		ThreadLocal&lt;Long&gt; threadLocal = <span class="keyword">new</span> <span class="title class_">ThreadLocal</span>&lt;&gt;();</span><br><span class="line">		threadLocal.set(<span class="number">1L</span>);</span><br><span class="line">		System.out.println(<span class="string">&quot;ThreadLocal#get:&quot;</span> + threadLocal.get());</span><br><span class="line">		threadLocal.remove();</span><br><span class="line">		System.out.println(<span class="string">&quot;ThreadLocal#remove:&quot;</span> + threadLocal.get());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ThreadLocal#get:<span class="number">1</span></span><br><span class="line">ThreadLocal#remove:<span class="literal">null</span></span><br></pre></td></tr></table></figure>
+
+<p>下面,我们一起来看看这个杀千刀的玩意.</p>
+<hr>
+<h2 id="2-ThreadLocal-set-方法"><a href="#2-ThreadLocal-set-方法" class="headerlink" title="2. ThreadLocal#set 方法"></a>2. <code>ThreadLocal#set</code> 方法</h2><p>流程: 得到当前线程 -&gt; 根据当前线程获取 ThreadLocalMap -&gt; 保存值到 ThreadLocalMap</p>
+<p>threadlocal 里面的内部实现 set 代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(T value)</span> &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">    <span class="type">ThreadLocalMap</span> <span class="variable">map</span> <span class="operator">=</span> getMap(t);</span><br><span class="line">    <span class="keyword">if</span> (map != <span class="literal">null</span>)</span><br><span class="line">        map.set(<span class="built_in">this</span>, value);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        createMap(t, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ThreadLocal#createMap</code>方法代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">createMap</span><span class="params">(Thread t, T firstValue)</span> &#123;</span><br><span class="line">    t.threadLocals = <span class="keyword">new</span> <span class="title class_">ThreadLocalMap</span>(<span class="built_in">this</span>, firstValue);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ThreadLocal#getMap</code>方法代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ThreadLocalMap <span class="title function_">getMap</span><span class="params">(Thread t)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> t.threadLocals;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么 t.threadLocals 又是什么玩意?</p>
+<p>就是 ThreadLocal 里面的 Map,整这么多幺蛾子,我竟然看不懂为什么,我太渣了.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ThreadLocal.<span class="type">ThreadLocalMap</span> <span class="variable">threadLocals</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>ThreadLocalMap</code>:你可以理解为一个简易的 HashMap</p>
+<hr>
+<h2 id="3-ThreadLocal-get-方法"><a href="#3-ThreadLocal-get-方法" class="headerlink" title="3. ThreadLocal#get 方法"></a>3. <code>ThreadLocal#get</code> 方法</h2><p>获取 ThreadLocal 里面的值.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> T <span class="title function_">get</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">    <span class="type">ThreadLocalMap</span> <span class="variable">map</span> <span class="operator">=</span> getMap(t);</span><br><span class="line">    <span class="keyword">if</span> (map != <span class="literal">null</span>) &#123;</span><br><span class="line">        ThreadLocalMap.<span class="type">Entry</span> <span class="variable">e</span> <span class="operator">=</span> map.getEntry(<span class="built_in">this</span>);</span><br><span class="line">        <span class="keyword">if</span> (e != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">            <span class="type">T</span> <span class="variable">result</span> <span class="operator">=</span> (T)e.value;</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> setInitialValue();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ThreadLocal#setInitialValue</code>方法代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> T <span class="title function_">setInitialValue</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">T</span> <span class="variable">value</span> <span class="operator">=</span> initialValue();</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">    <span class="type">ThreadLocalMap</span> <span class="variable">map</span> <span class="operator">=</span> getMap(t);</span><br><span class="line">    <span class="keyword">if</span> (map != <span class="literal">null</span>)</span><br><span class="line">        map.set(<span class="built_in">this</span>, value);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        createMap(t, value);</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ThreadLocal#initialValue</code>方法代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> T <span class="title function_">initialValue</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-ThreadLocal-remove-方法"><a href="#4-ThreadLocal-remove-方法" class="headerlink" title="4. ThreadLocal#remove 方法"></a>4. <code>ThreadLocal#remove</code> 方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">remove</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">ThreadLocalMap</span> <span class="variable">m</span> <span class="operator">=</span> getMap(Thread.currentThread());</span><br><span class="line">    <span class="keyword">if</span> (m != <span class="literal">null</span>)</span><br><span class="line">        m.remove(<span class="built_in">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由上面的代码可以看出来,也是根据当前线程获取当前线程里面的 ThreadLocalMap,然后根据 key 移除 value.</p>
+<hr>
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h2><p>可能有点绕,我尝试总结一下.</p>
+<p>ThreadLocal 的操作都是: 获取当前线程(<code>Thread.currentThread()</code>) -&gt; 对当前线程里面的 ThreadLocals(实际为<code>ThreadLocal.threadLocals</code>)属性值进行操作 -&gt; <code>key</code> 为 <code>ThreadLocal</code> 的 <code>this</code> 对象,<code>value</code> 为用户 <code>set</code> 进来的值.</p>
 
       
     </div>
