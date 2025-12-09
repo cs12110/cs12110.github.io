@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="支付1. 微信支付&#x2F;支付宝支付1.1 微信支付类型总结官方文档: https:&#x2F;&#x2F;pay.weixin.qq.com&#x2F;doc&#x2F;v3&#x2F;partner&#x2F;4012069852    支付模式 适用场景 注意点 备注    JSAPI 支付 微信内 H5、公众号、小程序、内嵌网页支付。常用于微信商城、会员卡充值、线上服务购买等。 需要在微信客户端内访问；需配置支付授权目录或小程序 AppID；前">
+<meta property="og:type" content="article">
+<meta property="og:title" content="支付指南">
+<meta property="og:url" content="http://example.com/2025/08/15/javaee-pay-guide/index.html">
+<meta property="og:site_name" content="mini-docs">
+<meta property="og:description" content="支付1. 微信支付&#x2F;支付宝支付1.1 微信支付类型总结官方文档: https:&#x2F;&#x2F;pay.weixin.qq.com&#x2F;doc&#x2F;v3&#x2F;partner&#x2F;4012069852    支付模式 适用场景 注意点 备注    JSAPI 支付 微信内 H5、公众号、小程序、内嵌网页支付。常用于微信商城、会员卡充值、线上服务购买等。 需要在微信客户端内访问；需配置支付授权目录或小程序 AppID；前">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-15T12:46:25.000Z">
+<meta property="article:modified_time" content="2025-12-09T10:06:04.766Z">
+<meta property="article:author" content="cs12110@163.com">
+<meta property="article:tag" content="JavaEE">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2025/08/15/javaee-pay-guide/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>支付指南 | mini-docs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">mini-docs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">19</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">92</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">110</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/cs12110" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/15/javaee-pay-guide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/12764287.png">
+      <meta itemprop="name" content="cs12110@163.com">
+      <meta itemprop="description" content="就一臭打字的">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="mini-docs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          支付指南
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-08-15 20:46:25" itemprop="dateCreated datePublished" datetime="2025-08-15T20:46:25+08:00">2025-08-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-12-09 18:06:04" itemprop="dateModified" datetime="2025-12-09T18:06:04+08:00">2025-12-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JavaEE/" itemprop="url" rel="index"><span itemprop="name">JavaEE</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JavaEE/%E6%94%AF%E4%BB%98%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">支付指南</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="支付"><a href="#支付" class="headerlink" title="支付"></a>支付</h2><h3 id="1-微信支付-支付宝支付"><a href="#1-微信支付-支付宝支付" class="headerlink" title="1. 微信支付&#x2F;支付宝支付"></a>1. 微信支付&#x2F;支付宝支付</h3><h4 id="1-1-微信支付类型总结"><a href="#1-1-微信支付类型总结" class="headerlink" title="1.1 微信支付类型总结"></a>1.1 微信支付类型总结</h4><p>官方文档: <a target="_blank" rel="noopener" href="https://pay.weixin.qq.com/doc/v3/partner/4012069852">https://pay.weixin.qq.com/doc/v3/partner/4012069852</a></p>
+<table>
+<thead>
+<tr>
+<th align="left">支付模式</th>
+<th align="left">适用场景</th>
+<th align="left">注意点</th>
+<th align="left">备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">JSAPI 支付</td>
+<td align="left">微信内 H5、公众号、小程序、内嵌网页支付。常用于微信商城、会员卡充值、线上服务购买等。</td>
+<td align="left">需要在微信客户端内访问；需配置支付授权目录或小程序 AppID；前端通过 JS 调用接口拉起支付；后台接收支付结果通知。</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">Native 支付</td>
+<td align="left">线下实体店、无人售货机、PC 网站等场景。用户通过扫码支付。</td>
+<td align="left">商户需生成支付二维码并展示；二维码有效期、安全性；需要轮询或等待回调通知确认支付结果。</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">App 支付</td>
+<td align="left">App 内购买商品或服务。常用于独立 App 的电商、游戏、工具类应用。</td>
+<td align="left">需集成微信 SDK；AppID 和商户号需关联；支付请求在 App 内发起，并跳转到微信完成支付，再返回 App。</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">H5 支付</td>
+<td align="left">移动端浏览器（如 Chrome、Safari）等微信客户端外的网页支付。常用于外部导流的移动端商城。</td>
+<td align="left">非微信内的 H5 页面支付；需进行域名授权；支付成功后可能需要手动跳转回商户页面。</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">付款码支付</td>
+<td align="left">线下门店收银台，用户向收银员展示付款码，收银员通过扫码枪完成收款。</td>
+<td align="left">主要用于被扫模式；需保证商户后台系统能快速响应并处理订单；注意安全风控，避免盗刷。</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>微信支付通用注意点</p>
+<ul>
+<li>安全性：妥善保管商户号、API 密钥和 API 证书。</li>
+<li>回调通知：以微信后台的支付成功回调通知作为订单支付成功的唯一凭证。</li>
+<li>订单管理：商户订单号（<code>out_trade_no</code>）必须唯一。</li>
+</ul>
+<h4 id="1-2-支付宝支付类型总结"><a href="#1-2-支付宝支付类型总结" class="headerlink" title="1.2 支付宝支付类型总结"></a>1.2 支付宝支付类型总结</h4><p>官方文档: <a target="_blank" rel="noopener" href="https://opendocs.alipay.com/open/204">https://opendocs.alipay.com/open/204</a></p>
+<table>
+<thead>
+<tr>
+<th align="left">支付模式</th>
+<th align="left">适用场景</th>
+<th align="left">注意点</th>
+<th align="left">备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">手机 App 支付</td>
+<td align="left">商家独立 App 内购买商品或服务。适用于 App 电商、App 游戏充值等。</td>
+<td align="left">需集成支付宝 SDK；支付请求在 App 内发起，跳转到支付宝 App 完成支付，再返回商家 App。</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">电脑网站支付</td>
+<td align="left">PC 端网页购买商品或服务。适用于 PC 电商网站、在线教育课程等。</td>
+<td align="left">用户在 PC 浏览器上操作；可选择跳转到支付宝页面完成支付，或在商家页面扫码支付。</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">当面付（扫码支付）</td>
+<td align="left">线下实体店收银、PC 端或移动端网页展示二维码让用户扫码支付。</td>
+<td align="left">商家生成二维码供用户使用支付宝 App 扫码（主扫模式）；或用户展示付款码供商家设备扫码（被扫模式，如收银台）。</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">H5 支付（WAP 支付）</td>
+<td align="left">移动端浏览器（非 App 内，非微信内）的网页购买服务。常用于外部渠道导流的移动端商城。</td>
+<td align="left">适用于非独立 App 的移动端页面；支付请求从浏览器发起，跳转到支付宝 H5 页面完成支付。</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">小程序支付</td>
+<td align="left">支付宝小程序内购买商品或服务。</td>
+<td align="left">支付流程在支付宝小程序内完成；需调用小程序提供的支付接口；需在开放平台关联小程序应用。</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>支付宝支付通用注意点</p>
+<ul>
+<li>安全性：使用 RSA2 签名算法，妥善保管私钥。</li>
+<li>回调通知：以支付宝的异步通知（notify_url）为准，作为处理订单的唯一依据。</li>
+<li>应用配置：所有支付模式都需要在支付宝开放平台创建应用并配置。</li>
+</ul>
+<hr>
+<span id="more"></span>
+
+<h3 id="2-基础知识"><a href="#2-基础知识" class="headerlink" title="2. 基础知识"></a>2. 基础知识</h3><h4 id="2-1-加密算法"><a href="#2-1-加密算法" class="headerlink" title="2.1 加密算法"></a>2.1 加密算法</h4><h5 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h5><p>对称加密(Symmetric Encryption): 加密和解密使用相同的密钥</p>
+<table>
+<thead>
+<tr>
+<th align="left">算法</th>
+<th align="left">密钥长度</th>
+<th align="left">特点</th>
+<th align="left">应用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">AES</td>
+<td align="left">128&#x2F;192&#x2F;256 位</td>
+<td align="left">最常用，安全高效</td>
+<td align="left">SSL&#x2F;TLS、文件加密、数据库加密</td>
+</tr>
+<tr>
+<td align="left">DES</td>
+<td align="left">56 位</td>
+<td align="left">已过时，不安全</td>
+<td align="left">遗留系统</td>
+</tr>
+<tr>
+<td align="left">3DES</td>
+<td align="left">112&#x2F;168 位</td>
+<td align="left">DES 的增强版</td>
+<td align="left">金融系统（逐渐被淘汰）</td>
+</tr>
+<tr>
+<td align="left">ChaCha20</td>
+<td align="left">256 位</td>
+<td align="left">移动设备性能好</td>
+<td align="left">移动端加密</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AES加密示例</span></span><br><span class="line"><span class="type">String</span> <span class="variable">plainText</span> <span class="operator">=</span> <span class="string">&quot;Hello World&quot;</span>;</span><br><span class="line"><span class="type">String</span> <span class="variable">secretKey</span> <span class="operator">=</span> <span class="string">&quot;mySecretKey123456&quot;</span>; <span class="comment">// 16字符</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 加密</span></span><br><span class="line"><span class="type">Cipher</span> <span class="variable">cipher</span> <span class="operator">=</span> Cipher.getInstance(<span class="string">&quot;AES&quot;</span>);</span><br><span class="line">cipher.init(Cipher.ENCRYPT_MODE, <span class="keyword">new</span> <span class="title class_">SecretKeySpec</span>(secretKey.getBytes(), <span class="string">&quot;AES&quot;</span>));</span><br><span class="line"><span class="type">byte</span>[] encrypted = cipher.doFinal(plainText.getBytes());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解密</span></span><br><span class="line">cipher.init(Cipher.DECRYPT_MODE, <span class="keyword">new</span> <span class="title class_">SecretKeySpec</span>(secretKey.getBytes(), <span class="string">&quot;AES&quot;</span>));</span><br><span class="line"><span class="type">byte</span>[] decrypted = cipher.doFinal(encrypted);</span><br></pre></td></tr></table></figure>
+
+<h5 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h5><p>非对称加密(Asymmetric Encryption): 使用公钥和私钥配对</p>
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>原理</th>
+<th>特点</th>
+<th>应用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RSA</td>
+<td>大数分解</td>
+<td>最常用，兼容性好</td>
+<td>数字签名、密钥交换</td>
+</tr>
+<tr>
+<td>ECC</td>
+<td>椭圆曲线</td>
+<td>密钥短，效率高</td>
+<td>移动设备、区块链</td>
+</tr>
+<tr>
+<td>DSA</td>
+<td>离散对数</td>
+<td>只用于签名</td>
+<td>数字签名</td>
+</tr>
+</tbody></table>
+<p>示例代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RSA加密示例</span></span><br><span class="line"><span class="type">KeyPairGenerator</span> <span class="variable">keyGen</span> <span class="operator">=</span> KeyPairGenerator.getInstance(<span class="string">&quot;RSA&quot;</span>);</span><br><span class="line">keyGen.initialize(<span class="number">2048</span>);</span><br><span class="line"><span class="type">KeyPair</span> <span class="variable">keyPair</span> <span class="operator">=</span> keyGen.generateKeyPair();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 公钥加密</span></span><br><span class="line"><span class="type">PublicKey</span> <span class="variable">publicKey</span> <span class="operator">=</span> keyPair.getPublic();</span><br><span class="line"><span class="type">Cipher</span> <span class="variable">cipher</span> <span class="operator">=</span> Cipher.getInstance(<span class="string">&quot;RSA&quot;</span>);</span><br><span class="line">cipher.init(Cipher.ENCRYPT_MODE, publicKey);</span><br><span class="line"><span class="type">byte</span>[] encrypted = cipher.doFinal(plainText.getBytes());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 私钥解密</span></span><br><span class="line"><span class="type">PrivateKey</span> <span class="variable">privateKey</span> <span class="operator">=</span> keyPair.getPrivate();</span><br><span class="line">cipher.init(Cipher.DECRYPT_MODE, privateKey);</span><br><span class="line"><span class="type">byte</span>[] decrypted = cipher.doFinal(encrypted);</span><br></pre></td></tr></table></figure>
+
+<p><strong>公钥和私钥详解</strong>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 非对称加密的核心：密钥对</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">KeyPairExample</span> &#123;</span><br><span class="line">    <span class="comment">// 公钥 (Public Key) - 可以公开分享</span></span><br><span class="line">    <span class="comment">// 用途：加密数据、验证签名</span></span><br><span class="line">    PublicKey publicKey;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 私钥 (Private Key) - 必须严格保密</span></span><br><span class="line">    <span class="comment">// 用途：解密数据、创建签名</span></span><br><span class="line">    PrivateKey privateKey;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Alice想给Bob发送加密消息</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SecureMessage</span> &#123;</span><br><span class="line">    <span class="comment">// Bob生成密钥对</span></span><br><span class="line">    <span class="type">KeyPair</span> <span class="variable">bobKeyPair</span> <span class="operator">=</span> generateRSAKeyPair();</span><br><span class="line">    <span class="type">PublicKey</span> <span class="variable">bobPublicKey</span> <span class="operator">=</span> bobKeyPair.getPublic();  <span class="comment">// Bob的公钥，可以给任何人</span></span><br><span class="line">    <span class="type">PrivateKey</span> <span class="variable">bobPrivateKey</span> <span class="operator">=</span> bobKeyPair.getPrivate(); <span class="comment">// Bob的私钥，自己保密</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Alice用Bob的公钥加密消息</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">secretMessage</span> <span class="operator">=</span> <span class="string">&quot;Hello Bob!&quot;</span>;</span><br><span class="line">    <span class="type">byte</span>[] encrypted = encryptWithPublicKey(secretMessage, bobPublicKey);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Bob用自己的私钥解密</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">decrypted</span> <span class="operator">=</span> decryptWithPrivateKey(encrypted, bobPrivateKey);</span><br><span class="line">    <span class="comment">// decrypted = &quot;Hello Bob!&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="单向加密"><a href="#单向加密" class="headerlink" title="单向加密"></a>单向加密</h5><p>哈希算法(Hash Algorithm):单向加密，不可逆</p>
+<table>
+<thead>
+<tr>
+<th align="left">算法</th>
+<th align="left">输出长度</th>
+<th align="left">特点</th>
+<th align="left">应用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">MD5</td>
+<td align="left">128 位</td>
+<td align="left">已不安全，易碰撞</td>
+<td align="left">文件校验（不推荐安全用途）</td>
+</tr>
+<tr>
+<td align="left">SHA-1</td>
+<td align="left">160 位</td>
+<td align="left">已不安全</td>
+<td align="left">版本控制（Git）</td>
+</tr>
+<tr>
+<td align="left">SHA-256</td>
+<td align="left">256 位</td>
+<td align="left">目前最常用</td>
+<td align="left">区块链、数字证书</td>
+</tr>
+<tr>
+<td align="left">SHA-3</td>
+<td align="left">可变</td>
+<td align="left">新一代标准</td>
+<td align="left">未来替代 SHA-2</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SHA-256哈希示例</span></span><br><span class="line"><span class="type">String</span> <span class="variable">input</span> <span class="operator">=</span> <span class="string">&quot;Hello World&quot;</span>;</span><br><span class="line"><span class="type">MessageDigest</span> <span class="variable">digest</span> <span class="operator">=</span> MessageDigest.getInstance(<span class="string">&quot;SHA-256&quot;</span>);</span><br><span class="line"><span class="type">byte</span>[] hash = digest.digest(input.getBytes());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果：a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e</span></span><br><span class="line"><span class="comment">// 注意：相同输入永远得到相同输出，但无法从哈希值反推原始数据</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="相关使用"><a href="#相关使用" class="headerlink" title="相关使用"></a>相关使用</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.security.*;</span><br><span class="line"><span class="keyword">import</span> java.security.spec.PKCS8EncodedKeySpec;</span><br><span class="line"><span class="keyword">import</span> java.security.spec.X509EncodedKeySpec;</span><br><span class="line"><span class="keyword">import</span> java.util.Base64;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DigitalSignatureExample</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成RSA密钥对</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> KeyPair <span class="title function_">generateRSAKeyPair</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// 使用RSA算法，2048位密钥长度</span></span><br><span class="line">        <span class="type">KeyPairGenerator</span> <span class="variable">keyPairGenerator</span> <span class="operator">=</span> KeyPairGenerator.getInstance(<span class="string">&quot;RSA&quot;</span>);</span><br><span class="line">        keyPairGenerator.initialize(<span class="number">2048</span>);</span><br><span class="line">        <span class="keyword">return</span> keyPairGenerator.generateKeyPair();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 使用私钥对消息进行签名</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">byte</span>[] signMessage(String message, PrivateKey privateKey) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// 创建Signature对象，使用SHA256withRSA算法</span></span><br><span class="line">        <span class="type">Signature</span> <span class="variable">signature</span> <span class="operator">=</span> Signature.getInstance(<span class="string">&quot;SHA256withRSA&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 初始化签名对象，用于签名</span></span><br><span class="line">        signature.initSign(privateKey);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 传入要签名的数据</span></span><br><span class="line">        signature.update(message.getBytes(<span class="string">&quot;UTF-8&quot;</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 执行签名，返回签名结果</span></span><br><span class="line">        <span class="keyword">return</span> signature.sign();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 使用公钥验证签名</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">verifySignature</span><span class="params">(String message, <span class="type">byte</span>[] signatureBytes, PublicKey publicKey)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// 创建Signature对象，使用相同的算法</span></span><br><span class="line">        <span class="type">Signature</span> <span class="variable">signature</span> <span class="operator">=</span> Signature.getInstance(<span class="string">&quot;SHA256withRSA&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 初始化签名对象，用于验证</span></span><br><span class="line">        signature.initVerify(publicKey);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 传入原始数据</span></span><br><span class="line">        signature.update(message.getBytes(<span class="string">&quot;UTF-8&quot;</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 验证签名</span></span><br><span class="line">        <span class="keyword">return</span> signature.verify(signatureBytes);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将公钥转换为Base64字符串（便于存储和传输）</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">publicKeyToString</span><span class="params">(PublicKey publicKey)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Base64.getEncoder().encodeToString(publicKey.getEncoded());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将私钥转换为Base64字符串（安全存储！）</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">privateKeyToString</span><span class="params">(PrivateKey privateKey)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Base64.getEncoder().encodeToString(privateKey.getEncoded());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 从Base64字符串恢复公钥</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> PublicKey <span class="title function_">publicKeyFromString</span><span class="params">(String publicKeyStr)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">byte</span>[] keyBytes = Base64.getDecoder().decode(publicKeyStr);</span><br><span class="line">        <span class="type">X509EncodedKeySpec</span> <span class="variable">keySpec</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">X509EncodedKeySpec</span>(keyBytes);</span><br><span class="line">        <span class="type">KeyFactory</span> <span class="variable">keyFactory</span> <span class="operator">=</span> KeyFactory.getInstance(<span class="string">&quot;RSA&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> keyFactory.generatePublic(keySpec);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 从Base64字符串恢复私钥</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> PrivateKey <span class="title function_">privateKeyFromString</span><span class="params">(String privateKeyStr)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">byte</span>[] keyBytes = Base64.getDecoder().decode(privateKeyStr);</span><br><span class="line">        <span class="type">PKCS8EncodedKeySpec</span> <span class="variable">keySpec</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PKCS8EncodedKeySpec</span>(keyBytes);</span><br><span class="line">        <span class="type">KeyFactory</span> <span class="variable">keyFactory</span> <span class="operator">=</span> KeyFactory.getInstance(<span class="string">&quot;RSA&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> keyFactory.generatePrivate(keySpec);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DigitalSignatureDemo</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 演示完整的数字签名流程</span></span><br><span class="line">            demoDigitalSignature();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 演示密钥持久化和恢复</span></span><br><span class="line">            demoKeyPersistence();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 演示签名被篡改的情况</span></span><br><span class="line">            demoSignatureTampering();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 演示完整的数字签名流程</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">demoDigitalSignature</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;=== 数字签名完整流程演示 ===&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 1. Alice生成密钥对</span></span><br><span class="line">        <span class="type">KeyPair</span> <span class="variable">aliceKeyPair</span> <span class="operator">=</span> DigitalSignatureExample.generateRSAKeyPair();</span><br><span class="line">        <span class="type">PublicKey</span> <span class="variable">alicePublicKey</span> <span class="operator">=</span> aliceKeyPair.getPublic();</span><br><span class="line">        <span class="type">PrivateKey</span> <span class="variable">alicePrivateKey</span> <span class="operator">=</span> aliceKeyPair.getPrivate();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;Alice生成了RSA密钥对&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. Alice要发送的消息</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;我同意向Bob转账1000元&quot;</span>;</span><br><span class="line">        System.out.println(<span class="string">&quot;原始消息: &quot;</span> + message);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. Alice用私钥对消息签名</span></span><br><span class="line">        <span class="type">byte</span>[] signature = DigitalSignatureExample.signMessage(message, alicePrivateKey);</span><br><span class="line">        <span class="type">String</span> <span class="variable">signatureBase64</span> <span class="operator">=</span> Base64.getEncoder().encodeToString(signature);</span><br><span class="line">        System.out.println(<span class="string">&quot;数字签名: &quot;</span> + signatureBase64.substring(<span class="number">0</span>, <span class="number">50</span>) + <span class="string">&quot;...&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4. Bob用Alice的公钥验证签名</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">isValid</span> <span class="operator">=</span> DigitalSignatureExample.verifySignature(message, signature, alicePublicKey);</span><br><span class="line">        System.out.println(<span class="string">&quot;签名验证结果: &quot;</span> + (isValid ? <span class="string">&quot;✅ 验证成功&quot;</span> : <span class="string">&quot;❌ 验证失败&quot;</span>));</span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 演示密钥的持久化和恢复</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">demoKeyPersistence</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;=== 密钥持久化演示 ===&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 1. 生成密钥对</span></span><br><span class="line">        <span class="type">KeyPair</span> <span class="variable">keyPair</span> <span class="operator">=</span> DigitalSignatureExample.generateRSAKeyPair();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 转换为字符串（便于存储到数据库或文件）</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">publicKeyStr</span> <span class="operator">=</span> DigitalSignatureExample.publicKeyToString(keyPair.getPublic());</span><br><span class="line">        <span class="type">String</span> <span class="variable">privateKeyStr</span> <span class="operator">=</span> DigitalSignatureExample.privateKeyToString(keyPair.getPrivate());</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;公钥字符串长度: &quot;</span> + publicKeyStr.length());</span><br><span class="line">        System.out.println(<span class="string">&quot;私钥字符串长度: &quot;</span> + privateKeyStr.length());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 从字符串恢复密钥</span></span><br><span class="line">        <span class="type">PublicKey</span> <span class="variable">restoredPublicKey</span> <span class="operator">=</span> DigitalSignatureExample.publicKeyFromString(publicKeyStr);</span><br><span class="line">        <span class="type">PrivateKey</span> <span class="variable">restoredPrivateKey</span> <span class="operator">=</span> DigitalSignatureExample.privateKeyFromString(privateKeyStr);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4. 测试恢复的密钥是否正常工作</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">testMessage</span> <span class="operator">=</span> <span class="string">&quot;测试消息&quot;</span>;</span><br><span class="line">        <span class="type">byte</span>[] testSignature = DigitalSignatureExample.signMessage(testMessage, restoredPrivateKey);</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">testResult</span> <span class="operator">=</span> DigitalSignatureExample.verifySignature(testMessage, testSignature, restoredPublicKey);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;密钥恢复测试: &quot;</span> + (testResult ? <span class="string">&quot;✅ 成功&quot;</span> : <span class="string">&quot;❌ 失败&quot;</span>));</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 演示签名被篡改的情况</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">demoSignatureTampering</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;=== 签名篡改检测演示 ===&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 1. 生成密钥对</span></span><br><span class="line">        <span class="type">KeyPair</span> <span class="variable">keyPair</span> <span class="operator">=</span> DigitalSignatureExample.generateRSAKeyPair();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 对原始消息签名</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">originalMessage</span> <span class="operator">=</span> <span class="string">&quot;重要指令：执行操作A&quot;</span>;</span><br><span class="line">        <span class="type">byte</span>[] originalSignature = DigitalSignatureExample.signMessage(originalMessage, keyPair.getPrivate());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 尝试篡改消息</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">tamperedMessage</span> <span class="operator">=</span> <span class="string">&quot;重要指令：执行操作B&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4. 验证篡改后的消息</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">result1</span> <span class="operator">=</span> DigitalSignatureExample.verifySignature(tamperedMessage, originalSignature, keyPair.getPublic());</span><br><span class="line">        System.out.println(<span class="string">&quot;篡改消息验证: &quot;</span> + (result1 ? <span class="string">&quot;❌ 错误地通过&quot;</span> : <span class="string">&quot;✅ 正确拒绝&quot;</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 5. 尝试篡改签名</span></span><br><span class="line">        <span class="type">byte</span>[] tamperedSignature = originalSignature.clone();</span><br><span class="line">        tamperedSignature[<span class="number">0</span>] = (<span class="type">byte</span>) ~tamperedSignature[<span class="number">0</span>]; <span class="comment">// 修改签名的一个字节</span></span><br><span class="line"></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">result2</span> <span class="operator">=</span> DigitalSignatureExample.verifySignature(originalMessage, tamperedSignature, keyPair.getPublic());</span><br><span class="line">        System.out.println(<span class="string">&quot;篡改签名验证: &quot;</span> + (result2 ? <span class="string">&quot;❌ 错误地通过&quot;</span> : <span class="string">&quot;✅ 正确拒绝&quot;</span>));</span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-公钥存放到数据库"><a href="#2-2-公钥存放到数据库" class="headerlink" title="2.2 公钥存放到数据库"></a>2.2 公钥存放到数据库</h4><p>Q: 在微信支付里面,加密&#x2F;解密&#x2F;验签需要公钥,需要怎么处理公钥才能满足服务动态扩容的场景?</p>
+<p>A: 可以存放在数据库里面,然后转换公钥对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">/</span><br><span class="line"> * 解析PEM格式的公钥</span><br><span class="line"> *</span><br><span class="line"> * <span class="meta">@param</span> certificateContent 公钥文件内容</span><br><span class="line"> */</span><br><span class="line"><span class="keyword">private</span> PublicKey <span class="title function_">parsePublicKey</span><span class="params">(String certificateContent)</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">CertificateFactory</span> <span class="variable">factory</span> <span class="operator">=</span> CertificateFactory.getInstance(<span class="string">&quot;X.509&quot;</span>);</span><br><span class="line">        <span class="type">Certificate</span> <span class="variable">certificate</span> <span class="operator">=</span> factory.generateCertificate(</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">ByteArrayInputStream</span>(certificateContent.getBytes(StandardCharsets.UTF_8))</span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">return</span> certificate.getPublicKey();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        logger.error(<span class="string">&quot;解析证书失败&quot;</span>, e);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;证书解析失败&quot;</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/JavaEE/" rel="tag"><i class="fa fa-tag"></i> JavaEE</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/07/01/ai-ollama-deepseek-dify/" rel="prev" title="ollama+dify+deepseek 搭建个人知识库">
+      <i class="fa fa-chevron-left"></i> ollama+dify+deepseek 搭建个人知识库
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/12/01/ai-mcp/" rel="next" title="MCP">
+      MCP <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E4%BB%98"><span class="nav-text">支付</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98-%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%AF%E4%BB%98"><span class="nav-text">1. 微信支付&#x2F;支付宝支付</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98%E7%B1%BB%E5%9E%8B%E6%80%BB%E7%BB%93"><span class="nav-text">1.1 微信支付类型总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%AF%E4%BB%98%E7%B1%BB%E5%9E%8B%E6%80%BB%E7%BB%93"><span class="nav-text">1.2 支付宝支付类型总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-text">2. 基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95"><span class="nav-text">2.1 加密算法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="nav-text">对称加密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="nav-text">非对称加密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8D%95%E5%90%91%E5%8A%A0%E5%AF%86"><span class="nav-text">单向加密</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8"><span class="nav-text">相关使用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E5%85%AC%E9%92%A5%E5%AD%98%E6%94%BE%E5%88%B0%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-text">2.2 公钥存放到数据库</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cs12110@163.com"
+      src="/images/12764287.png">
+  <p class="site-author-name" itemprop="name">cs12110@163.com</p>
+  <div class="site-description" itemprop="description">就一臭打字的</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">92</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cs12110" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cs12110" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cs12110@163.com</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+
+</body>
+</html>
